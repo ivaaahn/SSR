@@ -1,0 +1,97 @@
+@startuml SSR
+
+title Варианты использования приложения "SSR"
+
+left to right direction
+
+actor :Пользователь: as User
+actor :Руководитель: as SV
+actor :Студент: as ST
+actor :Ведущий руководитель: as Admin
+
+User <|-up- SV
+User <|-down- ST
+
+rectangle "Общее" {
+    usecase "Просмотреть свой профиль" as Profile
+    usecase "Редактирование профиля" as EditProfile
+}
+
+rectangle "Взаимодействие со студентами" {
+    usecase "Просмотреть список курируемых работ" as SVWorksList
+    usecase "Просмотреть информацию о работе" as SVWorkInfo
+    usecase "Добавить индивидуальное задание" as CreateTask
+    usecase "Редактировать индивидуальное задание" as EditTask
+    usecase "Отметить задание как выполненное" as DoneTask
+    usecase "Просмотреть прогреcc студента" as CheckProgress
+    usecase "Просмотреть список оставленных заявок" as ApplicationsListSV
+    usecase "Просмотреть информацию о заявке" as CheckApplicationSV
+    usecase "Принять заявку" as ApplyApplictaionSV
+    usecase "Отклонить заявку" as DeclineApplicationSV
+}
+
+rectangle "Взаимодействие с руководителями" {
+    usecase "Оставить заявку" as ConnectToSV
+    usecase "Просмотреть список доступных научруков" as SVList
+    usecase "Просмотреть профиль научрука" as SVProfile
+    usecase "Просмотреть список моих текущих работ" as STWorksList
+    usecase "Просмотреть информацию по данной работе" as STWorkInfo
+    usecase "Просмотреть список оставленных заявок" as ApplicationsListST
+    usecase "Просмотреть информацию о заявке" as CheckApplicationST
+    usecase "Отменить заявку" as CancelApplicationST
+}
+
+
+rectangle "Возможности администрирования" {
+    usecase "Добавить работу" as CreateWork
+    usecase "Назначить руководителя на работу" as AddSVToWork
+    usecase "Просмотреть список всех руководителей" as AllSVList
+    usecase "Просмотреть список всех работ" as AllWorksList
+    usecase "Просмотреть информацию о работе" as CheckWorkInfo
+    usecase "Редактировать информацию о работе" as EditWorkInfo
+    usecase "Просмотреть статистику по работе" as CheckWorkStat
+}
+
+
+Admin --> AllSVList
+
+Admin --> AllWorksList
+AllWorksList ..> CreateWork : include
+AllWorksList ..> CheckWorkInfo : include
+CheckWorkInfo ..> EditWorkInfo : include
+CheckWorkInfo ..> CheckWorkStat : include
+CheckWorkInfo ..> AddSVToWork : include
+
+
+
+User --> Profile
+
+Profile ..> EditProfile : include
+
+SVList ..> SVProfile : include
+SVProfile ..> ConnectToSV : include
+
+
+SV -> SVWorksList
+SVWorksList .> SVWorkInfo : include
+SVWorkInfo .> CheckProgress : include
+CheckProgress ..> CreateTask: include
+CheckProgress ..> DoneTask : include
+CheckProgress ..> EditTask : include
+
+SV --> ApplicationsListSV
+ApplicationsListSV .> CheckApplicationSV : include
+CheckApplicationSV ..> ApplyApplictaionSV : include
+CheckApplicationSV ..> DeclineApplicationSV : include
+
+ST --> STWorksList
+STWorksList .> STWorkInfo : include
+STWorkInfo .> SVList : include
+
+ST -> ApplicationsListST
+ApplicationsListST ..> CheckApplicationST : include
+CheckApplicationST ..> CancelApplicationST : include
+
+
+
+@enduml
