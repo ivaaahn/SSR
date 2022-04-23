@@ -1,4 +1,4 @@
-# SSR (Student-Suvervisor Relationship) - упростим взаимодействие с научным руководителем
+# SSR (Student-Supervisor Relationship) - упрости взаимодействие с научным руководителем
 
 ## Идея
 
