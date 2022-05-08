@@ -20,9 +20,8 @@ rectangle "Общее" {
 rectangle "Взаимодействие со студентами" {
     usecase "Просмотреть список курируемых работ" as SVWorksList
     usecase "Просмотреть информацию о работе" as SVWorkInfo
-    usecase "Добавить индивидуальное задание" as CreateTask
-    usecase "Редактировать индивидуальное задание" as EditTask
-    usecase "Отметить задание как выполненное" as DoneTask
+    usecase "Просмотреть список моих студентов" as SVWorkStudentsList
+    usecase "Обновить информацию о прогрессе студента" as UpdateProgress
     usecase "Просмотреть прогреcc студента" as CheckProgress
     usecase "Просмотреть список оставленных заявок" as ApplicationsListSV
     usecase "Просмотреть информацию о заявке" as CheckApplicationSV
@@ -74,10 +73,9 @@ SVProfile ..> ConnectToSV : include
 
 SV -> SVWorksList
 SVWorksList .> SVWorkInfo : include
-SVWorkInfo .> CheckProgress : include
-CheckProgress ..> CreateTask: include
-CheckProgress ..> DoneTask : include
-CheckProgress ..> EditTask : include
+SVWorkInfo .> SVWorkStudentsList : include
+SVWorkStudentsList .> CheckProgress : include
+CheckProgress ..> UpdateProgress: include
 
 SV --> ApplicationsListSV
 ApplicationsListSV .> CheckApplicationSV : include
