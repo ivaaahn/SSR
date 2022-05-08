@@ -1,0 +1,13 @@
+app:
+  name: 'ssr'
+  version: '0.1.0'
+
+http:
+  port: ':8080'
+
+logger:
+  log_level: 'debug'
+
+
+postgres:
+  dsn: 'postgres://ssradmin:ssradmin@localhost:5432/ssr'
