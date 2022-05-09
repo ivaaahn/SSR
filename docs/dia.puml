@@ -1,0 +1,322 @@
+@startuml
+
+namespace Delivery {
+    class BaseController {
+        - request
+    }
+
+    class AuthController {
+        - auth_service: IAuthService
+        + Login(),
+        + Logout(),
+        + UpdatePassword()
+    }
+
+    class SupervisorController {
+        - work_service: IWorkService
+        - bid_service: IBidService
+        - profile_service: IProfileService
+
+        + GetMyWork()
+        + GetWorkInfo()
+        + GetSSR()
+        + GetStudentProgress()
+        + ApproveWaypoint()
+        + GetBidsList()
+        + GetBidInfo()
+        + ApproveBid()
+        + DiscardBid()
+        + GetStudentProfile()
+        + GetMyProfile()
+    }
+
+    class StudentController {
+        - work_service: IWorkService
+        - bid_service: IBidService
+        - profile_service: IProfileService
+
+        + GetMyWorks()
+        + GetMyBids()
+        + GetWorkInfo()
+        + GetBidInfo)
+        + CreateBid()
+        + CancelBid()
+        + GetSupervisorProfile()
+        + GetMyProfile()
+    }
+
+}
+
+namespace Service {
+    class WorkService {
+        - work_repo: IWorkRepo
+
+        + GetSvWorksList(sv_id: int) -> list[SvWorksDTO]
+        + GetSvWork(sv_id: int, work_id: int) -> SvWorkDTO
+        + GetStudentProgress(sv_id: int, work_id: int, st_id: int) -> StudentProgressDTO
+        + AcceptWaypoint(id: int)
+        + GetWorksList(subject_id: int) -> list[WorkInfoDTO]
+        + GetStudentWorksList(sv_id: int) -> list[StudentWorkInfoDTO]
+        + GetStudentWork(sv_id: int, work_id: int) -> StudentWorkInfoDTO
+        + GetAvailableSupervisors(work_id: int) -> list[SupervisorInfoDTO]
+        + GetSupervisorInfo(sv_id: int) -> SupervisorInfoDTO
+    }
+
+    class BidService {
+        - ssr_repo: SSRRepo
+        + GetSvBidsList(supervisor_id: int) -> list[SvBidInfoDTO]
+        + GetSvBid(supervisor_id: int, bid_id: int) -> SvBidInfoDTO
+        + HandleSvBid(bid_id: int, action: Enum)
+        + CreateBid(bid: BidInfoDTO)
+        + GetStudentBidsList(supervisor_id: int) -> list[StudentBidInfoDTO]
+        + GetStudentBid(supervisor_id: int, bid_id: int) -> StudentBidInfoDTO
+        + CancelStudentBid(bid_id: int)
+    }
+
+    class ProfileService {
+        - profile_repo: ProfileRepo
+        + GetMyProfile(user_id: int, role: Enum) -> ProfileDTO
+        + GetStudentProfile(user_id: int, role) -> StudentInfoDTO
+        + GetSvProfile(user_id: int) -> SvProfileDTO
+        + PatchSvProfile(changes: SupervisorUpdateDTO)
+        + UpdatePhoto(role: new_photo: MultipartData)
+    }
+
+    class HeadSupervisorService {
+        - work_repo: WorkRepo
+        - ssr_repo: SSRRepo
+
+        + GetSupervisorsList() -> list[SupervisorInfoDTO]
+        + GetWorksList() -> list[WorkInf`oDTO]
+        + GetWorkInfo(work_id: int) -> WorkInfoDTO
+        + CreateWork(data: WorkCreateDTO) -> int
+        + GetWorkStat(work_id: int) -> WorkStatForHeadSvDTO
+        + UpdateWorkInfo(data: WorkInfoDTO)
+        + AssignSupervisorOnWork(work_id: int, sv_id: int)
+        + AssignSupervisorOnWorkBulk(work_id: int, supervisors_ids: list[int])
+    }
+
+    class AuthService {
+        - authRepo: AuthRepo
+        + Login(username: String, password: String) -> String
+        + UpdatePassword(email: String, password: String)
+    }
+}
+
+namespace Repository {
+    class StudentRepo {
+        + Get(id: Integer) -> StudentModel
+        + GetPlenty(filter: Filter) -> list[UserModel]
+        + Update(student_update: StudentUpdateModel)
+    }
+
+    class SupervisorRepo {
+        + Get(id: Integer) -> SupervisorModel
+        + GetPlenty(filter: Filter) -> list[SupervisorModel]
+        + Update(supervisor_update: SupervisorUpdateModel)
+    }
+
+    class SSRRepo {
+        + Get(ssr_id: Integer) -> SSRModel
+        + Create(ssr: SSRCreateModel) -> int
+        + GetPlenty(filter: Filter) -> list[SSRModel]
+    }
+
+    class WorkRepo {
+        + GetPlenty(filter: Filter) -> list[StudentWorkInfoDTO]
+        + Get(id: int) -> WorkInfoDTO
+    }
+
+    class AuthRepo {
+        + Get(email: String)
+        + UpdatePassword(email: String, password: String)
+    }
+}
+
+
+namespace Models {
+    class StudentUpdateModel {
+        + photo_url: String
+    }
+
+    class SupervisorUpdateModel {
+        + about: String
+        + photo_url: String
+    }
+
+    class SSRCreateModel {
+        + student_id: Integer
+        + supervisor_id: Integer
+        + work_id: Integer
+    }
+
+    class SupervisorModel {
+        + email: String
+        + first_name: String
+        + last_name: String
+        + photo_url: String
+        + role: String
+        + birthdate: Date
+        + about: String
+        + department: DepartmentModel
+    }
+
+    class StudentModel {
+        + email: String
+        + first_name: String
+        + last_name: String
+        + photo_url: String
+        + role: String
+        + student_card: String
+        + year: Integer
+        + department: DepartmentModel
+    }
+
+    class DepartmentModel {
+        name: String
+    }
+
+    class Subject {
+
+       }
+
+    class WorkModel {
+        name: String
+        description: String
+        semester: Integer
+    }
+
+    class SSRGetModel {
+        + status: string
+        + created_at: DateTime
+        + supervisor: SupervisorModel
+        + work: WorkModel
+        + student: StudentModel
+    }
+}
+
+namespace DTO {
+    namespace Student {
+        class StudentInfoDTO {
+           + id: Integer
+           + email: String
+           + full_name: String
+           + student_card: String
+           + year: Integer
+           + department: String
+        }
+
+        class StudentWorkInfoDTO {
+            + name: String
+            + subject: String
+            + description: String
+            + semester: Integer
+            + progress: StudentProgressDTO
+        }
+
+        class StudentWaypointDTO {
+           + id: Integer
+           + waypoint: WorkWaypointDTO
+           + status: Enum
+        }
+
+        class StudentProgressDTO {
+           + waypoints: list[SSRWaypointDTO]
+           + total_complete_percent: Float
+        }
+
+        class StudentBidInfoDTO {
+            + id: Integer
+            + status: Enum
+            + created_at: DateTime
+            + supervisor: SupervisorInfoDTO
+            + work: WorkInfoDTO
+        }
+
+        class BidCreateRequestDTO {
+            + work_id: Integer
+            + student_id: Integer
+            + supervisor_id: Integer
+        }
+    }
+
+    namespace SupervisorDTO {
+        class SupervisorInfoDTO {
+           + id: Integer
+           + email: String
+           + full_name: String
+           + birthdate: DateTime
+           + photo: String
+           + about: String
+           + department: String
+        }
+
+        class SupervisorUpdateDTO {
+           + about: String
+        }
+
+        class SvBidInfoDTO {
+            + id: Integer
+            + status: Enum
+            + created_at: DateTime
+            + student: StudentInfoDTO
+            + work: WorkInfoDTO
+        }
+
+         class SvWorkInfoDTO {
+            + name: String
+            + subject: String
+            + description: Sting
+            + semester: Integer
+            + is_head: Boolean
+            + students: List[StudentInfoDTO]
+        }
+    }
+
+
+    class SSRInfoDTO {
+        + supervisor: SupervisorInfoDTO
+        + student: StudentInfoDTO
+        + work: WorkInfoDTO
+        + created_at: DateTime
+        + status: Enum
+    }
+
+    namespace HeadSupervisor {
+        class WorkStatForHeadSvDTO {
+            + ssr_stat: list[SSRStatForHeadSvDTO]
+            + avg_complete_percent: Float
+            + students_with_zero_percent: Integer
+            + students_completed: Integer
+        }
+
+        class SSRStatForHeadSvDTO {
+            + supervisor: SupervisorInfoDTO
+            + student: StudentInfoDTO
+            + created_at: Datetime
+            + status: Enum
+            + waypoints_passed: Integer
+        }
+
+        class WorkCreateDTO {
+            + name: String
+            + description: String
+            + semester: Integer
+            + subject_id: int
+        }
+    }
+
+    class WorkInfoDTO {
+       + name: String
+       + subject: String
+       + description: String
+       + semester: Integer
+       + supervisors: List[SupervisorInfoDTO]
+    }
+
+    class WorkWaypointDTO {
+       + deadline: DateTime
+       + description: String
+    }
+
+@enduml
