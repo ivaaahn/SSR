@@ -21,3 +21,6 @@ CREATE TABLE "auth"
 
 ALTER TABLE "users"
     ADD FOREIGN KEY ("email") REFERENCES "auth" ("email");
+
+insert into auth (email, password) VALUES ('viktor1970@example.org', '$2b$12$kXlvD8/GSm/ZLEEjPFS0peiPEz.AEh5byuNIqZvFyu7bW6R5RxcJy');
+insert into users (email, first_name, last_name, avatar_url, role) VALUES ('viktor1970@example.org', 'Виктор', 'Иванов', NULL, 'student');

@@ -10,4 +10,8 @@ logger:
 
 
 postgres:
-  dsn: 'postgres://ssradmin:ssradmin@localhost:5432/ssr'
+  dsn: 'postgres://user:password@host:port/db'
+
+auth:
+  token_exp: 10
+  signing_key: 'super-secret'

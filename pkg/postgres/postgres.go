@@ -6,7 +6,7 @@ import (
 )
 
 type Postgres struct {
-	db *sqlx.DB
+	Conn *sqlx.DB
 }
 
 func New(dsn string) (*Postgres, error) {
@@ -20,13 +20,13 @@ func New(dsn string) (*Postgres, error) {
 	}
 
 	// TODO: closeResource
-	return &Postgres{db: db}, nil
+	return &Postgres{Conn: db}, nil
 }
 
 func (pg *Postgres) Close() error {
-	return pg.db.Close()
+	return pg.Conn.Close()
 }
 
 func (pg *Postgres) Check() error {
-	return pg.db.Ping()
+	return pg.Conn.Ping()
 }

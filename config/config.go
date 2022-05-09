@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"os"
 )
 
 type (
@@ -12,6 +13,7 @@ type (
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
 		Pg   `yaml:"postgres"`
+		Auth `yaml:"auth"`
 	}
 
 	// App -.
@@ -34,13 +36,32 @@ type (
 	Pg struct {
 		DSN string `env-required:"true" yaml:"dsn" env:"PG_DSN"`
 	}
+
+	Auth struct {
+		TokenExp   int    `env-required:"true" yaml:"token_exp" env:"AUTH_TOKEN_EXP"`
+		SigningKey string `env-required:"true" yaml:"signing_key" env:"AUTH_SIGNING_KEY"`
+	}
+)
+
+const (
+	testConfigPath = "./config/config_test.yml"
+	prodConfigPath = "./config/config.yml"
 )
 
 // NewConfig returns app config.
 func NewConfig() (*Config, error) {
-	cfg := &Config{}
+	var configPath string
 
-	err := cleanenv.ReadConfig("./config/config.yml", cfg)
+	switch os.Getenv("DEPLOY_MODE") {
+	case "PROD":
+		configPath = prodConfigPath
+	default:
+		configPath = testConfigPath
+	}
+
+	cfg := &Config{}
+	err := cleanenv.ReadConfig(configPath, cfg)
+
 	if err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
 	}

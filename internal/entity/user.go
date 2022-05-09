@@ -1,5 +1,7 @@
 package entity
 
+import "database/sql"
+
 type UserRole string
 
 const (
@@ -10,13 +12,8 @@ const (
 type User struct {
 	Id        int
 	Email     string
-	FirstName string
-	LastName  string
-	Avatar    string
+	FirstName string         `db:"first_name"`
+	LastName  string         `db:"last_name"`
+	Avatar    sql.NullString `db:"avatar_url"`
 	Role      UserRole
-}
-
-type Auth struct {
-	Email    string
-	Password string
 }
