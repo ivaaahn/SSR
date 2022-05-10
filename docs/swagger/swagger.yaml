@@ -1,0 +1,14 @@
+basePath: /
+host: localhost:8080
+info:
+  contact:
+    email: ivahnencko01@gmail.com
+    name: Ivakhnenko Dmitry, Moscow
+    url: github.com/ivaahn/ssr
+  description: Student-Supervisor Relationships
+  title: SSR Application
+  version: 0.1.0
+paths: {}
+schemes:
+- http
+swagger: "2.0"

@@ -1,0 +1,19 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Student-Supervisor Relationships",
+        "title": "SSR Application",
+        "contact": {
+            "name": "Ivakhnenko Dmitry, Moscow",
+            "url": "github.com/ivaahn/ssr",
+            "email": "ivahnencko01@gmail.com"
+        },
+        "version": "0.1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {}
+}
