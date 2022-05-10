@@ -6,16 +6,32 @@ import (
 )
 
 type (
-	IAuthUseCase interface {
-		Login(email, password string) (*dto.LoginResponseDTO, error)
-	}
 	IAuthRepo interface {
 		Get(email string) (*entity.Auth, error)
 	}
-	IUserUseCase interface {
-		Me(email string) (*dto.UserResponseDTO, error)
+	IAuthUC interface {
+		Login(email, password string) (*dto.LoginResponseDTO, error)
 	}
-	IUserRepo interface {
-		Get(email string) (*entity.User, error)
+
+	IProfileRepo interface {
+		GetStudentProfile(email string) (*entity.StudentProfile, error)
+		GetSupervisorProfile(email string) (*entity.SupervisorProfile, error)
+	}
+	IProfileUC interface {
+		GetStudentProfile(email string) (*dto.StudentProfileDTO, error)
+		GetSupervisorProfile(email string) (*dto.SupervisorProfileDTO, error)
+	}
+
+	IBidRepo interface {
+		GetBidsByStudentID(studentID int) ([]*entity.StudentBid, error)
+		GetBidsBySupervisorID(studentID int) ([]*entity.SupervisorBid, error)
+		CreateBid(studentID, supervisorID, workID int) (int, error)
+	}
+	IStudentBidUC interface {
+		GetStudentBids(studentID int) (*dto.StudentBidsDTO, error)
+		ApplyBid(data *dto.StudentApplyBidDTO) (*dto.StudentApplyBidResponseDTO, error)
+	}
+	ISupervisorBidUC interface {
+		GetSupervisorBids(supervisorID int) (*dto.SupervisorBidsDTO, error)
 	}
 )

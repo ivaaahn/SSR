@@ -6,6 +6,17 @@ import (
 	"ssr/internal/app"
 )
 
+// @title SSR Application
+// @version 0.1.0
+// @description Student-Supervisor Relationships
+
+// @contact.name Ivakhnenko Dmitry, Moscow
+// @contact.url github.com/ivaahn/ssr
+// @contact.email ivahnencko01@gmail.com
+
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 func main() {
 	cfg, err := config.NewConfig()
 	if err != nil {

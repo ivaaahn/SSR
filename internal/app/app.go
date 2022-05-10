@@ -3,15 +3,18 @@ package app
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"ssr/config"
+	_ "ssr/docs/swagger"
 	"ssr/internal/controller/http"
-	"ssr/internal/repo"
 	"ssr/internal/usecase"
+	"ssr/internal/usecase/repo_pg"
 	"ssr/pkg/logger"
+	"ssr/pkg/misc"
 	"ssr/pkg/postgres"
+	"strings"
 )
 
 // Run creates objects via constructors.
@@ -28,24 +31,30 @@ func Run(cfg *config.Config) {
 
 	e := echo.New()
 	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	authUC := usecase.NewAuthUC(repo.NewAuthPGRepo(pg, l), cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	userUC := usecase.NewUserUC(repo.NewUserPGRepo(pg, l))
+	authUC := usecase.NewAuthUC(repo_pg.NewAuthPGRepo(pg, l), cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileUC := usecase.NewProfileUC(repo_pg.NewProfilePGRepo(pg, l))
+	bidUC := usecase.NewBidUC(repo_pg.NewSSRPGRepo(pg, l))
 
-	http.NewRouter(e, l, authUC, userUC)
+	http.NewRouter(e, l, authUC, profileUC, bidUC, bidUC)
 
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &jwt.StandardClaims{},
+		Claims:     &misc.JWTClaimsSSR{},
 		SigningKey: []byte(cfg.SigningKey),
 		ContextKey: "userEmail",
 		Skipper: func(c echo.Context) bool {
-			// Skip middleware if path is equal 'login'
-			if c.Request().URL.Path == "/api/auth/login" {
+			// Skip middleware if 'login' or 'swagger'
+			path := c.Request().URL.Path
+
+			split := strings.Split(path, "/")
+			if split[2] == "auth" || split[1] == "swagger" {
 				return true
 			}
 			return false
 		},
 	}))
 
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.Logger.Fatal(e.Start(cfg.HTTP.Port))
 }

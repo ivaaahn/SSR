@@ -6,11 +6,19 @@ import (
 	"ssr/pkg/logger"
 )
 
-func NewRouter(echo *echo.Echo, l logger.Interface, authUC usecase.IAuthUseCase, userUC usecase.IUserUseCase) {
+func NewRouter(
+	echo *echo.Echo,
+	l logger.Interface,
+	authUC usecase.IAuthUC,
+	profileUC usecase.IProfileUC,
+	stBidUC usecase.IStudentBidUC,
+	svBidUC usecase.ISupervisorBidUC,
+) {
 	g := echo.Group("/api")
 
 	{
 		NewAuthRoutes(g, l, authUC)
-		NewUserRoutes(g, l, userUC)
+		NewStudentRoutes(g, l, profileUC, stBidUC)
+		NewSupervisorRoutes(g, l, profileUC, svBidUC)
 	}
 }
