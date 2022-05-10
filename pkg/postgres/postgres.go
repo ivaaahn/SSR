@@ -19,7 +19,6 @@ func New(dsn string) (*Postgres, error) {
 		return nil, err
 	}
 
-	// TODO: closeResource
 	return &Postgres{Conn: db}, nil
 }
 
