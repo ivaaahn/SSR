@@ -19,6 +19,13 @@ type supervisorRoutes struct {
 	workUC    usecase.ISupervisorWorkUC
 }
 
+// ShowAccount godoc
+// @Summary      Get supervisor's profile
+// @Tags         supervisor
+// @Produce      json
+// @Success      200  {object}  dto.SupervisorProfile
+// @Router       /api/supervisor/profile [get]
+// @Security	 Auth
 func (r *supervisorRoutes) getProfile(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -32,6 +39,14 @@ func (r *supervisorRoutes) getProfile(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Get supervisor's works
+// @Tags         supervisor
+// @Param        supervisor_id query int  true  "Supervisor ID"
+// @Produce      json
+// @Success      200  {object}  dto.SupervisorWorkPlenty
+// @Router       /api/supervisor/work [get]
+// @Security	 Auth
 func (r *supervisorRoutes) getWorks(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -47,6 +62,14 @@ func (r *supervisorRoutes) getWorks(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Get supervisor's bids
+// @Tags         supervisor
+// @Param        supervisor_id query int  true  "Supervisor ID"
+// @Produce      json
+// @Success      200  {object}  dto.SupervisorBids
+// @Router       /api/supervisor/bid [get]
+// @Security	 Auth
 func (r *supervisorRoutes) getBids(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -62,6 +85,14 @@ func (r *supervisorRoutes) getBids(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Accept or Decline student's bid
+// @Tags         supervisor
+// @Param 		 ResolveBid body dto.ResolveBid true "bid info"
+// @Produce      json
+// @Success      200
+// @Router       /api/supervisor/bid/resolve [post]
+// @Security	 Auth
 func (r *supervisorRoutes) resolveBid(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))

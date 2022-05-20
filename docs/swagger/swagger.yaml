@@ -1,4 +1,236 @@
 basePath: /
+definitions:
+  dto.ApplyBid:
+    properties:
+      studentID:
+        type: integer
+      supervisorID:
+        type: integer
+      workID:
+        type: integer
+    type: object
+  dto.ApplyBidResponse:
+    properties:
+      bidID:
+        type: integer
+    type: object
+  dto.CreateSSR:
+    properties:
+      bidID:
+        type: integer
+      studentID:
+        type: integer
+    type: object
+  dto.LoginResponse:
+    properties:
+      email:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.ResolveBid:
+    properties:
+      accept:
+        type: boolean
+      bidID:
+        type: integer
+      supervisorID:
+        type: integer
+    type: object
+  dto.StudentBid:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      supervisor:
+        $ref: '#/definitions/dto.SupervisorProfile'
+      work:
+        $ref: '#/definitions/dto.Work'
+    type: object
+  dto.StudentBids:
+    properties:
+      bids:
+        items:
+          $ref: '#/definitions/dto.StudentBid'
+        type: array
+    type: object
+  dto.StudentProfile:
+    properties:
+      avatarUrl:
+        type: string
+      department:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      studentCard:
+        type: string
+      studentID:
+        type: integer
+      year:
+        type: integer
+    type: object
+  dto.StudentViewSSR:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      supervisor:
+        $ref: '#/definitions/dto.SupervisorProfile'
+      work:
+        $ref: '#/definitions/dto.Work'
+    type: object
+  dto.StudentWork:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      kind:
+        type: string
+      subject:
+        type: string
+    type: object
+  dto.StudentWorkPlenty:
+    properties:
+      studentID:
+        type: integer
+      works:
+        items:
+          $ref: '#/definitions/dto.StudentWork'
+        type: array
+    type: object
+  dto.SubjectResp:
+    properties:
+      department:
+        type: string
+      name:
+        type: string
+      subjectID:
+        type: integer
+    type: object
+  dto.SupervisorBid:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      student:
+        $ref: '#/definitions/dto.StudentProfile'
+      work:
+        $ref: '#/definitions/dto.Work'
+    type: object
+  dto.SupervisorBids:
+    properties:
+      bids:
+        items:
+          $ref: '#/definitions/dto.SupervisorBid'
+        type: array
+    type: object
+  dto.SupervisorProfile:
+    properties:
+      about:
+        type: string
+      avatarUrl:
+        type: string
+      birthdate:
+        $ref: '#/definitions/misc.Date'
+      department:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      supervisorID:
+        type: integer
+    type: object
+  dto.SupervisorWork:
+    properties:
+      description:
+        type: string
+      head:
+        type: boolean
+      id:
+        type: integer
+      kind:
+        type: string
+      subject:
+        type: string
+    type: object
+  dto.SupervisorWorkPlenty:
+    properties:
+      supervisorID:
+        type: integer
+      works:
+        items:
+          $ref: '#/definitions/dto.SupervisorWork'
+        type: array
+    type: object
+  dto.Work:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      semester:
+        type: integer
+      subject:
+        $ref: '#/definitions/dto.SubjectResp'
+    type: object
+  dto.WorkSupervisor:
+    properties:
+      about:
+        type: string
+      avatarUrl:
+        type: string
+      birthdate:
+        $ref: '#/definitions/misc.Date'
+      department:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      full:
+        type: boolean
+      head:
+        type: boolean
+      lastName:
+        type: string
+      supervisorID:
+        type: integer
+    type: object
+  dto.WorkSupervisorPlenty:
+    properties:
+      supervisors:
+        items:
+          $ref: '#/definitions/dto.WorkSupervisor'
+        type: array
+      workID:
+        type: integer
+    type: object
+  misc.Date:
+    properties:
+      time.Time:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -8,7 +240,233 @@ info:
   description: Student-Supervisor Relationships
   title: SSR Application
   version: 0.1.0
-paths: {}
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - description: User email
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: User password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "401":
+          description: ""
+        "500":
+          description: ""
+      summary: Login into account
+      tags:
+      - auth
+  /api/student/bid:
+    get:
+      parameters:
+      - description: Student ID
+        in: query
+        name: student_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StudentBids'
+      security:
+      - Auth: []
+      summary: Get student's bids
+      tags:
+      - student
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: bid info
+        in: body
+        name: ApplyBid
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ApplyBid'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApplyBidResponse'
+      security:
+      - Auth: []
+      summary: Apply bid
+      tags:
+      - student
+  /api/student/profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StudentProfile'
+      security:
+      - Auth: []
+      summary: Get student's profile
+      tags:
+      - student
+  /api/student/ssr:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ssr info
+        in: body
+        name: ApplyBid
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSSR'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StudentViewSSR'
+      security:
+      - Auth: []
+      summary: Start SSR
+      tags:
+      - student
+  /api/student/work:
+    get:
+      parameters:
+      - description: Student ID
+        in: query
+        name: student_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StudentWorkPlenty'
+      security:
+      - Auth: []
+      summary: Get student's works
+      tags:
+      - student
+  /api/student/work/supervisor:
+    get:
+      parameters:
+      - description: Work ID
+        in: query
+        name: work_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.WorkSupervisorPlenty'
+      security:
+      - Auth: []
+      summary: Get supervisors of the work
+      tags:
+      - student
+  /api/supervisor/bid:
+    get:
+      parameters:
+      - description: Supervisor ID
+        in: query
+        name: supervisor_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SupervisorBids'
+      security:
+      - Auth: []
+      summary: Get supervisor's bids
+      tags:
+      - supervisor
+  /api/supervisor/bid/resolve:
+    post:
+      parameters:
+      - description: bid info
+        in: body
+        name: ResolveBid
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ResolveBid'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      security:
+      - Auth: []
+      summary: Accept or Decline student's bid
+      tags:
+      - supervisor
+  /api/supervisor/profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SupervisorProfile'
+      security:
+      - Auth: []
+      summary: Get supervisor's profile
+      tags:
+      - supervisor
+  /api/supervisor/work:
+    get:
+      parameters:
+      - description: Supervisor ID
+        in: query
+        name: supervisor_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SupervisorWorkPlenty'
+      security:
+      - Auth: []
+      summary: Get supervisor's works
+      tags:
+      - supervisor
 schemes:
 - http
+securityDefinitions:
+  Auth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -13,6 +13,17 @@ type authRoutes struct {
 	uc usecase.IAuthUC
 }
 
+// ShowAccount godoc
+// @Summary      Login into account
+// @Tags         auth
+// @Accept       x-www-form-urlencoded
+// @Produce      json
+// @Param        username formData  string  true  "User email"
+// @Param        password formData  string  true  "User password"
+// @Success      200  {object}  dto.LoginResponse
+// @Failure      401
+// @Failure      500
+// @Router       /api/auth/login [post]
 func (r *authRoutes) login(ctx echo.Context) error {
 	email := ctx.FormValue("username")
 	password := ctx.FormValue("password")
@@ -23,6 +34,7 @@ func (r *authRoutes) login(ctx echo.Context) error {
 
 	if err != nil {
 		r.l.Error(err)
+		return echo.ErrUnauthorized
 	}
 
 	return ctx.JSON(http.StatusOK, respDTO)

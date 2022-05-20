@@ -17,6 +17,10 @@ import (
 // @host localhost:8080
 // @BasePath /
 // @schemes http
+
+// @securitydefinitions.apikey Auth
+// @in header
+// @name Authorization
 func main() {
 	cfg, err := config.NewConfig()
 	if err != nil {
