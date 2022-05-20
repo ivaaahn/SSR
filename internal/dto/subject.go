@@ -1,6 +1,6 @@
 package dto
 
-type SubjectDTO struct {
+type SubjectResp struct {
 	SubjectID  int    `json:"subjectID"`
 	Name       string `json:"name"`
 	Department string `json:"department"`

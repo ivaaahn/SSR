@@ -4,36 +4,42 @@ import (
 	"time"
 )
 
-type StudentBidDTO struct {
-	BidID      int                  `json:"BidID"`
-	Status     string               `json:"status"`
-	CreatedAt  time.Time            `json:"createdAt"`
-	Supervisor SupervisorProfileDTO `json:"supervisor"`
-	Work       WorkDTO              `json:"work"`
+type StudentBid struct {
+	BidID      int               `json:"id"`
+	Status     string            `json:"status"`
+	CreatedAt  time.Time         `json:"createdAt"`
+	Supervisor SupervisorProfile `json:"supervisor"`
+	Work       Work              `json:"work"`
 }
 
-type SupervisorBidDTO struct {
-	BidID     int               `json:"BidID"`
-	Status    string            `json:"status"`
-	CreatedAt time.Time         `json:"createdAt"`
-	Student   StudentProfileDTO `json:"student"`
-	Work      WorkDTO           `json:"work"`
+type StudentBids struct {
+	Bids []*StudentBid `json:"bids"`
 }
 
-type StudentBidsDTO struct {
-	Bids []*StudentBidDTO
+type SupervisorBid struct {
+	BidID     int            `json:"id"`
+	Status    string         `json:"status"`
+	CreatedAt time.Time      `json:"createdAt"`
+	Student   StudentProfile `json:"student"`
+	Work      Work           `json:"work"`
 }
 
-type SupervisorBidsDTO struct {
-	Bids []*SupervisorBidDTO
+type SupervisorBids struct {
+	Bids []*SupervisorBid
 }
 
-type StudentApplyBidDTO struct {
+type ApplyBid struct {
 	StudentID    int `json:"studentID"`
 	SupervisorID int `json:"supervisorID"`
 	WorkID       int `json:"workID"`
 }
 
-type StudentApplyBidResponseDTO struct {
+type ApplyBidResponse struct {
 	BidID int `json:"bidID"`
+}
+
+type ResolveBid struct {
+	SupervisorID int  `json:"supervisorID"`
+	BidID        int  `json:"bidID"`
+	Accept       bool `json:"accept"`
 }

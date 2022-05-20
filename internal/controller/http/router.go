@@ -13,12 +13,15 @@ func NewRouter(
 	profileUC usecase.IProfileUC,
 	stBidUC usecase.IStudentBidUC,
 	svBidUC usecase.ISupervisorBidUC,
+	stWorkUC usecase.IStudentWorkUC,
+	svWorkUC usecase.ISupervisorWorkUC,
+	stSsrUC usecase.IStudentRelUC,
 ) {
 	g := echo.Group("/api")
 
 	{
 		NewAuthRoutes(g, l, authUC)
-		NewStudentRoutes(g, l, profileUC, stBidUC)
-		NewSupervisorRoutes(g, l, profileUC, svBidUC)
+		NewStudentRoutes(g, l, profileUC, stBidUC, stWorkUC, stSsrUC)
+		NewSupervisorRoutes(g, l, profileUC, svBidUC, svWorkUC)
 	}
 }

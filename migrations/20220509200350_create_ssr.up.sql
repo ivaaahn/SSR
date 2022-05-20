@@ -1,17 +1,17 @@
 CREATE TYPE "ssr_status" AS ENUM (
-    'заявка ожидает ответа',
-    'заявка отклонена',
-    'заявка отозвана',
-    'заявка принята',
-    'в работе',
-    'завершено'
+    'pending',
+    'rejected',
+    'cancelled',
+    'accepted',
+    'wip',
+    'done'
     );
 
 
 CREATE TABLE "ssr"
 (
     "ssr_id"        bigint unique generated always as identity,
-    "status"        ssr_status not null default 'заявка ожидает ответа',
+    "status"        ssr_status not null default 'pending',
     "created_at"    timestamp           default now(),
     "supervisor_id" bigint     not null,
     "work_id"       bigint     not null,
@@ -34,8 +34,3 @@ ALTER TABLE ssr
 CREATE INDEX ON "ssr" (status, supervisor_id);
 CREATE INDEX ON "ssr" (status, student_id);
 CREATE INDEX ON "ssr" (status, work_id);
-
-
-
-insert into "ssr" (status, supervisor_id, work_id, student_id)
-VALUES ('заявка ожидает ответа', 1, 1, 1);

@@ -24,7 +24,7 @@ func NewAuthUC(r IAuthRepo, tokenExpMinutes int, signingKey []byte) *AuthUseCase
 	}
 }
 
-func (uc *AuthUseCase) Login(email, password string) (*dto.LoginResponseDTO, error) {
+func (uc *AuthUseCase) Login(email, password string) (*dto.LoginResponse, error) {
 	dbData, err := uc.repo.Get(email)
 	if err != nil {
 		return nil, fmt.Errorf("AuthUseCase - Login - repo.GetStudentProfile: %w", err)
@@ -43,7 +43,7 @@ func (uc *AuthUseCase) Login(email, password string) (*dto.LoginResponseDTO, err
 		return nil, fmt.Errorf("AuthUseCase - token.SignedString: %w", err)
 	}
 
-	return &dto.LoginResponseDTO{
+	return &dto.LoginResponse{
 		Token: tokenStr,
 		Email: dbData.Email,
 		Role:  string(dbData.Role),

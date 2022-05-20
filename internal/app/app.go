@@ -4,7 +4,7 @@ package app
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	m "github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"ssr/config"
 	_ "ssr/docs/swagger"
@@ -30,16 +30,18 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	e.Use(m.Logger())
+	e.Use(m.Recover())
 
-	authUC := usecase.NewAuthUC(repo_pg.NewAuthPGRepo(pg, l), cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	profileUC := usecase.NewProfileUC(repo_pg.NewProfilePGRepo(pg, l))
-	bidUC := usecase.NewBidUC(repo_pg.NewSSRPGRepo(pg, l))
+	authUC := usecase.NewAuthUC(repo_pg.NewAuthPgRepo(pg, l), cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileUC := usecase.NewProfileUC(repo_pg.NewProfilePgRepo(pg, l))
+	bidUC := usecase.NewBidUC(repo_pg.NewSSRPgRepo(pg, l))
+	workUC := usecase.NewWorkUC(repo_pg.NewWorkPgRepo(pg, l))
+	ssrUC := usecase.NewSsrUC(repo_pg.NewSSRPgRepo(pg, l))
 
-	http.NewRouter(e, l, authUC, profileUC, bidUC, bidUC)
+	http.NewRouter(e, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC)
 
-	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+	e.Use(m.JWTWithConfig(m.JWTConfig{
 		Claims:     &misc.JWTClaimsSSR{},
 		SigningKey: []byte(cfg.SigningKey),
 		ContextKey: "userEmail",

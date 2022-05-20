@@ -5,13 +5,13 @@ import (
 	"ssr/pkg/postgres"
 )
 
-type BasePGRepo struct {
+type BasePgRepo struct {
 	*postgres.Postgres
 	l logger.Interface
 }
 
-func NewPGRepo(pg *postgres.Postgres, l logger.Interface) *BasePGRepo {
-	return &BasePGRepo{
+func NewPGRepo(pg *postgres.Postgres, l logger.Interface) *BasePgRepo {
+	return &BasePgRepo{
 		Postgres: pg,
 		l:        l,
 	}

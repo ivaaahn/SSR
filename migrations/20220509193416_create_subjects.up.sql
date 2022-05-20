@@ -10,4 +10,6 @@ ALTER TABLE "subjects"
     ADD FOREIGN KEY ("department_id") REFERENCES "departments" ("department_id");
 
 insert into subjects (name, department_id)
-VALUES ('Операционные системы', 'ИУ7')
+VALUES ('Операционные системы', 'ИУ7'),
+       ('Компьютерная графика', 'ИУ7');
+

@@ -1,6 +1,6 @@
 package dto
 
-type LoginResponseDTO struct {
+type LoginResponse struct {
 	Token string `json:"token"`
 	Email string `json:"email"`
 	Role  string `json:"role"`

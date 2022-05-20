@@ -16,13 +16,13 @@ func NewProfileUC(r IProfileRepo) *ProfileUseCase {
 	}
 }
 
-func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfileDTO, error) {
+func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfile, error) {
 	dbData, err := uc.repo.GetStudentProfile(email)
 	if err != nil {
 		return nil, fmt.Errorf("ProfileUseCase - GetProfile - repo.GetStudentProfile: %w", err)
 	}
 
-	return &dto.StudentProfileDTO{
+	return &dto.StudentProfile{
 		StudentID:   dbData.StudentID,
 		Email:       dbData.Email,
 		FirstName:   dbData.FirstName,
@@ -34,20 +34,20 @@ func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfileDT
 	}, nil
 }
 
-func (uc *ProfileUseCase) GetSupervisorProfile(email string) (*dto.SupervisorProfileDTO, error) {
+func (uc *ProfileUseCase) GetSupervisorProfile(email string) (*dto.SupervisorProfile, error) {
 	dbData, err := uc.repo.GetSupervisorProfile(email)
 	if err != nil {
 		return nil, fmt.Errorf("SupervisorUseCase - GetProfile - repo.GetSupervisorProfile: %w", err)
 	}
 
-	return &dto.SupervisorProfileDTO{
+	return &dto.SupervisorProfile{
 		SupervisorID: dbData.SupervisorID,
 		Email:        dbData.Email,
 		FirstName:    dbData.FirstName,
 		LastName:     dbData.LastName,
 		AvatarUrl:    misc.NullString(dbData.Avatar),
 		About:        dbData.About,
-		Birthdate:    misc.BirthDate{Time: dbData.Birthdate},
+		Birthdate:    misc.Date{Time: dbData.Birthdate},
 		Department:   dbData.DepartmentID,
 	}, nil
 }

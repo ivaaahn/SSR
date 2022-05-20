@@ -4,14 +4,14 @@ import (
 	"ssr/pkg/misc"
 )
 
-type UserInfoDTO struct {
+type UserInfo struct {
 	Email     string          `json:"email"`
 	FirstName string          `json:"firstName"`
 	LastName  string          `json:"lastName"`
 	AvatarUrl misc.NullString `json:"avatarUrl"`
 }
 
-type StudentProfileDTO struct {
+type StudentProfile struct {
 	StudentID   int             `json:"studentID"`
 	Email       string          `json:"email"`
 	FirstName   string          `json:"firstName"`
@@ -22,13 +22,13 @@ type StudentProfileDTO struct {
 	Department  string          `json:"department"`
 }
 
-type SupervisorProfileDTO struct {
+type SupervisorProfile struct {
 	SupervisorID int             `json:"supervisorID"`
 	Email        string          `json:"email"`
 	FirstName    string          `json:"firstName"`
 	LastName     string          `json:"lastName"`
 	About        string          `json:"about"`
-	Birthdate    misc.BirthDate  `json:"birthdate"`
+	Birthdate    misc.Date       `json:"birthdate"`
 	AvatarUrl    misc.NullString `json:"avatarUrl"`
 	Department   string          `json:"department"`
 }
