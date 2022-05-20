@@ -15,13 +15,13 @@ func (x *NullString) MarshalJSON() ([]byte, error) {
 	return json.Marshal(x.String)
 }
 
-type BirthDate struct {
+type Date struct {
 	time.Time
 }
 
-const birthDateLayout = "2006-01-02"
+const dateLayout = "2006-01-02"
 
-func (x *BirthDate) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + x.Format(birthDateLayout) + `"`), nil
+func (x *Date) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + x.Format(dateLayout) + `"`), nil
 
 }

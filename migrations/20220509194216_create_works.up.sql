@@ -21,7 +21,9 @@ ALTER TABLE "works"
 
 
 insert into "work_kinds" (name)
-VALUES ('Курсовая работа');
+VALUES ('Курсовая работа'),
+       ('Научно-исследовательская работа');
 
 insert into "works" (work_kind_id, description, semester, subject_id)
-VALUES (1, 'Только для истинных профессионалов', 7, 1);
+VALUES (1, 'Только для истинных профессионалов', 6, 1),
+       (2, 'Брезенхем за 20 минту', 6, 2);
