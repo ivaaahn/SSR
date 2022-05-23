@@ -57,6 +57,6 @@ func Run(cfg *config.Config) {
 		},
 	}))
 
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	e.GET("/swagger*", echoSwagger.WrapHandler)
 	e.Logger.Fatal(e.Start(cfg.HTTP.Port))
 }

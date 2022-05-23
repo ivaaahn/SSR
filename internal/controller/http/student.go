@@ -20,6 +20,13 @@ type studentRoutes struct {
 	ssrUC     usecase.IStudentRelUC
 }
 
+// ShowAccount godoc
+// @Summary      Get student's profile
+// @Tags         student
+// @Produce      json
+// @Success      200  {object}  dto.StudentProfile
+// @Router       /api/student/profile [get]
+// @Security	 Auth
 func (r *studentRoutes) getProfile(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -33,6 +40,14 @@ func (r *studentRoutes) getProfile(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Get student's bids
+// @Tags         student
+// @Produce      json
+// @Param        student_id query int  true  "Student ID"
+// @Success      200  {object}  dto.StudentBids
+// @Router       /api/student/bid [get]
+// @Security	 Auth
 func (r *studentRoutes) getBids(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -48,6 +63,14 @@ func (r *studentRoutes) getBids(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Get student's works
+// @Tags         student
+// @Param        student_id query int  true  "Student ID"
+// @Produce      json
+// @Success      200  {object}  dto.StudentWorkPlenty
+// @Router       /api/student/work [get]
+// @Security	 Auth
 func (r *studentRoutes) getWorks(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -63,6 +86,14 @@ func (r *studentRoutes) getWorks(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Get supervisors of the work
+// @Tags         student
+// @Param        work_id query int  true  "Work ID"
+// @Produce      json
+// @Success      200  {object}  dto.WorkSupervisorPlenty
+// @Router       /api/student/work/supervisor [get]
+// @Security	 Auth
 func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -78,6 +109,15 @@ func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Apply bid
+// @Tags         student
+// @Accept		 json
+// @Param 		 ApplyBid body dto.ApplyBid true "bid info"
+// @Produce      json
+// @Success      200  {object}  dto.ApplyBidResponse
+// @Router       /api/student/bid [put]
+// @Security	 Auth
 func (r *studentRoutes) applyBid(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
@@ -96,6 +136,15 @@ func (r *studentRoutes) applyBid(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Start SSR
+// @Tags         student
+// @Accept		 json
+// @Param 		 ApplyBid body dto.CreateSSR true "ssr info"
+// @Produce      json
+// @Success      200  {object}  dto.StudentViewSSR
+// @Router       /api/student/ssr [post]
+// @Security	 Auth
 func (r *studentRoutes) createSSR(ctx echo.Context) error {
 	email, _ := misc.ExtractInfoFromContext(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
