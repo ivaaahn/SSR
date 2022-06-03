@@ -30,7 +30,8 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	e := echo.New()
-	e.Use(m.Logger())
+	e.Use(m.CORS())
+	//e.Use(m.Logger())
 	e.Use(m.Recover())
 
 	authUC := usecase.NewAuthUC(repo_pg.NewAuthPgRepo(pg, l), cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))

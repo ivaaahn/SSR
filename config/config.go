@@ -45,7 +45,7 @@ type (
 
 const (
 	testConfigPath = "./config/config_test.yml"
-	prodConfigPath = "./config/config.yml"
+	prodConfigPath = "/etc/ssr/config.yml"
 )
 
 // NewConfig returns app config.

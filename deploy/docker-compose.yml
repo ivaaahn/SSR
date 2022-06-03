@@ -1,0 +1,36 @@
+version: "3"
+
+
+services:
+  app:
+    image: ivaaahn/ssr:0.1.0
+    container_name: app
+    environment:
+      DEPLOY_MODE: 'PROD'
+      WAIT_HOSTS: pg:5432
+      PG_DSN: postgres://ssradmin:ssradmin@pg:5432/ssr?sslmode=disable
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pg
+    restart: unless-stopped
+
+
+  pg:
+    image: postgres:alpine
+    container_name: pg
+    expose:
+      - 5432
+    environment:
+      POSTGRES_DB: ssr
+      POSTGRES_USER: ssradmin
+      POSTGRES_PASSWORD: ssradmin
+      PGDATA: "/data/lib/postgresql/data/pgdata"
+    volumes:
+      - pg_data_volume:/data/lib/postgresql/data
+    restart: unless-stopped
+
+
+
+volumes:
+  pg_data_volume:
