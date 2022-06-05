@@ -1,30 +1,32 @@
 package usecase
 
 import (
-	"fmt"
 	"ssr/internal/dto"
+	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 )
 
 type SSRUseCase struct {
+	*BaseUC
 	repo IRelRepo
 }
 
-func NewSsrUC(r IRelRepo) *SSRUseCase {
+func NewSsrUC(r IRelRepo, l logger.Interface) *SSRUseCase {
 	return &SSRUseCase{
-		repo: r,
+		BaseUC: NewUC(l),
+		repo:   r,
 	}
 }
 
 func (uc *SSRUseCase) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
 	ssrID, err := uc.repo.UpdateStatus(data.BidID, "wip")
 	if err != nil {
-		return nil, fmt.Errorf("SSRUseCase - Create - repo.UpdateStatus %w", err)
+		return nil, err
 	}
 
 	ssr, err := uc.repo.GetStudentViewSSR(data.StudentID, ssrID)
 	if err != nil {
-		return nil, fmt.Errorf("SSRUseCase - GetStudentViewSSR - repo.GetStudentViewSSR %w", err)
+		return nil, err
 	}
 
 	return &dto.StudentViewSSR{

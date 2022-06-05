@@ -3,18 +3,34 @@ version: "3"
 
 services:
   app:
-    image: ivaaahn/ssr:0.1.0
+#    build:
+#      dockerfile: deploy/Dockerfile
+#      context: ..
+    image: ivaaahn/ssr:0.1.2
     container_name: app
-    environment:
-      DEPLOY_MODE: 'PROD'
-      WAIT_HOSTS: pg:5432
-      PG_DSN: postgres://ssradmin:ssradmin@pg:5432/ssr?sslmode=disable
     ports:
       - "8080:8080"
     depends_on:
       - pg
+      - migrate
     restart: unless-stopped
 
+  migrate:
+#    build:
+#      dockerfile: deploy/Dockerfile.migrate
+#      context: ..
+    image: ivaaahn/go-migrate:0.1.0
+    container_name: migrate
+    environment:
+      PG_USER: ssradmin
+      PG_PSWD: ssradmin
+      PG_DB: ssr
+      PG_HOST: pg:5432
+      WAIT_HOSTS: pg:5432
+    volumes:
+      - ../migrations:/migrations
+    depends_on:
+      - pg
 
   pg:
     image: postgres:alpine
@@ -29,8 +45,6 @@ services:
     volumes:
       - pg_data_volume:/data/lib/postgresql/data
     restart: unless-stopped
-
-
 
 volumes:
   pg_data_volume:

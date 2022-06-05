@@ -37,9 +37,3 @@ VALUES ('viktor1970@example.org', 'Дмитрий', 'Ивахненко', NULL),
        ('jakov2001@example.org', 'Андрей', 'Куров', NULL),
        ('ipat1974@example.net', 'Максим', 'Борисов', NULL),
        ('kopilovfoka@example.org', 'Дмитрий', 'Варин', NULL);
-
-
--- fokinaraisa@example.org,$2b$12$ex3juPlGfd0FtMtAKLZkOeyQBw54RBwhMc3rUxeSW4658PaU5J3bC,Баранов Савватий Матвеевич,1929-02-08,True
--- vorobevafevronija@example.com,$2b$12$Nvf9q/rDQyl.tg2TKc59Ne4LrX2YOSwxsB9gxWk0n2enTekXBzzN.,Наумов Ермолай Викторович,1910-01-20,True
--- uljana_18@example.org,$2b$12$IakArR.lKa3jQrOMyv2ERuNR/ZNSLLaquHWpThuqEgpXgBempfjxi,Панова Алина Николаевна,1944-01-12,True
--- borisovairaida@example.org,$2b$12$39aDvU00XKZhSwGxeViIfeaWEtlIKUBiTJDhy6mVo2fvkantho3Wu,Герман Фомич Волков,1983-01-01,True

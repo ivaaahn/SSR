@@ -1,23 +1,24 @@
 package usecase
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"ssr/internal/dto"
+	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 	"time"
 )
 
 type AuthUseCase struct {
+	*BaseUC
 	repo       IAuthRepo
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuthUC(r IAuthRepo, tokenExpMinutes int, signingKey []byte) *AuthUseCase {
+func NewAuthUC(r IAuthRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *AuthUseCase {
 	return &AuthUseCase{
+		BaseUC:     NewUC(l),
 		repo:       r,
 		tokenExp:   time.Duration(tokenExpMinutes) * time.Minute,
 		signingKey: signingKey,
@@ -25,22 +26,23 @@ func NewAuthUC(r IAuthRepo, tokenExpMinutes int, signingKey []byte) *AuthUseCase
 }
 
 func (uc *AuthUseCase) Login(email, password string) (*dto.LoginResponse, error) {
-	dbData, err := uc.repo.Get(email)
+	dbData, err := uc.repo.GetUserInfo(email)
 	if err != nil {
-		return nil, fmt.Errorf("AuthUseCase - Login - repo.GetStudentProfile: %w", err)
+		return nil, err
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(dbData.Password), []byte(password)); err != nil {
-		return nil, echo.ErrUnauthorized
+		uc.l.Error(err)
+		return nil, err
 	}
 
-	tokenClaims := misc.NewJWTClaimsSSR(uc.tokenExp, dbData.Email, string(dbData.Role))
+	tokenClaims := misc.NewAppJWTClaims(uc.tokenExp, dbData.Email, string(dbData.Role))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
 	tokenStr, err := token.SignedString(uc.signingKey)
-
 	if err != nil {
-		return nil, fmt.Errorf("AuthUseCase - token.SignedString: %w", err)
+		uc.l.Error(err)
+		return nil, err
 	}
 
 	return &dto.LoginResponse{

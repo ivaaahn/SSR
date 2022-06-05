@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
+	"ssr/internal/errors"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -51,22 +52,18 @@ func New(level string) *Logger {
 	}
 }
 
-// Debug -.
 func (l *Logger) Debug(message interface{}, args ...interface{}) {
 	l.msg("debug", message, args...)
 }
 
-// Info -.
 func (l *Logger) Info(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
-// Warn -.
 func (l *Logger) Warn(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
-// Error -.
 func (l *Logger) Error(message interface{}, args ...interface{}) {
 	if l.logger.GetLevel() == zerolog.DebugLevel {
 		l.Debug(message, args...)
@@ -75,7 +72,6 @@ func (l *Logger) Error(message interface{}, args ...interface{}) {
 	l.msg("error", message, args...)
 }
 
-// Fatal -.
 func (l *Logger) Fatal(message interface{}, args ...interface{}) {
 	l.msg("fatal", message, args...)
 
@@ -92,6 +88,8 @@ func (l *Logger) log(message string, args ...interface{}) {
 
 func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 	switch msg := message.(type) {
+	case *errors.AppError:
+		l.log(msg.Message, string(msg.Marshal()))
 	case error:
 		l.log(msg.Error(), args...)
 	case string:

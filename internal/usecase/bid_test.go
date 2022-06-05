@@ -138,7 +138,7 @@ func TestSSRUseCase_Create(t *testing.T) {
 			repository: func(ctrl *gomock.Controller) *mocks.MockIRelRepo {
 				m := mocks.NewMockIRelRepo(ctrl)
 				m.EXPECT().UpdateStatus(1, entity.StatusSSR("wip")).Return(1, nil)
-				m.EXPECT().GetStudentViewSSR(1, 1).Return(&entity.StudentViewSSR{
+				m.EXPECT().GetStudentViewSSR(1, 1).Return(&entity.StudentViewSsr{
 					BidID:     1,
 					CreatedAt: time.Time{},
 					Status:    "wip",
@@ -212,7 +212,7 @@ func TestSSRUseCase_Create(t *testing.T) {
 			repository: func(ctrl *gomock.Controller) *mocks.MockIRelRepo {
 				m := mocks.NewMockIRelRepo(ctrl)
 				m.EXPECT().UpdateStatus(1, entity.StatusSSR("wip")).Return(1, nil)
-				m.EXPECT().GetStudentViewSSR(1, 1).Return(&entity.StudentViewSSR{
+				m.EXPECT().GetStudentViewSSR(1, 1).Return(&entity.StudentViewSsr{
 					BidID:     1,
 					CreatedAt: time.Time{},
 					Status:    "wip",

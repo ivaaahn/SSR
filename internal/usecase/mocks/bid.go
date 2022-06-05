@@ -36,9 +36,9 @@ func (m *MockIAuthRepo) EXPECT() *MockIAuthRepoMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockIAuthRepo) Get(email string) (*entity.Auth, error) {
+func (m *MockIAuthRepo) GetUserInfo(email string) (*entity.Auth, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", email)
+	ret := m.ctrl.Call(m, "GetUserInfo", email)
 	ret0, _ := ret[0].(*entity.Auth)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -47,7 +47,7 @@ func (m *MockIAuthRepo) Get(email string) (*entity.Auth, error) {
 // Get indicates an expected call of Get.
 func (mr *MockIAuthRepoMockRecorder) Get(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIAuthRepo)(nil).Get), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserInfo", reflect.TypeOf((*MockIAuthRepo)(nil).GetUserInfo), email)
 }
 
 // MockIAuthUC is a mock of IAuthUC interface.
@@ -233,10 +233,10 @@ func (mr *MockIRelRepoMockRecorder) Create(studentID, supervisorID, workID inter
 }
 
 // GetStudentViewBidPlenty mocks base method.
-func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSSR, error) {
+func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSsr, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentViewBidPlenty", studentID)
-	ret0, _ := ret[0].([]*entity.StudentViewSSR)
+	ret0, _ := ret[0].([]*entity.StudentViewSsr)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -248,10 +248,10 @@ func (mr *MockIRelRepoMockRecorder) GetStudentViewBidPlenty(studentID interface{
 }
 
 // GetStudentViewSSR mocks base method.
-func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSSR, error) {
+func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSsr, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentViewSSR", studentID, ssrID)
-	ret0, _ := ret[0].(*entity.StudentViewSSR)
+	ret0, _ := ret[0].(*entity.StudentViewSsr)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

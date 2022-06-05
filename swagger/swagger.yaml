@@ -147,7 +147,7 @@ definitions:
       avatarUrl:
         type: string
       birthdate:
-        $ref: '#/definitions/misc.Date'
+        type: string
       department:
         type: string
       email:
@@ -201,7 +201,7 @@ definitions:
       avatarUrl:
         type: string
       birthdate:
-        $ref: '#/definitions/misc.Date'
+        type: string
       department:
         type: string
       email:
@@ -225,11 +225,6 @@ definitions:
         type: array
       workID:
         type: integer
-    type: object
-  misc.Date:
-    properties:
-      time.Time:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -285,9 +280,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.StudentBids'
+        "404":
+          description: ""
       security:
       - Auth: []
-      summary: Get student's bids
+      summary: GetUserInfo student's bids
       tags:
       - student
     put:
@@ -321,9 +318,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.StudentProfile'
+        "404":
+          description: ""
       security:
       - Auth: []
-      summary: Get student's profile
+      summary: GetUserInfo student's profile
       tags:
       - student
   /api/student/ssr:
@@ -366,7 +365,7 @@ paths:
             $ref: '#/definitions/dto.StudentWorkPlenty'
       security:
       - Auth: []
-      summary: Get student's works
+      summary: GetUserInfo student's works
       tags:
       - student
   /api/student/work/supervisor:
@@ -386,7 +385,7 @@ paths:
             $ref: '#/definitions/dto.WorkSupervisorPlenty'
       security:
       - Auth: []
-      summary: Get supervisors of the work
+      summary: GetUserInfo supervisors of the work
       tags:
       - student
   /api/supervisor/bid:
@@ -406,7 +405,7 @@ paths:
             $ref: '#/definitions/dto.SupervisorBids'
       security:
       - Auth: []
-      summary: Get supervisor's bids
+      summary: GetUserInfo supervisor's bids
       tags:
       - supervisor
   /api/supervisor/bid/resolve:
@@ -439,7 +438,7 @@ paths:
             $ref: '#/definitions/dto.SupervisorProfile'
       security:
       - Auth: []
-      summary: Get supervisor's profile
+      summary: GetUserInfo supervisor's profile
       tags:
       - supervisor
   /api/supervisor/work:
@@ -459,7 +458,7 @@ paths:
             $ref: '#/definitions/dto.SupervisorWorkPlenty'
       security:
       - Auth: []
-      summary: Get supervisor's works
+      summary: GetUserInfo supervisor's works
       tags:
       - supervisor
 schemes:

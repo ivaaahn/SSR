@@ -7,7 +7,7 @@ import (
 
 type (
 	IAuthRepo interface {
-		Get(email string) (*entity.Auth, error)
+		GetUserInfo(email string) (*entity.Auth, error)
 	}
 	IAuthUC interface {
 		Login(email, password string) (*dto.LoginResponse, error)
@@ -24,9 +24,9 @@ type (
 
 	IRelRepo interface {
 		Create(studentID, supervisorID, workID int) (int, error)
-		GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSSR, error)
+		GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSsr, error)
 		GetSupervisorViewBidPlenty(studentID int) ([]*entity.SupervisorViewSSR, error)
-		GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSSR, error)
+		GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSsr, error)
 		UpdateStatus(id int, newStatus entity.StatusSSR) (int, error)
 	}
 

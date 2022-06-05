@@ -12,9 +12,7 @@ func CheckRole(next echo.HandlerFunc) echo.HandlerFunc {
 
 		// /api/<role>/... -> ["", "api", "<role>" , ...]
 		expRole := split[2]
-		_, recRole := misc.ExtractInfoFromContext(c)
-
-		println(recRole, expRole)
+		_, recRole := misc.ExtractCtx(c)
 
 		if recRole != expRole {
 			return echo.ErrForbidden

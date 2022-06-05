@@ -19,7 +19,7 @@ type WaypointSSR struct {
 	SsrID  int    `db:"ssr_id"`
 }
 
-type StudentViewSSR struct {
+type StudentViewSsr struct {
 	BidID     int       `db:"ssr_id"`
 	CreatedAt time.Time `db:"created_at"`
 	Status    string    `db:"ssr_status"`

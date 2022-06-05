@@ -31,9 +31,7 @@ func (r *authRoutes) login(ctx echo.Context) error {
 	r.l.Debug(fmt.Sprintf("Email %s; Password: %s", email, password))
 
 	respDTO, err := r.uc.Login(email, password)
-
 	if err != nil {
-		r.l.Error(err)
 		return echo.ErrUnauthorized
 	}
 
