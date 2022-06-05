@@ -14,10 +14,10 @@ import (
 
 type studentRoutes struct {
 	l         logger.Interface
-	profileUC usecase.IProfileUC
-	bidsUC    usecase.IStudentBidUC
+	profileUC usecase.IUsecaseProfile
+	bidsUC    usecase.IUsecaseStudentBid
 	worksUC   usecase.IStudentWorkUC
-	ssrUC     usecase.IStudentRelUC
+	ssrUC     usecase.IUseCaseStudentRelation
 }
 
 // ShowAccount godoc
@@ -67,7 +67,7 @@ func (r *studentRoutes) getBids(ctx echo.Context) error {
 // @Tags         student
 // @Param        student_id query int  true  "Student ID"
 // @Produce      json
-// @Success      200  {object}  dto.StudentWorkPlenty
+// @Success      200  {object}  dto.StudentWorks
 // @Router       /api/student/work [get]
 // @Security	 Auth
 func (r *studentRoutes) getWorks(ctx echo.Context) error {
@@ -161,10 +161,10 @@ func (r *studentRoutes) createSSR(ctx echo.Context) error {
 func NewStudentRoutes(
 	router *echo.Group,
 	l logger.Interface,
-	profileUC usecase.IProfileUC,
-	bidsUC usecase.IStudentBidUC,
+	profileUC usecase.IUsecaseProfile,
+	bidsUC usecase.IUsecaseStudentBid,
 	worksUC usecase.IStudentWorkUC,
-	ssrUC usecase.IStudentRelUC,
+	ssrUC usecase.IUseCaseStudentRelation,
 ) {
 	r := &studentRoutes{l, profileUC, bidsUC, worksUC, ssrUC}
 

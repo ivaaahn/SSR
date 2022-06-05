@@ -17,7 +17,7 @@ func NewSSRPgRepo(pg *postgres.Postgres, l logger.Interface) *SsrPgRepo {
 	}
 }
 
-func (r *SsrPgRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSsr, error) {
+func (r *SsrPgRepo) GetStudentRelation(studentID, ssrID int) (*entity.StudentSsr, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -37,11 +37,11 @@ func (r *SsrPgRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentView
 		join subjects subj using (subject_id)
 	where ssr.ssr_id = $1 and ssr.student_id = $2;
 	`
-	ssr := entity.StudentViewSsr{}
+	ssr := entity.StudentSsr{}
 
 	err := r.Conn.Get(&ssr, query, ssrID, studentID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetStudentViewSSR->r.Conn.Get: %w", err)
+		err := fmt.Errorf("SsrPgRepo->GetStudentRelation->r.Conn.Get: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (r *SsrPgRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentView
 	return &ssr, nil
 }
 
-func (r *SsrPgRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSsr, error) {
+func (r *SsrPgRepo) GetStudentBids(studentID int) ([]*entity.StudentSsr, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -70,11 +70,11 @@ func (r *SsrPgRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentVie
 	where ssr.status in ('pending','rejected', 'cancelled','accepted') and ssr.student_id = $1;
 	`
 
-	var bids []*entity.StudentViewSsr
+	var bids []*entity.StudentSsr
 
 	err := r.Conn.Select(&bids, query, studentID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetStudentViewBidPlenty->r.Conn.Select: %w", err)
+		err := fmt.Errorf("SsrPgRepo->GetStudentBids->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
@@ -82,7 +82,40 @@ func (r *SsrPgRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentVie
 	return bids, nil
 }
 
-func (r *SsrPgRepo) GetSupervisorViewBidPlenty(supervisorID int) ([]*entity.SupervisorViewSSR, error) {
+func (r *SsrPgRepo) GetStudentRelations(studentID int) ([]*entity.StudentSsr, error) {
+	query := `
+	select 
+		ssr.ssr_id,
+		ssr.status as ssr_status,
+		ssr.created_at,
+		sv.*,
+		u.*,
+		w.*,
+		wk.name as work_kind_name,
+		subj.name as subject_name,
+		subj.department_id as subject_department_id
+	from ssr 
+		join supervisors sv using (supervisor_id)
+		join users u using (user_id)
+		join works w using (work_id)
+		join work_kinds wk using (work_kind_id)
+		join subjects subj using (subject_id)
+	where ssr.status in ('wip', 'done') and ssr.student_id = $1;
+	`
+
+	var bids []*entity.StudentSsr
+
+	err := r.Conn.Select(&bids, query, studentID)
+	if err != nil {
+		err := fmt.Errorf("SsrPgRepo->GetStudentBids->r.Conn.Select: %w", err)
+		r.l.Error(err)
+		return nil, err
+	}
+
+	return bids, nil
+}
+
+func (r *SsrPgRepo) GetSupervisorBids(supervisorID int) ([]*entity.SupervisorSsr, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -103,11 +136,11 @@ func (r *SsrPgRepo) GetSupervisorViewBidPlenty(supervisorID int) ([]*entity.Supe
 	where ssr.status in ('pending','rejected', 'cancelled','accepted') and ssr.supervisor_id = $1;
 	`
 
-	var bids []*entity.SupervisorViewSSR
+	var bids []*entity.SupervisorSsr
 
 	err := r.Conn.Select(&bids, query, supervisorID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetSupervisorViewBidPlenty->r.Conn.Select: %w", err)
+		err := fmt.Errorf("SsrPgRepo->GetSupervisorBids->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}

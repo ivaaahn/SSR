@@ -14,8 +14,8 @@ import (
 
 type supervisorRoutes struct {
 	l         logger.Interface
-	profileUC usecase.IProfileUC
-	bidUC     usecase.ISupervisorBidUC
+	profileUC usecase.IUsecaseProfile
+	bidUC     usecase.IUseCaseSupervisorBid
 	workUC    usecase.ISupervisorWorkUC
 }
 
@@ -114,8 +114,8 @@ func (r *supervisorRoutes) resolveBid(ctx echo.Context) error {
 func NewSupervisorRoutes(
 	router *echo.Group,
 	l logger.Interface,
-	profileUC usecase.IProfileUC,
-	bidUC usecase.ISupervisorBidUC,
+	profileUC usecase.IUsecaseProfile,
+	bidUC usecase.IUseCaseSupervisorBid,
 	workUC usecase.ISupervisorWorkUC,
 ) {
 	r := &supervisorRoutes{l, profileUC, bidUC, workUC}

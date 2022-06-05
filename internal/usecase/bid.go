@@ -9,10 +9,10 @@ import (
 
 type BidUseCase struct {
 	*BaseUC
-	repo IRelRepo
+	repo IRepoSSR
 }
 
-func NewBidUC(r IRelRepo, l logger.Interface) *BidUseCase {
+func NewBidUC(r IRepoSSR, l logger.Interface) *BidUseCase {
 	return &BidUseCase{
 		BaseUC: NewUC(l),
 		repo:   r,
@@ -20,7 +20,7 @@ func NewBidUC(r IRelRepo, l logger.Interface) *BidUseCase {
 }
 
 func (uc *BidUseCase) GetStudentBids(studentID int) (*dto.StudentBids, error) {
-	dbData, err := uc.repo.GetStudentViewBidPlenty(studentID)
+	dbData, err := uc.repo.GetStudentBids(studentID)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (uc *BidUseCase) GetStudentBids(studentID int) (*dto.StudentBids, error) {
 }
 
 func (uc *BidUseCase) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) {
-	dbData, err := uc.repo.GetSupervisorViewBidPlenty(supervisorID)
+	dbData, err := uc.repo.GetSupervisorBids(supervisorID)
 	if err != nil {
 		return nil, err
 	}

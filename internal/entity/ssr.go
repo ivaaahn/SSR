@@ -13,13 +13,13 @@ const (
 	completed              = "done"
 )
 
-type WaypointSSR struct {
+type WaypointSsr struct {
 	*Waypoint
 	Status string `db:"waypoint_status"`
 	SsrID  int    `db:"ssr_id"`
 }
 
-type StudentViewSsr struct {
+type StudentSsr struct {
 	BidID     int       `db:"ssr_id"`
 	CreatedAt time.Time `db:"created_at"`
 	Status    string    `db:"ssr_status"`
@@ -27,7 +27,7 @@ type StudentViewSsr struct {
 	*Work
 }
 
-type SupervisorViewSSR struct {
+type SupervisorSsr struct {
 	BidID     int       `db:"ssr_id"`
 	CreatedAt time.Time `db:"created_at"`
 	Status    string    `db:"ssr_status"`

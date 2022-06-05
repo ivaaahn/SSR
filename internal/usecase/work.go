@@ -2,24 +2,42 @@ package usecase
 
 import (
 	"ssr/internal/dto"
+	"ssr/internal/entity"
 	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 )
 
 type WorkUseCase struct {
 	*BaseUC
-	repo IWorkRepo
+	repoWork IRepoWork
+	repoSsr  IRepoSSR
 }
 
-func NewWorkUC(r IWorkRepo, l logger.Interface) *WorkUseCase {
+func NewWorkUC(rWork IRepoWork, rSsr IRepoSSR, l logger.Interface) *WorkUseCase {
 	return &WorkUseCase{
-		BaseUC: NewUC(l),
-		repo:   r,
+		BaseUC:   NewUC(l),
+		repoWork: rWork,
+		repoSsr:  rSsr,
 	}
 }
 
-func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, error) {
-	dbData, err := uc.repo.GetWorksByStudentID(studentID)
+func checkIfBegin(relations []*entity.StudentSsr, workID int) bool {
+	for _, rel := range relations {
+		if rel.Work.WorkID == workID {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
+	dbData, err := uc.repoWork.GetWorksByStudentID(studentID)
+	if err != nil {
+		return nil, err
+	}
+
+	relations, err := uc.repoSsr.GetStudentRelations(studentID)
 	if err != nil {
 		return nil, err
 	}
@@ -32,17 +50,18 @@ func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, e
 			Kind:        db.WorkKindName,
 			Description: db.Description,
 			Subject:     db.SubjectName,
+			IsStarted:   checkIfBegin(relations, db.WorkID),
 		})
 	}
 
-	return &dto.StudentWorkPlenty{
+	return &dto.StudentWorks{
 		StudentID: studentID,
 		Works:     resp,
 	}, nil
 }
 
 func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
-	dbData, err := uc.repo.GetWorksBySupervisorID(supervisorID)
+	dbData, err := uc.repoWork.GetWorksBySupervisorID(supervisorID)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +85,7 @@ func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWork
 }
 
 func (uc *WorkUseCase) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
-	dbData, err := uc.repo.GetSupervisorsByWorkID(workID)
+	dbData, err := uc.repoWork.GetSupervisorsByWorkID(workID)
 	if err != nil {
 		return nil, err
 	}

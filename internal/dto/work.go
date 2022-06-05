@@ -13,9 +13,10 @@ type StudentWork struct {
 	Kind        string `json:"kind"`
 	Description string `json:"description"`
 	Subject     string `json:"subject"`
+	IsStarted   bool   `json:"is_started"`
 }
 
-type StudentWorkPlenty struct {
+type StudentWorks struct {
 	StudentID int            `json:"studentID"`
 	Works     []*StudentWork `json:"works"`
 }

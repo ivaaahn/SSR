@@ -228,7 +228,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentWorkPlenty"
+                            "$ref": "#/definitions/dto.StudentWorks"
                         }
                     }
                 }
@@ -541,6 +541,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_started": {
+                    "type": "boolean"
+                },
                 "kind": {
                     "type": "string"
                 },
@@ -549,7 +552,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.StudentWorkPlenty": {
+        "dto.StudentWorks": {
             "type": "object",
             "properties": {
                 "studentID": {

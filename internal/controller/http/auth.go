@@ -10,7 +10,7 @@ import (
 
 type authRoutes struct {
 	l  logger.Interface
-	uc usecase.IAuthUC
+	uc usecase.IUsecaseAuth
 }
 
 // ShowAccount godoc
@@ -38,7 +38,7 @@ func (r *authRoutes) login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
-func NewAuthRoutes(router *echo.Group, l logger.Interface, uc usecase.IAuthUC) {
+func NewAuthRoutes(router *echo.Group, l logger.Interface, uc usecase.IUsecaseAuth) {
 	ar := &authRoutes{l, uc}
 
 	g := router.Group("/auth")

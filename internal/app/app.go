@@ -38,7 +38,7 @@ func setupUC(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *co
 	authUC := uc.NewAuthUC(repo.NewAuthPgRepo(pg, l), l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
 	profileUC := uc.NewProfileUC(repo.NewProfilePgRepo(pg, l), l)
 	bidUC := uc.NewBidUC(repo.NewSSRPgRepo(pg, l), l)
-	workUC := uc.NewWorkUC(repo.NewWorkPgRepo(pg, l), l)
+	workUC := uc.NewWorkUC(repo.NewWorkPgRepo(pg, l), repo.NewSSRPgRepo(pg, l), l)
 	ssrUC := uc.NewSsrUC(repo.NewSSRPgRepo(pg, l), l)
 
 	http.NewRouter(server, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC)

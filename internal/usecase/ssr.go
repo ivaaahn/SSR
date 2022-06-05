@@ -8,14 +8,29 @@ import (
 
 type SSRUseCase struct {
 	*BaseUC
-	repo IRelRepo
+	repo IRepoSSR
 }
 
-func NewSsrUC(r IRelRepo, l logger.Interface) *SSRUseCase {
+func NewSsrUC(r IRepoSSR, l logger.Interface) *SSRUseCase {
 	return &SSRUseCase{
 		BaseUC: NewUC(l),
 		repo:   r,
 	}
+}
+
+func (uc *SSRUseCase) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
+	relations, err := uc.repo.GetStudentRelations(studentID)
+	if err != nil {
+		return false, err
+	}
+
+	for _, rel := range relations {
+		if rel.Work.WorkID == workID {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func (uc *SSRUseCase) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
@@ -24,7 +39,7 @@ func (uc *SSRUseCase) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
 		return nil, err
 	}
 
-	ssr, err := uc.repo.GetStudentViewSSR(data.StudentID, ssrID)
+	ssr, err := uc.repo.GetStudentRelation(data.StudentID, ssrID)
 	if err != nil {
 		return nil, err
 	}
