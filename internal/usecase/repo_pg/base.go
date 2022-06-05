@@ -10,7 +10,7 @@ type BasePgRepo struct {
 	l logger.Interface
 }
 
-func NewPGRepo(pg *postgres.Postgres, l logger.Interface) *BasePgRepo {
+func NewPgRepo(pg *postgres.Postgres, l logger.Interface) *BasePgRepo {
 	return &BasePgRepo{
 		Postgres: pg,
 		l:        l,

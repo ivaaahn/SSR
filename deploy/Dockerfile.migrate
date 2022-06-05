@@ -1,0 +1,7 @@
+FROM golang:1.18-alpine
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
+RUN chmod +x /wait.sh &&\
+    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+CMD /wait.sh && migrate -path /migrations -database postgres://$PG_USER:$PG_PSWD@$PG_HOST/$PG_DB?sslmode=disable up

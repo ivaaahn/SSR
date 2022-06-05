@@ -1,25 +1,27 @@
 package usecase
 
 import (
-	"fmt"
 	"ssr/internal/dto"
+	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 )
 
 type ProfileUseCase struct {
+	*BaseUC
 	repo IProfileRepo
 }
 
-func NewProfileUC(r IProfileRepo) *ProfileUseCase {
+func NewProfileUC(r IProfileRepo, l logger.Interface) *ProfileUseCase {
 	return &ProfileUseCase{
-		repo: r,
+		BaseUC: NewUC(l),
+		repo:   r,
 	}
 }
 
 func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfile, error) {
 	dbData, err := uc.repo.GetStudentProfile(email)
 	if err != nil {
-		return nil, fmt.Errorf("ProfileUseCase - GetProfile - repo.GetStudentProfile: %w", err)
+		return nil, err
 	}
 
 	return &dto.StudentProfile{
@@ -37,7 +39,7 @@ func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfile, 
 func (uc *ProfileUseCase) GetSupervisorProfile(email string) (*dto.SupervisorProfile, error) {
 	dbData, err := uc.repo.GetSupervisorProfile(email)
 	if err != nil {
-		return nil, fmt.Errorf("SupervisorUseCase - GetProfile - repo.GetSupervisorProfile: %w", err)
+		return nil, err
 	}
 
 	return &dto.SupervisorProfile{

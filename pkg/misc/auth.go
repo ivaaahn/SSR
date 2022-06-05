@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type JWTClaimsSSR struct {
+type AppJWTClaims struct {
 	jwt.StandardClaims
 	Role string
 }
 
-func NewJWTClaimsSSR(exp time.Duration, sub, role string) *JWTClaimsSSR {
-	return &JWTClaimsSSR{
+func NewAppJWTClaims(exp time.Duration, sub, role string) *AppJWTClaims {
+	return &AppJWTClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(exp).Unix(),
 			Subject:   sub,
@@ -21,8 +21,8 @@ func NewJWTClaimsSSR(exp time.Duration, sub, role string) *JWTClaimsSSR {
 	}
 }
 
-func ExtractInfoFromContext(ctx echo.Context) (string, string) {
-	token := ctx.Get("userEmail").(*jwt.Token)
-	claims := token.Claims.(*JWTClaimsSSR)
+func ExtractCtx(ctx echo.Context) (string, string) {
+	token := ctx.Get("ctx").(*jwt.Token)
+	claims := token.Claims.(*AppJWTClaims)
 	return claims.Subject, claims.Role
 }

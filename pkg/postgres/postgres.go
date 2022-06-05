@@ -3,6 +3,7 @@ package postgres
 import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"time"
 )
 
 type Postgres struct {
@@ -15,7 +16,12 @@ func New(dsn string) (*Postgres, error) {
 		return nil, err
 	}
 
-	if err := db.Ping(); err != nil {
+	for i := 0; i < 5 && (err != nil || i == 0); i++ {
+		err = db.Ping()
+		time.Sleep(5 * time.Second)
+	}
+
+	if err != nil {
 		return nil, err
 	}
 

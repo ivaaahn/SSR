@@ -13,16 +13,18 @@ type AuthPgRepo struct {
 
 func NewAuthPgRepo(pg *postgres.Postgres, l logger.Interface) *AuthPgRepo {
 	return &AuthPgRepo{
-		BasePgRepo: NewPGRepo(pg, l),
+		BasePgRepo: NewPgRepo(pg, l),
 	}
 }
 
-func (r *AuthPgRepo) Get(email string) (*entity.Auth, error) {
+func (r *AuthPgRepo) GetUserInfo(email string) (*entity.Auth, error) {
 	auth := entity.Auth{}
 
 	err := r.Conn.Get(&auth, "select * from auth where email = $1", email)
 	if err != nil {
-		return nil, fmt.Errorf("AuthPgRepo - GetStudentProfile - r.Conn.GetStudentProfile: %w", err)
+		err := fmt.Errorf("AuthPgRepo->r.Conn.Get(): %w", err)
+		r.l.Error(err)
+		return nil, err
 	}
 
 	return &auth, nil

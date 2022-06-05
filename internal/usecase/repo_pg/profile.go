@@ -13,22 +13,25 @@ type ProfilePgRepo struct {
 
 func NewProfilePgRepo(pg *postgres.Postgres, l logger.Interface) *ProfilePgRepo {
 	return &ProfilePgRepo{
-		BasePgRepo: NewPGRepo(pg, l),
+		BasePgRepo: NewPgRepo(pg, l),
 	}
 }
 
 func (r *ProfilePgRepo) GetStudentProfile(email string) (*entity.StudentProfile, error) {
 	const query = `
-select *
-from users u 
-    join students s using (user_id)
-where email = $1
-`
+	select *
+	from users u 
+		join students s using (user_id)
+	where email = $1
+	`
+
 	student := entity.StudentProfile{}
 
 	err := r.Conn.Get(&student, query, email)
 	if err != nil {
-		return nil, fmt.Errorf("ProfilePgRepo - GetStudentProfile - r.Conn.GetStudentProfile: %w", err)
+		err := fmt.Errorf("ProfilePgRepo->GetStudentProfile->r.Conn.Get(): %w", err)
+		r.l.Error(err)
+		return nil, err
 	}
 
 	return &student, nil
@@ -36,16 +39,19 @@ where email = $1
 
 func (r *ProfilePgRepo) GetSupervisorProfile(email string) (*entity.SupervisorProfile, error) {
 	const query = `
-select *
-from users u 
-    join supervisors s using (user_id)
-where email = $1
-`
+	select *
+	from users u 
+		join supervisors s using (user_id)
+	where email = $1
+	`
+
 	supervisor := entity.SupervisorProfile{}
 
 	err := r.Conn.Get(&supervisor, query, email)
 	if err != nil {
-		return nil, fmt.Errorf("ProfilePgRepo - GetSupervisorProfile - r.Conn.GetSupervisorProfile: %w", err)
+		err := fmt.Errorf("ProfilePgRepo->GetSupervisorProfile->r.Conn.Get(): %w", err)
+		r.l.Error(err)
+		return nil, err
 	}
 
 	return &supervisor, nil

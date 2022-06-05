@@ -21,50 +21,49 @@ type studentRoutes struct {
 }
 
 // ShowAccount godoc
-// @Summary      Get student's profile
+// @Summary      GetUserInfo student's profile
 // @Tags         student
 // @Produce      json
 // @Success      200  {object}  dto.StudentProfile
+// @Failure      404
 // @Router       /api/student/profile [get]
 // @Security	 Auth
 func (r *studentRoutes) getProfile(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	email, _ := misc.ExtractCtx(ctx)
 
-	respDTO, err := r.profileUC.GetStudentProfile(email)
+	profileDto, err := r.profileUC.GetStudentProfile(email)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrNotFound
 	}
 
-	return ctx.JSON(http.StatusOK, respDTO)
+	return ctx.JSON(http.StatusOK, profileDto)
 }
 
 // ShowAccount godoc
-// @Summary      Get student's bids
+// @Summary      GetUserInfo student's bids
 // @Tags         student
 // @Produce      json
 // @Param        student_id query int  true  "Student ID"
 // @Success      200  {object}  dto.StudentBids
+// @Failure      404
 // @Router       /api/student/bid [get]
 // @Security	 Auth
 func (r *studentRoutes) getBids(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
+	email, _ := misc.ExtractCtx(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
 
 	respDTO, err := r.bidsUC.GetStudentBids(studentID)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrNotFound
 	}
 
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
 // ShowAccount godoc
-// @Summary      Get student's works
+// @Summary      GetUserInfo student's works
 // @Tags         student
 // @Param        student_id query int  true  "Student ID"
 // @Produce      json
@@ -72,22 +71,21 @@ func (r *studentRoutes) getBids(ctx echo.Context) error {
 // @Router       /api/student/work [get]
 // @Security	 Auth
 func (r *studentRoutes) getWorks(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
+	email, _ := misc.ExtractCtx(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
 
 	respDTO, err := r.worksUC.GetStudentWorks(studentID)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrNotFound
 	}
 
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
 // ShowAccount godoc
-// @Summary      Get supervisors of the work
+// @Summary      GetUserInfo supervisors of the work
 // @Tags         student
 // @Param        work_id query int  true  "Work ID"
 // @Produce      json
@@ -95,15 +93,14 @@ func (r *studentRoutes) getWorks(ctx echo.Context) error {
 // @Router       /api/student/work/supervisor [get]
 // @Security	 Auth
 func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
+	email, _ := misc.ExtractCtx(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
 
 	respDTO, err := r.worksUC.GetWorkSupervisors(workID)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrNotFound
 	}
 
 	return ctx.JSON(http.StatusOK, respDTO)
@@ -119,7 +116,7 @@ func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
 // @Router       /api/student/bid [put]
 // @Security	 Auth
 func (r *studentRoutes) applyBid(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
+	email, _ := misc.ExtractCtx(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	reqDTO := &dto.ApplyBid{}
@@ -129,8 +126,7 @@ func (r *studentRoutes) applyBid(ctx echo.Context) error {
 
 	respDTO, err := r.bidsUC.Apply(reqDTO)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrInternalServerError
 	}
 
 	return ctx.JSON(http.StatusCreated, respDTO)
@@ -146,7 +142,7 @@ func (r *studentRoutes) applyBid(ctx echo.Context) error {
 // @Router       /api/student/ssr [post]
 // @Security	 Auth
 func (r *studentRoutes) createSSR(ctx echo.Context) error {
-	email, _ := misc.ExtractInfoFromContext(ctx)
+	email, _ := misc.ExtractCtx(ctx)
 	r.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	reqDTO := &dto.CreateSSR{}
@@ -156,8 +152,7 @@ func (r *studentRoutes) createSSR(ctx echo.Context) error {
 
 	respDTO, err := r.ssrUC.Create(reqDTO)
 	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+		return echo.ErrInternalServerError
 	}
 
 	return ctx.JSON(http.StatusCreated, respDTO)

@@ -1,25 +1,27 @@
 package usecase
 
 import (
-	"fmt"
 	"ssr/internal/dto"
+	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 )
 
 type WorkUseCase struct {
+	*BaseUC
 	repo IWorkRepo
 }
 
-func NewWorkUC(r IWorkRepo) *WorkUseCase {
+func NewWorkUC(r IWorkRepo, l logger.Interface) *WorkUseCase {
 	return &WorkUseCase{
-		repo: r,
+		BaseUC: NewUC(l),
+		repo:   r,
 	}
 }
 
 func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, error) {
 	dbData, err := uc.repo.GetWorksByStudentID(studentID)
 	if err != nil {
-		return nil, fmt.Errorf("WorkUseCase - GetStudentWorks - repo.GetStudentWorks: %w", err)
+		return nil, err
 	}
 
 	var resp []*dto.StudentWork
@@ -42,7 +44,7 @@ func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, e
 func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
 	dbData, err := uc.repo.GetWorksBySupervisorID(supervisorID)
 	if err != nil {
-		return nil, fmt.Errorf("WorkUseCase - GetStudentWorks - repo.GetStudentWorks: %w", err)
+		return nil, err
 	}
 
 	var resp []*dto.SupervisorWork
@@ -66,7 +68,7 @@ func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWork
 func (uc *WorkUseCase) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
 	dbData, err := uc.repo.GetSupervisorsByWorkID(workID)
 	if err != nil {
-		return nil, fmt.Errorf("WorkUseCase - GetStudentWorks - repo.GetStudentWorks: %w", err)
+		return nil, err
 	}
 
 	var resp []*dto.WorkSupervisor
