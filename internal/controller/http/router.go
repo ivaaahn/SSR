@@ -9,13 +9,13 @@ import (
 func NewRouter(
 	echo *echo.Echo,
 	l logger.Interface,
-	authUC usecase.IAuthUC,
-	profileUC usecase.IProfileUC,
-	stBidUC usecase.IStudentBidUC,
-	svBidUC usecase.ISupervisorBidUC,
+	authUC usecase.IUsecaseAuth,
+	profileUC usecase.IUsecaseProfile,
+	stBidUC usecase.IUsecaseStudentBid,
+	svBidUC usecase.IUseCaseSupervisorBid,
 	stWorkUC usecase.IStudentWorkUC,
 	svWorkUC usecase.ISupervisorWorkUC,
-	stSsrUC usecase.IStudentRelUC,
+	stSsrUC usecase.IUseCaseStudentRelation,
 ) {
 	g := echo.Group("/api")
 

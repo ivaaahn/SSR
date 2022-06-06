@@ -25,7 +25,7 @@ type SupervisorBid struct {
 }
 
 type SupervisorBids struct {
-	Bids []*SupervisorBid
+	Bids []*SupervisorBid `json:"bids"`
 }
 
 type ApplyBid struct {

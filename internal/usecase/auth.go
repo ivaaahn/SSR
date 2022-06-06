@@ -11,12 +11,12 @@ import (
 
 type AuthUseCase struct {
 	*BaseUC
-	repo       IAuthRepo
+	repo       IRepoAuth
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuthUC(r IAuthRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *AuthUseCase {
+func NewAuthUC(r IRepoAuth, l logger.Interface, tokenExpMinutes int, signingKey []byte) *AuthUseCase {
 	return &AuthUseCase{
 		BaseUC:     NewUC(l),
 		repo:       r,

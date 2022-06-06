@@ -6,50 +6,51 @@ import (
 )
 
 type (
-	IAuthRepo interface {
+	IRepoAuth interface {
 		GetUserInfo(email string) (*entity.Auth, error)
 	}
-	IAuthUC interface {
+	IUsecaseAuth interface {
 		Login(email, password string) (*dto.LoginResponse, error)
 	}
 
-	IProfileRepo interface {
+	IRepoProfile interface {
 		GetStudentProfile(email string) (*entity.StudentProfile, error)
 		GetSupervisorProfile(email string) (*entity.SupervisorProfile, error)
 	}
-	IProfileUC interface {
+	IUsecaseProfile interface {
 		GetStudentProfile(email string) (*dto.StudentProfile, error)
 		GetSupervisorProfile(email string) (*dto.SupervisorProfile, error)
 	}
 
-	IRelRepo interface {
+	IRepoSSR interface {
 		Create(studentID, supervisorID, workID int) (int, error)
-		GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSsr, error)
-		GetSupervisorViewBidPlenty(studentID int) ([]*entity.SupervisorViewSSR, error)
-		GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSsr, error)
+		GetStudentBids(studentID int) ([]*entity.StudentSsr, error)
+		GetSupervisorBids(studentID int) ([]*entity.SupervisorSsr, error)
+		GetStudentRelations(studentID int) ([]*entity.StudentSsr, error)
+		GetStudentRelation(studentID, ssrID int) (*entity.StudentSsr, error)
 		UpdateStatus(id int, newStatus entity.StatusSSR) (int, error)
 	}
 
-	IStudentBidUC interface {
+	IUsecaseStudentBid interface {
 		GetStudentBids(studentID int) (*dto.StudentBids, error)
 		Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error)
 	}
-	ISupervisorBidUC interface {
+	IUseCaseSupervisorBid interface {
 		GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error)
 		Resolve(data *dto.ResolveBid) error
 	}
 
-	IStudentRelUC interface {
+	IUseCaseStudentRelation interface {
 		Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error)
 	}
 
-	IWorkRepo interface {
+	IRepoWork interface {
 		GetWorksByStudentID(studentID int) ([]*entity.Work, error)
 		GetWorksBySupervisorID(supervisorID int) ([]*entity.WorkOfSupervisor, error)
 		GetSupervisorsByWorkID(workID int) ([]*entity.SupervisorOfWork, error)
 	}
 	IStudentWorkUC interface {
-		GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, error)
+		GetStudentWorks(studentID int) (*dto.StudentWorks, error)
 		GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error)
 	}
 	ISupervisorWorkUC interface {

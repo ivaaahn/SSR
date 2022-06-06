@@ -233,10 +233,10 @@ func (mr *MockIRelRepoMockRecorder) Create(studentID, supervisorID, workID inter
 }
 
 // GetStudentViewBidPlenty mocks base method.
-func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentViewSsr, error) {
+func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentSsr, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStudentViewBidPlenty", studentID)
-	ret0, _ := ret[0].([]*entity.StudentViewSsr)
+	ret := m.ctrl.Call(m, "GetStudentBids", studentID)
+	ret0, _ := ret[0].([]*entity.StudentSsr)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -244,14 +244,14 @@ func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.Student
 // GetStudentViewBidPlenty indicates an expected call of GetStudentViewBidPlenty.
 func (mr *MockIRelRepoMockRecorder) GetStudentViewBidPlenty(studentID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentViewBidPlenty", reflect.TypeOf((*MockIRelRepo)(nil).GetStudentViewBidPlenty), studentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentBids", reflect.TypeOf((*MockIRelRepo)(nil).GetStudentViewBidPlenty), studentID)
 }
 
 // GetStudentViewSSR mocks base method.
-func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentViewSsr, error) {
+func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentSsr, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStudentViewSSR", studentID, ssrID)
-	ret0, _ := ret[0].(*entity.StudentViewSsr)
+	ret := m.ctrl.Call(m, "GetStudentRelation", studentID, ssrID)
+	ret0, _ := ret[0].(*entity.StudentSsr)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -259,14 +259,14 @@ func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentV
 // GetStudentViewSSR indicates an expected call of GetStudentViewSSR.
 func (mr *MockIRelRepoMockRecorder) GetStudentViewSSR(studentID, ssrID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentViewSSR", reflect.TypeOf((*MockIRelRepo)(nil).GetStudentViewSSR), studentID, ssrID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentRelation", reflect.TypeOf((*MockIRelRepo)(nil).GetStudentViewSSR), studentID, ssrID)
 }
 
 // GetSupervisorViewBidPlenty mocks base method.
-func (m *MockIRelRepo) GetSupervisorViewBidPlenty(studentID int) ([]*entity.SupervisorViewSSR, error) {
+func (m *MockIRelRepo) GetSupervisorViewBidPlenty(studentID int) ([]*entity.SupervisorSsr, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSupervisorViewBidPlenty", studentID)
-	ret0, _ := ret[0].([]*entity.SupervisorViewSSR)
+	ret := m.ctrl.Call(m, "GetSupervisorBids", studentID)
+	ret0, _ := ret[0].([]*entity.SupervisorSsr)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -274,7 +274,7 @@ func (m *MockIRelRepo) GetSupervisorViewBidPlenty(studentID int) ([]*entity.Supe
 // GetSupervisorViewBidPlenty indicates an expected call of GetSupervisorViewBidPlenty.
 func (mr *MockIRelRepoMockRecorder) GetSupervisorViewBidPlenty(studentID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSupervisorViewBidPlenty", reflect.TypeOf((*MockIRelRepo)(nil).GetSupervisorViewBidPlenty), studentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSupervisorBids", reflect.TypeOf((*MockIRelRepo)(nil).GetSupervisorViewBidPlenty), studentID)
 }
 
 // UpdateStatus mocks base method.
@@ -527,10 +527,10 @@ func (m *MockIStudentWorkUC) EXPECT() *MockIStudentWorkUCMockRecorder {
 }
 
 // GetStudentWorks mocks base method.
-func (m *MockIStudentWorkUC) GetStudentWorks(studentID int) (*dto.StudentWorkPlenty, error) {
+func (m *MockIStudentWorkUC) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentWorks", studentID)
-	ret0, _ := ret[0].(*dto.StudentWorkPlenty)
+	ret0, _ := ret[0].(*dto.StudentWorks)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

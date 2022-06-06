@@ -8,10 +8,10 @@ import (
 
 type ProfileUseCase struct {
 	*BaseUC
-	repo IProfileRepo
+	repo IRepoProfile
 }
 
-func NewProfileUC(r IProfileRepo, l logger.Interface) *ProfileUseCase {
+func NewProfileUC(r IRepoProfile, l logger.Interface) *ProfileUseCase {
 	return &ProfileUseCase{
 		BaseUC: NewUC(l),
 		repo:   r,

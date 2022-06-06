@@ -224,7 +224,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentWorkPlenty"
+                            "$ref": "#/definitions/dto.StudentWorks"
                         }
                     }
                 }
@@ -537,6 +537,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "is_started": {
+                    "type": "boolean"
+                },
                 "kind": {
                     "type": "string"
                 },
@@ -545,7 +548,7 @@
                 }
             }
         },
-        "dto.StudentWorkPlenty": {
+        "dto.StudentWorks": {
             "type": "object",
             "properties": {
                 "studentID": {
