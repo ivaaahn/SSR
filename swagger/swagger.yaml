@@ -21,6 +21,46 @@ definitions:
       studentID:
         type: integer
     type: object
+  dto.FeedbackAddResp:
+    properties:
+      feedback_id:
+        type: integer
+    type: object
+  dto.FeedbackPlenty:
+    properties:
+      feedbacks:
+        items:
+          $ref: '#/definitions/dto.FeedbackResp'
+        type: array
+    type: object
+  dto.FeedbackReq:
+    properties:
+      content:
+        type: string
+      studentID:
+        type: integer
+      supervisorID:
+        type: integer
+      workID:
+        type: integer
+    type: object
+  dto.FeedbackResp:
+    properties:
+      content:
+        type: string
+      student_full_name:
+        type: string
+      studentID:
+        type: integer
+      supervisorID:
+        type: integer
+      work_kind:
+        type: string
+      work_subject:
+        type: string
+      workID:
+        type: integer
+    type: object
   dto.LoginResponse:
     properties:
       email:
@@ -38,6 +78,11 @@ definitions:
         type: integer
       supervisorID:
         type: integer
+    type: object
+  dto.ResolveBidResp:
+    properties:
+      new_status:
+        type: string
     type: object
   dto.StudentBid:
     properties:
@@ -311,6 +356,50 @@ paths:
       summary: Apply bid
       tags:
       - student
+  /api/student/feedback:
+    get:
+      parameters:
+      - description: Supervisor ID
+        in: query
+        name: supervisor_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FeedbackPlenty'
+      security:
+      - Auth: []
+      summary: Get feedbacks on the supervisor.
+      tags:
+      - student
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: feedback info
+        in: body
+        name: Feedback
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FeedbackReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.FeedbackAddResp'
+        "500":
+          description: ""
+      security:
+      - Auth: []
+      summary: Provide a feedback
+      tags:
+      - student
   /api/student/profile:
     get:
       produces:
@@ -423,7 +512,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ResolveBidResp'
       security:
       - Auth: []
       summary: Accept or Decline student's bid

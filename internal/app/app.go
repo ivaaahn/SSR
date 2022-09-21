@@ -35,13 +35,14 @@ func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
 }
 
 func setupUC(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
-	authUC := uc.NewAuthUC(repo.NewAuthPgRepo(pg, l), l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	profileUC := uc.NewProfileUC(repo.NewProfilePgRepo(pg, l), l)
-	bidUC := uc.NewBidUC(repo.NewSSRPgRepo(pg, l), l)
-	workUC := uc.NewWorkUC(repo.NewWorkPgRepo(pg, l), repo.NewSSRPgRepo(pg, l), l)
-	ssrUC := uc.NewSsrUC(repo.NewSSRPgRepo(pg, l), l)
+	authUC := uc.NewAuth(repo.NewAuthPgRepo(pg, l), l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileUC := uc.NewProfile(repo.NewProfilePgRepo(pg, l), l)
+	bidUC := uc.NewBid(repo.NewSSRPgRepo(pg, l), l)
+	workUC := uc.NewWork(repo.NewWorkPgRepo(pg, l), repo.NewSSRPgRepo(pg, l), l)
+	ssrUC := uc.NewSSR(repo.NewSSRPgRepo(pg, l), l)
+	feedBackUC := uc.NewFeedback(repo.NewFeedback(pg, l), l)
 
-	http.NewRouter(server, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC)
+	http.NewRouter(server, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC, feedBackUC)
 }
 
 func Run(cfg *config.Config) {
@@ -49,7 +50,7 @@ func Run(cfg *config.Config) {
 
 	pg, err := postgres.New(cfg.Pg.DSN)
 	if err != nil {
-		loggerObject.Fatal(fmt.Errorf("app - Run - postgres.NewAuthUC: %w", err))
+		loggerObject.Fatal(fmt.Errorf("app - Run - postgres.NewAuth: %w", err))
 	}
 
 	defer pg.Close()

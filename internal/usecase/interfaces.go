@@ -56,4 +56,13 @@ type (
 	ISupervisorWorkUC interface {
 		GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error)
 	}
+
+	IUsecaseFeedback interface {
+		Add(data *dto.FeedbackReq) (int, error)
+		GetOnSupervisor(supervisorID int) (*dto.FeedbackPlenty, error)
+	}
+	IRepoFeedback interface {
+		Create(studentID, supervisorID, workID int, content string) (int, error)
+		GetBySupervisorID(supervisorID int) ([]*entity.Feedback, error)
+	}
 )

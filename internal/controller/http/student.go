@@ -13,11 +13,12 @@ import (
 )
 
 type studentRoutes struct {
-	l         logger.Interface
-	profileUC usecase.IUsecaseProfile
-	bidsUC    usecase.IUsecaseStudentBid
-	worksUC   usecase.IStudentWorkUC
-	ssrUC     usecase.IUseCaseStudentRelation
+	l          logger.Interface
+	profileUC  usecase.IUsecaseProfile
+	bidsUC     usecase.IUsecaseStudentBid
+	worksUC    usecase.IStudentWorkUC
+	ssrUC      usecase.IUseCaseStudentRelation
+	feedbackUC usecase.IUsecaseFeedback
 }
 
 // ShowAccount godoc
@@ -158,6 +159,55 @@ func (r *studentRoutes) createSSR(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, respDTO)
 }
 
+// ShowAccount godoc
+// @Summary      Provide a feedback
+// @Tags         student
+// @Accept		 json
+// @Param 		 Feedback body dto.FeedbackReq true "feedback info"
+// @Produce      json
+// @Success      201  {object}  dto.FeedbackAddResp
+// @Failure      500
+// @Router       /api/student/feedback [put]
+// @Security	 Auth
+func (r *studentRoutes) provideFeedback(ctx echo.Context) error {
+	email, _ := misc.ExtractCtx(ctx)
+	r.l.Debug(fmt.Sprintf("Email: %s", email))
+
+	reqDTO := &dto.FeedbackReq{}
+	if err := ctx.Bind(reqDTO); err != nil {
+		return echo.ErrBadRequest
+	}
+
+	id, err := r.feedbackUC.Add(reqDTO)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusConflict)
+	}
+
+	return ctx.JSON(http.StatusCreated, dto.FeedbackAddResp{FeedbackID: id})
+}
+
+// ShowAccount godoc
+// @Summary      Get feedbacks on the supervisor.
+// @Tags         student
+// @Param        supervisor_id query int true "Supervisor ID"
+// @Produce      json
+// @Success      200  {object}  dto.FeedbackPlenty
+// @Router       /api/student/feedback [get]
+// @Security	 Auth
+func (r *studentRoutes) getFeedback(ctx echo.Context) error {
+	email, _ := misc.ExtractCtx(ctx)
+	r.l.Debug(fmt.Sprintf("Email: %s", email))
+
+	supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
+
+	respDTO, err := r.feedbackUC.GetOnSupervisor(supervisorID)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	return ctx.JSON(http.StatusOK, respDTO)
+}
+
 func NewStudentRoutes(
 	router *echo.Group,
 	l logger.Interface,
@@ -165,8 +215,9 @@ func NewStudentRoutes(
 	bidsUC usecase.IUsecaseStudentBid,
 	worksUC usecase.IStudentWorkUC,
 	ssrUC usecase.IUseCaseStudentRelation,
+	feedbackUC usecase.IUsecaseFeedback,
 ) {
-	r := &studentRoutes{l, profileUC, bidsUC, worksUC, ssrUC}
+	r := &studentRoutes{l, profileUC, bidsUC, worksUC, ssrUC, feedbackUC}
 
 	g := router.Group("/student", middlewares.CheckRole)
 
@@ -177,6 +228,8 @@ func NewStudentRoutes(
 		g.POST("/ssr", r.createSSR)
 		g.GET("/work", r.getWorks)
 		g.GET("/work/supervisor", r.getSupervisorsOfWork)
+		g.GET("/feedback", r.getFeedback)
+		g.PUT("/feedback", r.provideFeedback)
 	}
 
 }

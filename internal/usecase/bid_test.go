@@ -47,7 +47,7 @@ package usecase
 //		t.Run(tt.name, func(t *testing.T) {
 //			ctrl := gomock.NewController(t)
 //
-//			u := NewBidUC(tt.repository(ctrl))
+//			u := NewBid(tt.repository(ctrl))
 //
 //			received, err := u.Apply(tt.args.bid)
 //
@@ -111,7 +111,7 @@ package usecase
 //		t.Run(tt.name, func(t *testing.T) {
 //			ctrl := gomock.NewController(t)
 //
-//			u := NewBidUC(tt.repository(ctrl))
+//			u := NewBid(tt.repository(ctrl))
 //
 //			err := u.Resolve(tt.args.bid)
 //
@@ -287,7 +287,7 @@ package usecase
 //		t.Run(tt.name, func(t *testing.T) {
 //			ctrl := gomock.NewController(t)
 //
-//			u := NewSsrUC(tt.repository(ctrl))
+//			u := NewSSR(tt.repository(ctrl))
 //
 //			received, err := u.Create(tt.args.req)
 //

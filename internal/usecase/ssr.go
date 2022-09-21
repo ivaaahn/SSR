@@ -6,19 +6,19 @@ import (
 	"ssr/pkg/misc"
 )
 
-type SSRUseCase struct {
-	*BaseUC
+type SSR struct {
+	*Base
 	repo IRepoSSR
 }
 
-func NewSsrUC(r IRepoSSR, l logger.Interface) *SSRUseCase {
-	return &SSRUseCase{
-		BaseUC: NewUC(l),
-		repo:   r,
+func NewSSR(r IRepoSSR, l logger.Interface) *SSR {
+	return &SSR{
+		Base: NewBase(l),
+		repo: r,
 	}
 }
 
-func (uc *SSRUseCase) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
+func (uc *SSR) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
 	relations, err := uc.repo.GetStudentRelations(studentID)
 	if err != nil {
 		return false, err
@@ -33,7 +33,7 @@ func (uc *SSRUseCase) CheckIfStudentBeginWork(studentID, workID int) (bool, erro
 	return false, nil
 }
 
-func (uc *SSRUseCase) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
+func (uc *SSR) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
 	ssrID, err := uc.repo.UpdateStatus(data.BidID, "wip")
 	if err != nil {
 		return nil, err

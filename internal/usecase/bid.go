@@ -7,19 +7,19 @@ import (
 	"ssr/pkg/misc"
 )
 
-type BidUseCase struct {
-	*BaseUC
+type Bid struct {
+	*Base
 	repo IRepoSSR
 }
 
-func NewBidUC(r IRepoSSR, l logger.Interface) *BidUseCase {
-	return &BidUseCase{
-		BaseUC: NewUC(l),
-		repo:   r,
+func NewBid(r IRepoSSR, l logger.Interface) *Bid {
+	return &Bid{
+		Base: NewBase(l),
+		repo: r,
 	}
 }
 
-func (uc *BidUseCase) GetStudentBids(studentID int) (*dto.StudentBids, error) {
+func (uc *Bid) GetStudentBids(studentID int) (*dto.StudentBids, error) {
 	dbData, err := uc.repo.GetStudentBids(studentID)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (uc *BidUseCase) GetStudentBids(studentID int) (*dto.StudentBids, error) {
 	return &dto.StudentBids{Bids: resp}, nil
 }
 
-func (uc *BidUseCase) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) {
+func (uc *Bid) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) {
 	dbData, err := uc.repo.GetSupervisorBids(supervisorID)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (uc *BidUseCase) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, 
 	return &dto.SupervisorBids{Bids: resp}, nil
 }
 
-func (uc *BidUseCase) Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error) {
+func (uc *Bid) Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error) {
 	bidID, err := uc.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
 	if err != nil {
 		return nil, err
@@ -109,7 +109,7 @@ func (uc *BidUseCase) Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error) {
 	return &dto.ApplyBidResponse{BidID: bidID}, nil
 }
 
-func (uc *BidUseCase) Resolve(data *dto.ResolveBid) error {
+func (uc *Bid) Resolve(data *dto.ResolveBid) error {
 	var status entity.StatusSSR
 
 	if data.Accept {

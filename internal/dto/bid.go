@@ -43,3 +43,7 @@ type ResolveBid struct {
 	BidID        int  `json:"bidID"`
 	Accept       bool `json:"accept"`
 }
+
+type ResolveBidResp struct {
+	NewStatus string `json:"new_status"`
+}

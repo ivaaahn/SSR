@@ -9,23 +9,23 @@ import (
 	"time"
 )
 
-type AuthUseCase struct {
-	*BaseUC
+type Auth struct {
+	*Base
 	repo       IRepoAuth
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuthUC(r IRepoAuth, l logger.Interface, tokenExpMinutes int, signingKey []byte) *AuthUseCase {
-	return &AuthUseCase{
-		BaseUC:     NewUC(l),
+func NewAuth(r IRepoAuth, l logger.Interface, tokenExpMinutes int, signingKey []byte) *Auth {
+	return &Auth{
+		Base:       NewBase(l),
 		repo:       r,
 		tokenExp:   time.Duration(tokenExpMinutes) * time.Minute,
 		signingKey: signingKey,
 	}
 }
 
-func (uc *AuthUseCase) Login(email, password string) (*dto.LoginResponse, error) {
+func (uc *Auth) Login(email, password string) (*dto.LoginResponse, error) {
 	dbData, err := uc.repo.GetUserInfo(email)
 	if err != nil {
 		return nil, err

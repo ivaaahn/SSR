@@ -9,19 +9,20 @@ import (
 func NewRouter(
 	echo *echo.Echo,
 	l logger.Interface,
-	authUC usecase.IUsecaseAuth,
-	profileUC usecase.IUsecaseProfile,
-	stBidUC usecase.IUsecaseStudentBid,
-	svBidUC usecase.IUseCaseSupervisorBid,
-	stWorkUC usecase.IStudentWorkUC,
-	svWorkUC usecase.ISupervisorWorkUC,
-	stSsrUC usecase.IUseCaseStudentRelation,
+	auth usecase.IUsecaseAuth,
+	profile usecase.IUsecaseProfile,
+	studentBids usecase.IUsecaseStudentBid,
+	supervisorBids usecase.IUseCaseSupervisorBid,
+	studentWorks usecase.IStudentWorkUC,
+	supervisorWorks usecase.ISupervisorWorkUC,
+	studentRelations usecase.IUseCaseStudentRelation,
+	feedback usecase.IUsecaseFeedback,
 ) {
 	g := echo.Group("/api")
 
 	{
-		NewAuthRoutes(g, l, authUC)
-		NewStudentRoutes(g, l, profileUC, stBidUC, stWorkUC, stSsrUC)
-		NewSupervisorRoutes(g, l, profileUC, svBidUC, svWorkUC)
+		NewAuthRoutes(g, l, auth)
+		NewStudentRoutes(g, l, profile, studentBids, studentWorks, studentRelations, feedback)
+		NewSupervisorRoutes(g, l, profile, supervisorBids, supervisorWorks)
 	}
 }

@@ -7,15 +7,15 @@ import (
 	"ssr/pkg/misc"
 )
 
-type WorkUseCase struct {
-	*BaseUC
+type Work struct {
+	*Base
 	repoWork IRepoWork
 	repoSsr  IRepoSSR
 }
 
-func NewWorkUC(rWork IRepoWork, rSsr IRepoSSR, l logger.Interface) *WorkUseCase {
-	return &WorkUseCase{
-		BaseUC:   NewUC(l),
+func NewWork(rWork IRepoWork, rSsr IRepoSSR, l logger.Interface) *Work {
+	return &Work{
+		Base:     NewBase(l),
 		repoWork: rWork,
 		repoSsr:  rSsr,
 	}
@@ -31,7 +31,7 @@ func checkIfBegin(relations []*entity.StudentSsr, workID int) bool {
 	return false
 }
 
-func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
+func (uc *Work) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
 	dbData, err := uc.repoWork.GetWorksByStudentID(studentID)
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (uc *WorkUseCase) GetStudentWorks(studentID int) (*dto.StudentWorks, error)
 	}, nil
 }
 
-func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
+func (uc *Work) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
 	dbData, err := uc.repoWork.GetWorksBySupervisorID(supervisorID)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (uc *WorkUseCase) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWork
 	}, nil
 }
 
-func (uc *WorkUseCase) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
+func (uc *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
 	dbData, err := uc.repoWork.GetSupervisorsByWorkID(workID)
 	if err != nil {
 		return nil, err

@@ -90,7 +90,7 @@ func (r *supervisorRoutes) getBids(ctx echo.Context) error {
 // @Tags         supervisor
 // @Param 		 ResolveBid body dto.ResolveBid true "bid info"
 // @Produce      json
-// @Success      200
+// @Success      200  {object}  dto.ResolveBidResp
 // @Router       /api/supervisor/bid/resolve [post]
 // @Security	 Auth
 func (r *supervisorRoutes) resolveBid(ctx echo.Context) error {
@@ -102,13 +102,20 @@ func (r *supervisorRoutes) resolveBid(ctx echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	err := r.bidUC.Resolve(reqDTO)
-	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
+	if err := r.bidUC.Resolve(reqDTO); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
-	return ctx.NoContent(http.StatusOK)
+	newStatus := ""
+	if reqDTO.Accept {
+		newStatus = "accepted"
+	} else {
+		newStatus = "rejected"
+	}
+
+	resp := dto.ResolveBidResp{NewStatus: newStatus}
+
+	return ctx.JSON(http.StatusOK, resp)
 }
 
 func NewSupervisorRoutes(

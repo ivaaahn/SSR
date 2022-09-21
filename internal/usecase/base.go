@@ -4,12 +4,12 @@ import (
 	"ssr/pkg/logger"
 )
 
-type BaseUC struct {
+type Base struct {
 	l logger.Interface
 }
 
-func NewUC(l logger.Interface) *BaseUC {
-	return &BaseUC{
+func NewBase(l logger.Interface) *Base {
+	return &Base{
 		l: l,
 	}
 }

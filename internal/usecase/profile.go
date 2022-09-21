@@ -6,19 +6,19 @@ import (
 	"ssr/pkg/misc"
 )
 
-type ProfileUseCase struct {
-	*BaseUC
+type Profile struct {
+	*Base
 	repo IRepoProfile
 }
 
-func NewProfileUC(r IRepoProfile, l logger.Interface) *ProfileUseCase {
-	return &ProfileUseCase{
-		BaseUC: NewUC(l),
-		repo:   r,
+func NewProfile(r IRepoProfile, l logger.Interface) *Profile {
+	return &Profile{
+		Base: NewBase(l),
+		repo: r,
 	}
 }
 
-func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfile, error) {
+func (uc *Profile) GetStudentProfile(email string) (*dto.StudentProfile, error) {
 	dbData, err := uc.repo.GetStudentProfile(email)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (uc *ProfileUseCase) GetStudentProfile(email string) (*dto.StudentProfile, 
 	}, nil
 }
 
-func (uc *ProfileUseCase) GetSupervisorProfile(email string) (*dto.SupervisorProfile, error) {
+func (uc *Profile) GetSupervisorProfile(email string) (*dto.SupervisorProfile, error) {
 	dbData, err := uc.repo.GetSupervisorProfile(email)
 	if err != nil {
 		return nil, err

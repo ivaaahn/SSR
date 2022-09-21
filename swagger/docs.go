@@ -136,6 +136,78 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/feedback": {
+            "get": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "student"
+                ],
+                "summary": "Get feedbacks on the supervisor.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Supervisor ID",
+                        "name": "supervisor_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbackPlenty"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "student"
+                ],
+                "summary": "Provide a feedback",
+                "parameters": [
+                    {
+                        "description": "feedback info",
+                        "name": "Feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbackReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbackAddResp"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/student/profile": {
             "get": {
                 "security": [
@@ -327,7 +399,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ResolveBidResp"
+                        }
                     }
                 }
             }
@@ -424,6 +499,68 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.FeedbackAddResp": {
+            "type": "object",
+            "properties": {
+                "feedback_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.FeedbackPlenty": {
+            "type": "object",
+            "properties": {
+                "feedbacks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FeedbackResp"
+                    }
+                }
+            }
+        },
+        "dto.FeedbackReq": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "studentID": {
+                    "type": "integer"
+                },
+                "supervisorID": {
+                    "type": "integer"
+                },
+                "workID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.FeedbackResp": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "studentID": {
+                    "type": "integer"
+                },
+                "student_full_name": {
+                    "type": "string"
+                },
+                "supervisorID": {
+                    "type": "integer"
+                },
+                "workID": {
+                    "type": "integer"
+                },
+                "work_kind": {
+                    "type": "string"
+                },
+                "work_subject": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
@@ -449,6 +586,14 @@ const docTemplate = `{
                 },
                 "supervisorID": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.ResolveBidResp": {
+            "type": "object",
+            "properties": {
+                "new_status": {
+                    "type": "string"
                 }
             }
         },
