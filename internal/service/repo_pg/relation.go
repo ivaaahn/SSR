@@ -7,17 +7,17 @@ import (
 	"ssr/pkg/postgres"
 )
 
-type SsrPgRepo struct {
+type Relation struct {
 	*BasePgRepo
 }
 
-func NewSSRPgRepo(pg *postgres.Postgres, l logger.Interface) *SsrPgRepo {
-	return &SsrPgRepo{
+func NewRelation(pg *postgres.Postgres, l logger.Interface) *Relation {
+	return &Relation{
 		BasePgRepo: NewPgRepo(pg, l),
 	}
 }
 
-func (r *SsrPgRepo) GetStudentRelation(studentID, ssrID int) (*entity.StudentSsr, error) {
+func (repo *Relation) GetStudentRelation(studentID, ssrID int) (*entity.StRelation, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -37,19 +37,19 @@ func (r *SsrPgRepo) GetStudentRelation(studentID, ssrID int) (*entity.StudentSsr
 		join subjects subj using (subject_id)
 	where ssr.ssr_id = $1 and ssr.student_id = $2;
 	`
-	ssr := entity.StudentSsr{}
+	ssr := entity.StRelation{}
 
-	err := r.Conn.Get(&ssr, query, ssrID, studentID)
+	err := repo.Conn.Get(&ssr, query, ssrID, studentID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetStudentRelation->r.Conn.Get: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->GetStudentRelation->repo.Conn.Get: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return &ssr, nil
 }
 
-func (r *SsrPgRepo) GetStudentBids(studentID int) ([]*entity.StudentSsr, error) {
+func (repo *Relation) GetStudentBids(studentID int) ([]*entity.StRelation, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -70,19 +70,19 @@ func (r *SsrPgRepo) GetStudentBids(studentID int) ([]*entity.StudentSsr, error) 
 	where ssr.status in ('pending','rejected', 'cancelled','accepted') and ssr.student_id = $1;
 	`
 
-	var bids []*entity.StudentSsr
+	var bids []*entity.StRelation
 
-	err := r.Conn.Select(&bids, query, studentID)
+	err := repo.Conn.Select(&bids, query, studentID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetStudentBids->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->GetStudentBids->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return bids, nil
 }
 
-func (r *SsrPgRepo) GetStudentRelations(studentID int) ([]*entity.StudentSsr, error) {
+func (repo *Relation) GetStudentRelations(studentID int) ([]*entity.StRelation, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -103,19 +103,19 @@ func (r *SsrPgRepo) GetStudentRelations(studentID int) ([]*entity.StudentSsr, er
 	where ssr.status in ('wip', 'done') and ssr.student_id = $1;
 	`
 
-	var bids []*entity.StudentSsr
+	var bids []*entity.StRelation
 
-	err := r.Conn.Select(&bids, query, studentID)
+	err := repo.Conn.Select(&bids, query, studentID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetStudentBids->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->GetStudentBids->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return bids, nil
 }
 
-func (r *SsrPgRepo) GetSupervisorBids(supervisorID int) ([]*entity.SupervisorSsr, error) {
+func (repo *Relation) GetSupervisorBids(supervisorID int) ([]*entity.SvRelation, error) {
 	query := `
 	select 
 		ssr.ssr_id,
@@ -136,19 +136,19 @@ func (r *SsrPgRepo) GetSupervisorBids(supervisorID int) ([]*entity.SupervisorSsr
 	where ssr.status in ('pending','rejected', 'cancelled','accepted') and ssr.supervisor_id = $1;
 	`
 
-	var bids []*entity.SupervisorSsr
+	var bids []*entity.SvRelation
 
-	err := r.Conn.Select(&bids, query, supervisorID)
+	err := repo.Conn.Select(&bids, query, supervisorID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->GetSupervisorBids->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->GetSupervisorBids->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return bids, nil
 }
 
-func (r *SsrPgRepo) Create(studentID, supervisorID, workID int) (int, error) {
+func (repo *Relation) Create(studentID, supervisorID, workID int) (int, error) {
 	query := `
 	insert into ssr (student_id, supervisor_id, work_id) 
 	values ($1, $2, $3)
@@ -156,17 +156,17 @@ func (r *SsrPgRepo) Create(studentID, supervisorID, workID int) (int, error) {
 	`
 
 	var bidID int
-	err := r.Conn.QueryRowx(query, studentID, supervisorID, workID).Scan(&bidID)
+	err := repo.Conn.QueryRowx(query, studentID, supervisorID, workID).Scan(&bidID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->Create->r.Conn.QueryRowx: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->Create->repo.Conn.QueryRowx: %w", err)
+		repo.l.Error(err)
 		return 0, err
 	}
 
 	return bidID, nil
 }
 
-func (r *SsrPgRepo) UpdateStatus(id int, newStatus entity.StatusSSR) (int, error) {
+func (repo *Relation) UpdateStatus(id int, newStatus entity.StatusSSR) (int, error) {
 	query := `
 	update ssr set status = $1
 	where ssr_id = $2
@@ -174,10 +174,10 @@ func (r *SsrPgRepo) UpdateStatus(id int, newStatus entity.StatusSSR) (int, error
 	`
 
 	var bidID int
-	err := r.Conn.QueryRowx(query, newStatus, id).Scan(&bidID)
+	err := repo.Conn.QueryRowx(query, newStatus, id).Scan(&bidID)
 	if err != nil {
-		err := fmt.Errorf("SsrPgRepo->UpdateStatus->r.Conn.QueryRowx: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Relation->UpdateStatus->repo.Conn.QueryRowx: %w", err)
+		repo.l.Error(err)
 		return 0, err
 	}
 

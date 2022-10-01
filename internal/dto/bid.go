@@ -4,28 +4,28 @@ import (
 	"time"
 )
 
-type StudentBid struct {
-	BidID      int               `json:"id"`
-	Status     string            `json:"status"`
-	CreatedAt  time.Time         `json:"createdAt"`
-	Supervisor SupervisorProfile `json:"supervisor"`
-	Work       Work              `json:"work"`
+type StBid struct {
+	BidID      int       `json:"id"`
+	Status     string    `json:"status"`
+	CreatedAt  time.Time `json:"createdAt"`
+	Supervisor SvProfile `json:"supervisor"`
+	Work       Work      `json:"work"`
 }
 
-type StudentBids struct {
-	Bids []*StudentBid `json:"bids"`
+type StBids struct {
+	Bids []*StBid `json:"bids"`
 }
 
-type SupervisorBid struct {
-	BidID     int            `json:"id"`
-	Status    string         `json:"status"`
-	CreatedAt time.Time      `json:"createdAt"`
-	Student   StudentProfile `json:"student"`
-	Work      Work           `json:"work"`
+type SvBid struct {
+	BidID     int       `json:"id"`
+	Status    string    `json:"status"`
+	CreatedAt time.Time `json:"createdAt"`
+	Student   StProfile `json:"student"`
+	Work      Work      `json:"work"`
 }
 
-type SupervisorBids struct {
-	Bids []*SupervisorBid `json:"bids"`
+type SvBids struct {
+	Bids []*SvBid `json:"bids"`
 }
 
 type ApplyBid struct {
@@ -34,7 +34,7 @@ type ApplyBid struct {
 	WorkID       int `json:"workID"`
 }
 
-type ApplyBidResponse struct {
+type ApplyBidResp struct {
 	BidID int `json:"bidID"`
 }
 

@@ -9,7 +9,7 @@ definitions:
       workID:
         type: integer
     type: object
-  dto.ApplyBidResponse:
+  dto.ApplyBidResp:
     properties:
       bidID:
         type: integer
@@ -84,7 +84,7 @@ definitions:
       new_status:
         type: string
     type: object
-  dto.StudentBid:
+  dto.StBid:
     properties:
       createdAt:
         type: string
@@ -93,18 +93,18 @@ definitions:
       status:
         type: string
       supervisor:
-        $ref: '#/definitions/dto.SupervisorProfile'
+        $ref: '#/definitions/dto.SvProfile'
       work:
         $ref: '#/definitions/dto.Work'
     type: object
-  dto.StudentBids:
+  dto.StBids:
     properties:
       bids:
         items:
-          $ref: '#/definitions/dto.StudentBid'
+          $ref: '#/definitions/dto.StBid'
         type: array
     type: object
-  dto.StudentProfile:
+  dto.StProfile:
     properties:
       avatarUrl:
         type: string
@@ -123,7 +123,7 @@ definitions:
       year:
         type: integer
     type: object
-  dto.StudentViewSSR:
+  dto.StViewRelation:
     properties:
       createdAt:
         type: string
@@ -132,11 +132,11 @@ definitions:
       status:
         type: string
       supervisor:
-        $ref: '#/definitions/dto.SupervisorProfile'
+        $ref: '#/definitions/dto.SvProfile'
       work:
         $ref: '#/definitions/dto.Work'
     type: object
-  dto.StudentWork:
+  dto.StWork:
     properties:
       description:
         type: string
@@ -149,13 +149,13 @@ definitions:
       subject:
         type: string
     type: object
-  dto.StudentWorks:
+  dto.StWorks:
     properties:
       studentID:
         type: integer
       works:
         items:
-          $ref: '#/definitions/dto.StudentWork'
+          $ref: '#/definitions/dto.StWork'
         type: array
     type: object
   dto.SubjectResp:
@@ -167,7 +167,7 @@ definitions:
       subjectID:
         type: integer
     type: object
-  dto.SupervisorBid:
+  dto.SvBid:
     properties:
       createdAt:
         type: string
@@ -176,18 +176,18 @@ definitions:
       status:
         type: string
       student:
-        $ref: '#/definitions/dto.StudentProfile'
+        $ref: '#/definitions/dto.StProfile'
       work:
         $ref: '#/definitions/dto.Work'
     type: object
-  dto.SupervisorBids:
+  dto.SvBids:
     properties:
       bids:
         items:
-          $ref: '#/definitions/dto.SupervisorBid'
+          $ref: '#/definitions/dto.SvBid'
         type: array
     type: object
-  dto.SupervisorProfile:
+  dto.SvProfile:
     properties:
       about:
         type: string
@@ -206,7 +206,7 @@ definitions:
       supervisorID:
         type: integer
     type: object
-  dto.SupervisorWork:
+  dto.SvWork:
     properties:
       description:
         type: string
@@ -219,13 +219,13 @@ definitions:
       subject:
         type: string
     type: object
-  dto.SupervisorWorkPlenty:
+  dto.SvWorkPlenty:
     properties:
       supervisorID:
         type: integer
       works:
         items:
-          $ref: '#/definitions/dto.SupervisorWork'
+          $ref: '#/definitions/dto.SvWork'
         type: array
     type: object
   dto.Work:
@@ -241,7 +241,7 @@ definitions:
       subject:
         $ref: '#/definitions/dto.SubjectResp'
     type: object
-  dto.WorkSupervisor:
+  dto.WorkSv:
     properties:
       about:
         type: string
@@ -264,11 +264,11 @@ definitions:
       supervisorID:
         type: integer
     type: object
-  dto.WorkSupervisorPlenty:
+  dto.WorkSvPlenty:
     properties:
       supervisors:
         items:
-          $ref: '#/definitions/dto.WorkSupervisor'
+          $ref: '#/definitions/dto.WorkSv'
         type: array
       workID:
         type: integer
@@ -306,9 +306,9 @@ paths:
           schema:
             $ref: '#/definitions/dto.LoginResponse'
         "401":
-          description: ""
+          description: Unauthorized
         "500":
-          description: ""
+          description: Internal Server Error
       summary: Login into account
       tags:
       - auth
@@ -326,9 +326,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StudentBids'
+            $ref: '#/definitions/dto.StBids'
         "404":
-          description: ""
+          description: Not Found
       security:
       - Auth: []
       summary: GetUserInfo student's bids
@@ -350,7 +350,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ApplyBidResponse'
+            $ref: '#/definitions/dto.ApplyBidResp'
       security:
       - Auth: []
       summary: Apply bid
@@ -360,7 +360,7 @@ paths:
     get:
       parameters:
       - description: Supervisor ID
-        in: query
+        in: path
         name: supervisor_id
         required: true
         type: integer
@@ -394,7 +394,7 @@ paths:
           schema:
             $ref: '#/definitions/dto.FeedbackAddResp'
         "500":
-          description: ""
+          description: Internal Server Error
       security:
       - Auth: []
       summary: Provide a feedback
@@ -408,9 +408,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StudentProfile'
+            $ref: '#/definitions/dto.StProfile'
         "404":
-          description: ""
+          description: Not Found
       security:
       - Auth: []
       summary: GetUserInfo student's profile
@@ -433,7 +433,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StudentViewSSR'
+            $ref: '#/definitions/dto.StViewRelation'
       security:
       - Auth: []
       summary: Start SSR
@@ -453,7 +453,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StudentWorks'
+            $ref: '#/definitions/dto.StWorks'
       security:
       - Auth: []
       summary: GetUserInfo student's works
@@ -473,7 +473,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.WorkSupervisorPlenty'
+            $ref: '#/definitions/dto.WorkSvPlenty'
       security:
       - Auth: []
       summary: GetUserInfo supervisors of the work
@@ -493,7 +493,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SupervisorBids'
+            $ref: '#/definitions/dto.SvBids'
       security:
       - Auth: []
       summary: GetUserInfo supervisor's bids
@@ -528,7 +528,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SupervisorProfile'
+            $ref: '#/definitions/dto.SvProfile'
       security:
       - Auth: []
       summary: GetUserInfo supervisor's profile
@@ -548,7 +548,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SupervisorWorkPlenty'
+            $ref: '#/definitions/dto.SvWorkPlenty'
       security:
       - Auth: []
       summary: GetUserInfo supervisor's works

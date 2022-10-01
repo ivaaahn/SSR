@@ -13,13 +13,13 @@ type Work struct {
 	Semester    int8
 }
 
-type WorkOfSupervisor struct {
+type SvWork struct {
 	*Work
 	Head bool `db:"head"`
 }
 
-type SupervisorOfWork struct {
-	*SupervisorProfile
+type WorkSv struct {
+	*SvProfile
 	Head bool `db:"head"`
 	Full bool `db:"full"`
 }

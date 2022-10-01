@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"ssr/internal/dto"
@@ -6,20 +6,20 @@ import (
 	"ssr/pkg/misc"
 )
 
-type SSR struct {
+type Relation struct {
 	*Base
-	repo IRepoSSR
+	repo RelationRepo
 }
 
-func NewSSR(r IRepoSSR, l logger.Interface) *SSR {
-	return &SSR{
+func NewRelation(r RelationRepo, l logger.Interface) *Relation {
+	return &Relation{
 		Base: NewBase(l),
 		repo: r,
 	}
 }
 
-func (uc *SSR) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
-	relations, err := uc.repo.GetStudentRelations(studentID)
+func (service *Relation) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
+	relations, err := service.repo.GetStudentRelations(studentID)
 	if err != nil {
 		return false, err
 	}
@@ -33,29 +33,29 @@ func (uc *SSR) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
 	return false, nil
 }
 
-func (uc *SSR) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
-	ssrID, err := uc.repo.UpdateStatus(data.BidID, "wip")
+func (service *Relation) Create(data *dto.CreateSSR) (*dto.StViewRelation, error) {
+	ssrID, err := service.repo.UpdateStatus(data.BidID, "wip")
 	if err != nil {
 		return nil, err
 	}
 
-	ssr, err := uc.repo.GetStudentRelation(data.StudentID, ssrID)
+	ssr, err := service.repo.GetStudentRelation(data.StudentID, ssrID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &dto.StudentViewSSR{
+	return &dto.StViewRelation{
 		RelID:     ssr.BidID,
 		Status:    ssr.Status,
 		CreatedAt: ssr.CreatedAt,
-		Supervisor: dto.SupervisorProfile{
+		Supervisor: dto.SvProfile{
 			SupervisorID: ssr.SupervisorID,
-			Email:        ssr.SupervisorProfile.Email,
-			FirstName:    ssr.SupervisorProfile.FirstName,
-			LastName:     ssr.SupervisorProfile.LastName,
-			About:        ssr.SupervisorProfile.About,
+			Email:        ssr.SvProfile.Email,
+			FirstName:    ssr.SvProfile.FirstName,
+			LastName:     ssr.SvProfile.LastName,
+			About:        ssr.SvProfile.About,
 			Birthdate:    misc.Date{Time: ssr.Birthdate},
-			AvatarUrl:    misc.NullString(ssr.Avatar),
+			AvatarUrl:    misc.NullString(ssr.PhotoUrl),
 			Department:   ssr.DepartmentID,
 		},
 		Work: dto.Work{

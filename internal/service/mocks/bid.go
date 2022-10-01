@@ -36,9 +36,9 @@ func (m *MockIAuthRepo) EXPECT() *MockIAuthRepoMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockIAuthRepo) GetUserInfo(email string) (*entity.Auth, error) {
+func (m *MockIAuthRepo) GetUserByEmail(email string) (*entity.Auth, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserInfo", email)
+	ret := m.ctrl.Call(m, "GetUserByEmail", email)
 	ret0, _ := ret[0].(*entity.Auth)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -47,7 +47,7 @@ func (m *MockIAuthRepo) GetUserInfo(email string) (*entity.Auth, error) {
 // Get indicates an expected call of Get.
 func (mr *MockIAuthRepoMockRecorder) Get(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserInfo", reflect.TypeOf((*MockIAuthRepo)(nil).GetUserInfo), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockIAuthRepo)(nil).GetUserByEmail), email)
 }
 
 // MockIAuthUC is a mock of IAuthUC interface.
@@ -112,10 +112,10 @@ func (m *MockIProfileRepo) EXPECT() *MockIProfileRepoMockRecorder {
 }
 
 // GetStudentProfile mocks base method.
-func (m *MockIProfileRepo) GetStudentProfile(email string) (*entity.StudentProfile, error) {
+func (m *MockIProfileRepo) GetStProfile(email string) (*entity.StProfile, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStudentProfile", email)
-	ret0, _ := ret[0].(*entity.StudentProfile)
+	ret := m.ctrl.Call(m, "GetStProfile", email)
+	ret0, _ := ret[0].(*entity.StProfile)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -123,14 +123,14 @@ func (m *MockIProfileRepo) GetStudentProfile(email string) (*entity.StudentProfi
 // GetStudentProfile indicates an expected call of GetStudentProfile.
 func (mr *MockIProfileRepoMockRecorder) GetStudentProfile(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentProfile", reflect.TypeOf((*MockIProfileRepo)(nil).GetStudentProfile), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStProfile", reflect.TypeOf((*MockIProfileRepo)(nil).GetStProfile), email)
 }
 
 // GetSupervisorProfile mocks base method.
-func (m *MockIProfileRepo) GetSupervisorProfile(email string) (*entity.SupervisorProfile, error) {
+func (m *MockIProfileRepo) GetSvProfile(email string) (*entity.SvProfile, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSupervisorProfile", email)
-	ret0, _ := ret[0].(*entity.SupervisorProfile)
+	ret := m.ctrl.Call(m, "GetSvProfile", email)
+	ret0, _ := ret[0].(*entity.SvProfile)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -138,7 +138,7 @@ func (m *MockIProfileRepo) GetSupervisorProfile(email string) (*entity.Superviso
 // GetSupervisorProfile indicates an expected call of GetSupervisorProfile.
 func (mr *MockIProfileRepoMockRecorder) GetSupervisorProfile(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSupervisorProfile", reflect.TypeOf((*MockIProfileRepo)(nil).GetSupervisorProfile), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSvProfile", reflect.TypeOf((*MockIProfileRepo)(nil).GetSvProfile), email)
 }
 
 // MockIProfileUC is a mock of IProfileUC interface.
@@ -165,10 +165,10 @@ func (m *MockIProfileUC) EXPECT() *MockIProfileUCMockRecorder {
 }
 
 // GetStudentProfile mocks base method.
-func (m *MockIProfileUC) GetStudentProfile(email string) (*dto.StudentProfile, error) {
+func (m *MockIProfileUC) GetStudentProfile(email string) (*dto.StProfile, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStudentProfile", email)
-	ret0, _ := ret[0].(*dto.StudentProfile)
+	ret := m.ctrl.Call(m, "GetStProfile", email)
+	ret0, _ := ret[0].(*dto.StProfile)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -176,14 +176,14 @@ func (m *MockIProfileUC) GetStudentProfile(email string) (*dto.StudentProfile, e
 // GetStudentProfile indicates an expected call of GetStudentProfile.
 func (mr *MockIProfileUCMockRecorder) GetStudentProfile(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStudentProfile", reflect.TypeOf((*MockIProfileUC)(nil).GetStudentProfile), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStProfile", reflect.TypeOf((*MockIProfileUC)(nil).GetStudentProfile), email)
 }
 
 // GetSupervisorProfile mocks base method.
-func (m *MockIProfileUC) GetSupervisorProfile(email string) (*dto.SupervisorProfile, error) {
+func (m *MockIProfileUC) GetSupervisorProfile(email string) (*dto.SvProfile, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSupervisorProfile", email)
-	ret0, _ := ret[0].(*dto.SupervisorProfile)
+	ret := m.ctrl.Call(m, "GetSvProfile", email)
+	ret0, _ := ret[0].(*dto.SvProfile)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -191,7 +191,7 @@ func (m *MockIProfileUC) GetSupervisorProfile(email string) (*dto.SupervisorProf
 // GetSupervisorProfile indicates an expected call of GetSupervisorProfile.
 func (mr *MockIProfileUCMockRecorder) GetSupervisorProfile(email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSupervisorProfile", reflect.TypeOf((*MockIProfileUC)(nil).GetSupervisorProfile), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSvProfile", reflect.TypeOf((*MockIProfileUC)(nil).GetSupervisorProfile), email)
 }
 
 // MockIRelRepo is a mock of IRelRepo interface.
@@ -233,10 +233,10 @@ func (mr *MockIRelRepoMockRecorder) Create(studentID, supervisorID, workID inter
 }
 
 // GetStudentViewBidPlenty mocks base method.
-func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StudentSsr, error) {
+func (m *MockIRelRepo) GetStudentViewBidPlenty(studentID int) ([]*entity.StRelation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentBids", studentID)
-	ret0, _ := ret[0].([]*entity.StudentSsr)
+	ret0, _ := ret[0].([]*entity.StRelation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -248,10 +248,10 @@ func (mr *MockIRelRepoMockRecorder) GetStudentViewBidPlenty(studentID interface{
 }
 
 // GetStudentViewSSR mocks base method.
-func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StudentSsr, error) {
+func (m *MockIRelRepo) GetStudentViewSSR(studentID, ssrID int) (*entity.StRelation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentRelation", studentID, ssrID)
-	ret0, _ := ret[0].(*entity.StudentSsr)
+	ret0, _ := ret[0].(*entity.StRelation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -263,10 +263,10 @@ func (mr *MockIRelRepoMockRecorder) GetStudentViewSSR(studentID, ssrID interface
 }
 
 // GetSupervisorViewBidPlenty mocks base method.
-func (m *MockIRelRepo) GetSupervisorViewBidPlenty(studentID int) ([]*entity.SupervisorSsr, error) {
+func (m *MockIRelRepo) GetSupervisorViewBidPlenty(studentID int) ([]*entity.SvRelation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSupervisorBids", studentID)
-	ret0, _ := ret[0].([]*entity.SupervisorSsr)
+	ret0, _ := ret[0].([]*entity.SvRelation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -316,10 +316,10 @@ func (m *MockIStudentBidUC) EXPECT() *MockIStudentBidUCMockRecorder {
 }
 
 // Apply mocks base method.
-func (m *MockIStudentBidUC) Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error) {
+func (m *MockIStudentBidUC) Apply(data *dto.ApplyBid) (*dto.ApplyBidResp, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Apply", data)
-	ret0, _ := ret[0].(*dto.ApplyBidResponse)
+	ret0, _ := ret[0].(*dto.ApplyBidResp)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -331,10 +331,10 @@ func (mr *MockIStudentBidUCMockRecorder) Apply(data interface{}) *gomock.Call {
 }
 
 // GetStudentBids mocks base method.
-func (m *MockIStudentBidUC) GetStudentBids(studentID int) (*dto.StudentBids, error) {
+func (m *MockIStudentBidUC) GetStudentBids(studentID int) (*dto.StBids, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentBids", studentID)
-	ret0, _ := ret[0].(*dto.StudentBids)
+	ret0, _ := ret[0].(*dto.StBids)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -369,10 +369,10 @@ func (m *MockISupervisorBidUC) EXPECT() *MockISupervisorBidUCMockRecorder {
 }
 
 // GetSupervisorBids mocks base method.
-func (m *MockISupervisorBidUC) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) {
+func (m *MockISupervisorBidUC) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSupervisorBids", supervisorID)
-	ret0, _ := ret[0].(*dto.SupervisorBids)
+	ret0, _ := ret[0].(*dto.SvBids)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -421,10 +421,10 @@ func (m *MockIStudentRelUC) EXPECT() *MockIStudentRelUCMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockIStudentRelUC) Create(data *dto.CreateSSR) (*dto.StudentViewSSR, error) {
+func (m *MockIStudentRelUC) Create(data *dto.CreateSSR) (*dto.StViewRelation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", data)
-	ret0, _ := ret[0].(*dto.StudentViewSSR)
+	ret0, _ := ret[0].(*dto.StViewRelation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -459,10 +459,10 @@ func (m *MockIWorkRepo) EXPECT() *MockIWorkRepoMockRecorder {
 }
 
 // GetSupervisorsByWorkID mocks base method.
-func (m *MockIWorkRepo) GetSupervisorsByWorkID(workID int) ([]*entity.SupervisorOfWork, error) {
+func (m *MockIWorkRepo) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSupervisorsByWorkID", workID)
-	ret0, _ := ret[0].([]*entity.SupervisorOfWork)
+	ret0, _ := ret[0].([]*entity.WorkSv)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -489,10 +489,10 @@ func (mr *MockIWorkRepoMockRecorder) GetWorksByStudentID(studentID interface{}) 
 }
 
 // GetWorksBySupervisorID mocks base method.
-func (m *MockIWorkRepo) GetWorksBySupervisorID(supervisorID int) ([]*entity.WorkOfSupervisor, error) {
+func (m *MockIWorkRepo) GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWorksBySupervisorID", supervisorID)
-	ret0, _ := ret[0].([]*entity.WorkOfSupervisor)
+	ret0, _ := ret[0].([]*entity.SvWork)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -527,10 +527,10 @@ func (m *MockIStudentWorkUC) EXPECT() *MockIStudentWorkUCMockRecorder {
 }
 
 // GetStudentWorks mocks base method.
-func (m *MockIStudentWorkUC) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
+func (m *MockIStudentWorkUC) GetStudentWorks(studentID int) (*dto.StWorks, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudentWorks", studentID)
-	ret0, _ := ret[0].(*dto.StudentWorks)
+	ret0, _ := ret[0].(*dto.StWorks)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -542,10 +542,10 @@ func (mr *MockIStudentWorkUCMockRecorder) GetStudentWorks(studentID interface{})
 }
 
 // GetWorkSupervisors mocks base method.
-func (m *MockIStudentWorkUC) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
+func (m *MockIStudentWorkUC) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWorkSupervisors", workID)
-	ret0, _ := ret[0].(*dto.WorkSupervisorPlenty)
+	ret0, _ := ret[0].(*dto.WorkSvPlenty)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -580,10 +580,10 @@ func (m *MockISupervisorWorkUC) EXPECT() *MockISupervisorWorkUCMockRecorder {
 }
 
 // GetSupervisorWorks mocks base method.
-func (m *MockISupervisorWorkUC) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
+func (m *MockISupervisorWorkUC) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSupervisorWorks", supervisorID)
-	ret0, _ := ret[0].(*dto.SupervisorWorkPlenty)
+	ret0, _ := ret[0].(*dto.SvWorkPlenty)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

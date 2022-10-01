@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"ssr/internal/dto"
@@ -9,30 +9,30 @@ import (
 
 type Bid struct {
 	*Base
-	repo IRepoSSR
+	repo RelationRepo
 }
 
-func NewBid(r IRepoSSR, l logger.Interface) *Bid {
+func NewBid(r RelationRepo, l logger.Interface) *Bid {
 	return &Bid{
 		Base: NewBase(l),
 		repo: r,
 	}
 }
 
-func (uc *Bid) GetStudentBids(studentID int) (*dto.StudentBids, error) {
-	dbData, err := uc.repo.GetStudentBids(studentID)
+func (service *Bid) GetStudentBids(studentID int) (*dto.StBids, error) {
+	dbData, err := service.repo.GetStudentBids(studentID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.StudentBid
+	var resp []*dto.StBid
 
 	for _, db := range dbData {
-		resp = append(resp, &dto.StudentBid{
+		resp = append(resp, &dto.StBid{
 			BidID:     db.BidID,
 			Status:    db.Status,
 			CreatedAt: db.CreatedAt,
-			Supervisor: dto.SupervisorProfile{
+			Supervisor: dto.SvProfile{
 				SupervisorID: db.SupervisorID,
 				Email:        db.Email,
 				FirstName:    db.FirstName,
@@ -41,8 +41,8 @@ func (uc *Bid) GetStudentBids(studentID int) (*dto.StudentBids, error) {
 				Birthdate: misc.Date{
 					Time: db.Birthdate,
 				},
-				AvatarUrl:  misc.NullString(db.Avatar),
-				Department: db.SupervisorProfile.DepartmentID,
+				AvatarUrl:  misc.NullString(db.PhotoUrl),
+				Department: db.SvProfile.DepartmentID,
 			},
 			Work: dto.Work{
 				WorkID:      db.WorkID,
@@ -58,30 +58,30 @@ func (uc *Bid) GetStudentBids(studentID int) (*dto.StudentBids, error) {
 		})
 	}
 
-	return &dto.StudentBids{Bids: resp}, nil
+	return &dto.StBids{Bids: resp}, nil
 }
 
-func (uc *Bid) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) {
-	dbData, err := uc.repo.GetSupervisorBids(supervisorID)
+func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
+	dbData, err := service.repo.GetSupervisorBids(supervisorID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.SupervisorBid
+	var resp []*dto.SvBid
 
 	for _, db := range dbData {
-		resp = append(resp, &dto.SupervisorBid{
+		resp = append(resp, &dto.SvBid{
 			BidID:     db.BidID,
 			Status:    db.Status,
 			CreatedAt: db.CreatedAt,
-			Student: dto.StudentProfile{
+			Student: dto.StProfile{
 				StudentID:  db.StudentID,
 				Email:      db.Email,
 				FirstName:  db.FirstName,
 				LastName:   db.LastName,
 				Year:       db.Year,
-				AvatarUrl:  misc.NullString(db.Avatar),
-				Department: db.StudentProfile.DepartmentID,
+				AvatarUrl:  misc.NullString(db.PhotoUrl),
+				Department: db.StProfile.DepartmentID,
 			},
 			Work: dto.Work{
 				WorkID:      db.WorkID,
@@ -97,19 +97,19 @@ func (uc *Bid) GetSupervisorBids(supervisorID int) (*dto.SupervisorBids, error) 
 		})
 	}
 
-	return &dto.SupervisorBids{Bids: resp}, nil
+	return &dto.SvBids{Bids: resp}, nil
 }
 
-func (uc *Bid) Apply(data *dto.ApplyBid) (*dto.ApplyBidResponse, error) {
-	bidID, err := uc.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
+func (service *Bid) Apply(data *dto.ApplyBid) (*dto.ApplyBidResp, error) {
+	bidID, err := service.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &dto.ApplyBidResponse{BidID: bidID}, nil
+	return &dto.ApplyBidResp{BidID: bidID}, nil
 }
 
-func (uc *Bid) Resolve(data *dto.ResolveBid) error {
+func (service *Bid) Resolve(data *dto.ResolveBid) error {
 	var status entity.StatusSSR
 
 	if data.Accept {
@@ -118,6 +118,6 @@ func (uc *Bid) Resolve(data *dto.ResolveBid) error {
 		status = "rejected"
 	}
 
-	_, err := uc.repo.UpdateStatus(data.BidID, status)
+	_, err := service.repo.UpdateStatus(data.BidID, status)
 	return err
 }

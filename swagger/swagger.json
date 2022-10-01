@@ -52,10 +52,10 @@
                         }
                     },
                     "401": {
-                        "description": ""
+                        "description": "Unauthorized"
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -87,11 +87,11 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentBids"
+                            "$ref": "#/definitions/dto.StBids"
                         }
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found"
                     }
                 }
             },
@@ -126,7 +126,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApplyBidResponse"
+                            "$ref": "#/definitions/dto.ApplyBidResp"
                         }
                     }
                 }
@@ -151,7 +151,7 @@
                         "type": "integer",
                         "description": "Supervisor ID",
                         "name": "supervisor_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -199,7 +199,7 @@
                         }
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -222,11 +222,11 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentProfile"
+                            "$ref": "#/definitions/dto.StProfile"
                         }
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found"
                     }
                 }
             }
@@ -263,7 +263,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentViewSSR"
+                            "$ref": "#/definitions/dto.StViewRelation"
                         }
                     }
                 }
@@ -296,7 +296,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentWorks"
+                            "$ref": "#/definitions/dto.StWorks"
                         }
                     }
                 }
@@ -329,7 +329,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.WorkSupervisorPlenty"
+                            "$ref": "#/definitions/dto.WorkSvPlenty"
                         }
                     }
                 }
@@ -362,7 +362,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorBids"
+                            "$ref": "#/definitions/dto.SvBids"
                         }
                     }
                 }
@@ -421,7 +421,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorProfile"
+                            "$ref": "#/definitions/dto.SvProfile"
                         }
                     }
                 }
@@ -454,7 +454,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorWorkPlenty"
+                            "$ref": "#/definitions/dto.SvWorkPlenty"
                         }
                     }
                 }
@@ -476,7 +476,7 @@
                 }
             }
         },
-        "dto.ApplyBidResponse": {
+        "dto.ApplyBidResp": {
             "type": "object",
             "properties": {
                 "bidID": {
@@ -593,7 +593,7 @@
                 }
             }
         },
-        "dto.StudentBid": {
+        "dto.StBid": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -606,25 +606,25 @@
                     "type": "string"
                 },
                 "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
+                    "$ref": "#/definitions/dto.SvProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.StudentBids": {
+        "dto.StBids": {
             "type": "object",
             "properties": {
                 "bids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StudentBid"
+                        "$ref": "#/definitions/dto.StBid"
                     }
                 }
             }
         },
-        "dto.StudentProfile": {
+        "dto.StProfile": {
             "type": "object",
             "properties": {
                 "avatarUrl": {
@@ -653,7 +653,7 @@
                 }
             }
         },
-        "dto.StudentViewSSR": {
+        "dto.StViewRelation": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -666,14 +666,14 @@
                     "type": "string"
                 },
                 "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
+                    "$ref": "#/definitions/dto.SvProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.StudentWork": {
+        "dto.StWork": {
             "type": "object",
             "properties": {
                 "description": {
@@ -693,7 +693,7 @@
                 }
             }
         },
-        "dto.StudentWorks": {
+        "dto.StWorks": {
             "type": "object",
             "properties": {
                 "studentID": {
@@ -702,7 +702,7 @@
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StudentWork"
+                        "$ref": "#/definitions/dto.StWork"
                     }
                 }
             }
@@ -721,7 +721,7 @@
                 }
             }
         },
-        "dto.SupervisorBid": {
+        "dto.SvBid": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -734,25 +734,25 @@
                     "type": "string"
                 },
                 "student": {
-                    "$ref": "#/definitions/dto.StudentProfile"
+                    "$ref": "#/definitions/dto.StProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.SupervisorBids": {
+        "dto.SvBids": {
             "type": "object",
             "properties": {
                 "bids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SupervisorBid"
+                        "$ref": "#/definitions/dto.SvBid"
                     }
                 }
             }
         },
-        "dto.SupervisorProfile": {
+        "dto.SvProfile": {
             "type": "object",
             "properties": {
                 "about": {
@@ -781,7 +781,7 @@
                 }
             }
         },
-        "dto.SupervisorWork": {
+        "dto.SvWork": {
             "type": "object",
             "properties": {
                 "description": {
@@ -801,7 +801,7 @@
                 }
             }
         },
-        "dto.SupervisorWorkPlenty": {
+        "dto.SvWorkPlenty": {
             "type": "object",
             "properties": {
                 "supervisorID": {
@@ -810,7 +810,7 @@
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SupervisorWork"
+                        "$ref": "#/definitions/dto.SvWork"
                     }
                 }
             }
@@ -835,7 +835,7 @@
                 }
             }
         },
-        "dto.WorkSupervisor": {
+        "dto.WorkSv": {
             "type": "object",
             "properties": {
                 "about": {
@@ -870,13 +870,13 @@
                 }
             }
         },
-        "dto.WorkSupervisorPlenty": {
+        "dto.WorkSvPlenty": {
             "type": "object",
             "properties": {
                 "supervisors": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.WorkSupervisor"
+                        "$ref": "#/definitions/dto.WorkSv"
                     }
                 },
                 "workID": {

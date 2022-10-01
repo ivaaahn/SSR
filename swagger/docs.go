@@ -56,10 +56,10 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": ""
+                        "description": "Unauthorized"
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -77,7 +77,7 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo student's bids",
+                "summary": "GetUserByEmail student's bids",
                 "parameters": [
                     {
                         "type": "integer",
@@ -91,11 +91,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentBids"
+                            "$ref": "#/definitions/dto.StBids"
                         }
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found"
                     }
                 }
             },
@@ -130,7 +130,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApplyBidResponse"
+                            "$ref": "#/definitions/dto.ApplyBidResp"
                         }
                     }
                 }
@@ -155,7 +155,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Supervisor ID",
                         "name": "supervisor_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -203,7 +203,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -221,16 +221,16 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo student's profile",
+                "summary": "GetUserByEmail student's profile",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentProfile"
+                            "$ref": "#/definitions/dto.StProfile"
                         }
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found"
                     }
                 }
             }
@@ -267,7 +267,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentViewSSR"
+                            "$ref": "#/definitions/dto.StViewRelation"
                         }
                     }
                 }
@@ -286,7 +286,7 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo student's works",
+                "summary": "GetUserByEmail student's works",
                 "parameters": [
                     {
                         "type": "integer",
@@ -300,7 +300,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentWorks"
+                            "$ref": "#/definitions/dto.StWorks"
                         }
                     }
                 }
@@ -319,7 +319,7 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo supervisors of the work",
+                "summary": "GetUserByEmail supervisors of the work",
                 "parameters": [
                     {
                         "type": "integer",
@@ -333,7 +333,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.WorkSupervisorPlenty"
+                            "$ref": "#/definitions/dto.WorkSvPlenty"
                         }
                     }
                 }
@@ -352,7 +352,7 @@ const docTemplate = `{
                 "tags": [
                     "supervisor"
                 ],
-                "summary": "GetUserInfo supervisor's bids",
+                "summary": "GetUserByEmail supervisor's bids",
                 "parameters": [
                     {
                         "type": "integer",
@@ -366,7 +366,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorBids"
+                            "$ref": "#/definitions/dto.SvBids"
                         }
                     }
                 }
@@ -420,12 +420,12 @@ const docTemplate = `{
                 "tags": [
                     "supervisor"
                 ],
-                "summary": "GetUserInfo supervisor's profile",
+                "summary": "GetUserByEmail supervisor's profile",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorProfile"
+                            "$ref": "#/definitions/dto.SvProfile"
                         }
                     }
                 }
@@ -444,7 +444,7 @@ const docTemplate = `{
                 "tags": [
                     "supervisor"
                 ],
-                "summary": "GetUserInfo supervisor's works",
+                "summary": "GetUserByEmail supervisor's works",
                 "parameters": [
                     {
                         "type": "integer",
@@ -458,7 +458,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SupervisorWorkPlenty"
+                            "$ref": "#/definitions/dto.SvWorkPlenty"
                         }
                     }
                 }
@@ -480,7 +480,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ApplyBidResponse": {
+        "dto.ApplyBidResp": {
             "type": "object",
             "properties": {
                 "bidID": {
@@ -597,7 +597,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.StudentBid": {
+        "dto.StBid": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -610,25 +610,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
+                    "$ref": "#/definitions/dto.SvProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.StudentBids": {
+        "dto.StBids": {
             "type": "object",
             "properties": {
                 "bids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StudentBid"
+                        "$ref": "#/definitions/dto.StBid"
                     }
                 }
             }
         },
-        "dto.StudentProfile": {
+        "dto.StProfile": {
             "type": "object",
             "properties": {
                 "avatarUrl": {
@@ -657,7 +657,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.StudentViewSSR": {
+        "dto.StViewRelation": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -670,14 +670,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
+                    "$ref": "#/definitions/dto.SvProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.StudentWork": {
+        "dto.StWork": {
             "type": "object",
             "properties": {
                 "description": {
@@ -697,7 +697,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.StudentWorks": {
+        "dto.StWorks": {
             "type": "object",
             "properties": {
                 "studentID": {
@@ -706,7 +706,7 @@ const docTemplate = `{
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StudentWork"
+                        "$ref": "#/definitions/dto.StWork"
                     }
                 }
             }
@@ -725,7 +725,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SupervisorBid": {
+        "dto.SvBid": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -738,25 +738,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "student": {
-                    "$ref": "#/definitions/dto.StudentProfile"
+                    "$ref": "#/definitions/dto.StProfile"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.SupervisorBids": {
+        "dto.SvBids": {
             "type": "object",
             "properties": {
                 "bids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SupervisorBid"
+                        "$ref": "#/definitions/dto.SvBid"
                     }
                 }
             }
         },
-        "dto.SupervisorProfile": {
+        "dto.SvProfile": {
             "type": "object",
             "properties": {
                 "about": {
@@ -785,7 +785,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SupervisorWork": {
+        "dto.SvWork": {
             "type": "object",
             "properties": {
                 "description": {
@@ -805,7 +805,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SupervisorWorkPlenty": {
+        "dto.SvWorkPlenty": {
             "type": "object",
             "properties": {
                 "supervisorID": {
@@ -814,7 +814,7 @@ const docTemplate = `{
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SupervisorWork"
+                        "$ref": "#/definitions/dto.SvWork"
                     }
                 }
             }
@@ -839,7 +839,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.WorkSupervisor": {
+        "dto.WorkSv": {
             "type": "object",
             "properties": {
                 "about": {
@@ -874,13 +874,13 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.WorkSupervisorPlenty": {
+        "dto.WorkSvPlenty": {
             "type": "object",
             "properties": {
                 "supervisors": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.WorkSupervisor"
+                        "$ref": "#/definitions/dto.WorkSv"
                     }
                 },
                 "workID": {

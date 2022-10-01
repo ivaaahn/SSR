@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"ssr/internal/dto"
@@ -7,10 +7,10 @@ import (
 
 type Feedback struct {
 	*Base
-	repo IRepoFeedback
+	repo FeedbackRepo
 }
 
-func NewFeedback(r IRepoFeedback, l logger.Interface) *Feedback {
+func NewFeedback(r FeedbackRepo, l logger.Interface) *Feedback {
 	return &Feedback{
 		Base: NewBase(l),
 		repo: r,

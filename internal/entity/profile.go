@@ -2,7 +2,7 @@ package entity
 
 import "time"
 
-type StudentProfile struct {
+type StProfile struct {
 	*User
 	StudentID    int    `db:"student_id"`
 	StudentCard  string `db:"student_card"`
@@ -10,7 +10,7 @@ type StudentProfile struct {
 	DepartmentID string `db:"department_id"`
 }
 
-type SupervisorProfile struct {
+type SvProfile struct {
 	*User
 	SupervisorID int       `db:"supervisor_id"`
 	Birthdate    time.Time `db:"birthdate"`

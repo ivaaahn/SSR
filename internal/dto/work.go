@@ -8,7 +8,7 @@ type Work struct {
 	Subject     SubjectResp `json:"subject"`
 }
 
-type StudentWork struct {
+type StWork struct {
 	WorkID      int    `json:"id"`
 	Kind        string `json:"kind"`
 	Description string `json:"description"`
@@ -16,12 +16,12 @@ type StudentWork struct {
 	IsStarted   bool   `json:"is_started"`
 }
 
-type StudentWorks struct {
-	StudentID int            `json:"studentID"`
-	Works     []*StudentWork `json:"works"`
+type StWorks struct {
+	StudentID int       `json:"studentID"`
+	Works     []*StWork `json:"works"`
 }
 
-type SupervisorWork struct {
+type SvWork struct {
 	WorkID      int    `json:"id"`
 	Kind        string `json:"kind"`
 	Description string `json:"description"`
@@ -29,18 +29,18 @@ type SupervisorWork struct {
 	Head        bool   `json:"head"`
 }
 
-type SupervisorWorkPlenty struct {
-	SupervisorID int               `json:"supervisorID"`
-	Works        []*SupervisorWork `json:"works"`
+type SvWorkPlenty struct {
+	SupervisorID int       `json:"supervisorID"`
+	Works        []*SvWork `json:"works"`
 }
 
-type WorkSupervisor struct {
-	SupervisorProfile
+type WorkSv struct {
+	SvProfile
 	Head bool `json:"head"`
 	Full bool `json:"full"`
 }
 
-type WorkSupervisorPlenty struct {
-	WorkID      int               `json:"workID"`
-	Supervisors []*WorkSupervisor `json:"supervisors"`
+type WorkSvPlenty struct {
+	WorkID      int       `json:"workID"`
+	Supervisors []*WorkSv `json:"supervisors"`
 }

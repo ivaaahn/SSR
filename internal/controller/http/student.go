@@ -6,33 +6,32 @@ import (
 	"net/http"
 	"ssr/internal/controller/http/middlewares"
 	"ssr/internal/dto"
-	"ssr/internal/usecase"
 	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 	"strconv"
 )
 
-type studentRoutes struct {
-	l          logger.Interface
-	profileUC  usecase.IUsecaseProfile
-	bidsUC     usecase.IUsecaseStudentBid
-	worksUC    usecase.IStudentWorkUC
-	ssrUC      usecase.IUseCaseStudentRelation
-	feedbackUC usecase.IUsecaseFeedback
+type student struct {
+	l               logger.Interface
+	profileService  StProfileService
+	bidService      StBidService
+	workService     StWorkService
+	relationService StRelationService
+	feedbackService FeedbackService
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo student's profile
+// @Summary      GetUserByEmail student's profile
 // @Tags         student
 // @Produce      json
-// @Success      200  {object}  dto.StudentProfile
+// @Success      200  {object}  dto.StProfile
 // @Failure      404
 // @Router       /api/student/profile [get]
 // @Security	 Auth
-func (r *studentRoutes) getProfile(ctx echo.Context) error {
+func (ctrl *student) getProfile(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
 
-	profileDto, err := r.profileUC.GetStudentProfile(email)
+	profileDto, err := ctrl.profileService.GetStudentProfile(email)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -41,21 +40,21 @@ func (r *studentRoutes) getProfile(ctx echo.Context) error {
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo student's bids
+// @Summary      GetUserByEmail student's bids
 // @Tags         student
 // @Produce      json
 // @Param        student_id query int  true  "Student ID"
-// @Success      200  {object}  dto.StudentBids
+// @Success      200  {object}  dto.StBids
 // @Failure      404
 // @Router       /api/student/bid [get]
 // @Security	 Auth
-func (r *studentRoutes) getBids(ctx echo.Context) error {
+func (ctrl *student) getBids(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
 
-	respDTO, err := r.bidsUC.GetStudentBids(studentID)
+	respDTO, err := ctrl.bidService.GetStudentBids(studentID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -64,20 +63,20 @@ func (r *studentRoutes) getBids(ctx echo.Context) error {
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo student's works
+// @Summary      GetUserByEmail student's works
 // @Tags         student
 // @Param        student_id query int  true  "Student ID"
 // @Produce      json
-// @Success      200  {object}  dto.StudentWorks
+// @Success      200  {object}  dto.StWorks
 // @Router       /api/student/work [get]
 // @Security	 Auth
-func (r *studentRoutes) getWorks(ctx echo.Context) error {
+func (ctrl *student) getWorks(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
 
-	respDTO, err := r.worksUC.GetStudentWorks(studentID)
+	respDTO, err := ctrl.workService.GetStudentWorks(studentID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -86,20 +85,20 @@ func (r *studentRoutes) getWorks(ctx echo.Context) error {
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo supervisors of the work
+// @Summary      GetUserByEmail supervisors of the work
 // @Tags         student
 // @Param        work_id query int  true  "Work ID"
 // @Produce      json
-// @Success      200  {object}  dto.WorkSupervisorPlenty
+// @Success      200  {object}  dto.WorkSvPlenty
 // @Router       /api/student/work/supervisor [get]
 // @Security	 Auth
-func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
+func (ctrl *student) getSupervisorsOfWork(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
 
-	respDTO, err := r.worksUC.GetWorkSupervisors(workID)
+	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -113,19 +112,19 @@ func (r *studentRoutes) getSupervisorsOfWork(ctx echo.Context) error {
 // @Accept		 json
 // @Param 		 ApplyBid body dto.ApplyBid true "bid info"
 // @Produce      json
-// @Success      200  {object}  dto.ApplyBidResponse
+// @Success      200  {object}  dto.ApplyBidResp
 // @Router       /api/student/bid [put]
 // @Security	 Auth
-func (r *studentRoutes) applyBid(ctx echo.Context) error {
+func (ctrl *student) applyBid(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	reqDTO := &dto.ApplyBid{}
 	if err := ctx.Bind(reqDTO); err != nil {
 		return echo.ErrBadRequest
 	}
 
-	respDTO, err := r.bidsUC.Apply(reqDTO)
+	respDTO, err := ctrl.bidService.Apply(reqDTO)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -139,19 +138,19 @@ func (r *studentRoutes) applyBid(ctx echo.Context) error {
 // @Accept		 json
 // @Param 		 ApplyBid body dto.CreateSSR true "ssr info"
 // @Produce      json
-// @Success      200  {object}  dto.StudentViewSSR
+// @Success      200  {object}  dto.StViewRelation
 // @Router       /api/student/ssr [post]
 // @Security	 Auth
-func (r *studentRoutes) createSSR(ctx echo.Context) error {
+func (ctrl *student) createSSR(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	reqDTO := &dto.CreateSSR{}
 	if err := ctx.Bind(reqDTO); err != nil {
 		return echo.ErrBadRequest
 	}
 
-	respDTO, err := r.ssrUC.Create(reqDTO)
+	respDTO, err := ctrl.relationService.Create(reqDTO)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -169,16 +168,16 @@ func (r *studentRoutes) createSSR(ctx echo.Context) error {
 // @Failure      500
 // @Router       /api/student/feedback [put]
 // @Security	 Auth
-func (r *studentRoutes) provideFeedback(ctx echo.Context) error {
+func (ctrl *student) provideFeedback(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
 	reqDTO := &dto.FeedbackReq{}
 	if err := ctx.Bind(reqDTO); err != nil {
 		return echo.ErrBadRequest
 	}
 
-	id, err := r.feedbackUC.Add(reqDTO)
+	id, err := ctrl.feedbackService.Add(reqDTO)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusConflict)
 	}
@@ -189,18 +188,18 @@ func (r *studentRoutes) provideFeedback(ctx echo.Context) error {
 // ShowAccount godoc
 // @Summary      Get feedbacks on the supervisor.
 // @Tags         student
-// @Param        supervisor_id query int true "Supervisor ID"
+// @Param        supervisor_id path integer true "Supervisor ID"
 // @Produce      json
 // @Success      200  {object}  dto.FeedbackPlenty
 // @Router       /api/student/feedback [get]
 // @Security	 Auth
-func (r *studentRoutes) getFeedback(ctx echo.Context) error {
+func (ctrl *student) getFeedback(ctx echo.Context) error {
 	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
 
-	supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
+	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
 
-	respDTO, err := r.feedbackUC.GetOnSupervisor(supervisorID)
+	respDTO, err := ctrl.feedbackService.GetOnSupervisor(supervisorID)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -211,25 +210,32 @@ func (r *studentRoutes) getFeedback(ctx echo.Context) error {
 func NewStudentRoutes(
 	router *echo.Group,
 	l logger.Interface,
-	profileUC usecase.IUsecaseProfile,
-	bidsUC usecase.IUsecaseStudentBid,
-	worksUC usecase.IStudentWorkUC,
-	ssrUC usecase.IUseCaseStudentRelation,
-	feedbackUC usecase.IUsecaseFeedback,
+	profileService StProfileService,
+	bidsService StBidService,
+	worksService StWorkService,
+	relationService StRelationService,
+	feedbackService FeedbackService,
 ) {
-	r := &studentRoutes{l, profileUC, bidsUC, worksUC, ssrUC, feedbackUC}
+	ctrl := &student{
+		l,
+		profileService,
+		bidsService,
+		worksService,
+		relationService,
+		feedbackService,
+	}
 
-	g := router.Group("/student", middlewares.CheckRole)
+	student := router.Group("/student", middlewares.CheckRole)
 
 	{
-		g.GET("/profile", r.getProfile)
-		g.GET("/bid", r.getBids)
-		g.PUT("/bid", r.applyBid)
-		g.POST("/ssr", r.createSSR)
-		g.GET("/work", r.getWorks)
-		g.GET("/work/supervisor", r.getSupervisorsOfWork)
-		g.GET("/feedback", r.getFeedback)
-		g.PUT("/feedback", r.provideFeedback)
+		student.GET("/profile", ctrl.getProfile)
+		student.GET("/bid", ctrl.getBids)
+		student.PUT("/bid", ctrl.applyBid)
+		student.POST("/ssr", ctrl.createSSR)
+		student.GET("/work", ctrl.getWorks)
+		student.GET("/work/supervisor_id", ctrl.getSupervisorsOfWork)
+		student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
+		student.PUT("/feedback", ctrl.provideFeedback)
 	}
 
 }

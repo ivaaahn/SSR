@@ -1,7 +1,7 @@
 CREATE TABLE "work_kinds"
 (
     "work_kind_id" bigint unique generated always as identity,
-    "name"         varchar unique not null
+    "title"         varchar unique not null
 );
 
 CREATE TABLE "works"
@@ -14,13 +14,11 @@ CREATE TABLE "works"
 );
 
 ALTER TABLE "works"
-    ADD FOREIGN KEY ("subject_id") REFERENCES "subjects" ("subject_id");
-
-ALTER TABLE "works"
+    ADD FOREIGN KEY ("subject_id") REFERENCES "subjects" ("subject_id"),
     ADD FOREIGN KEY ("work_kind_id") REFERENCES "work_kinds" ("work_kind_id");
 
 
-insert into "work_kinds" (name)
+insert into "work_kinds" (title)
 VALUES ('Курсовая работа'),
        ('Научно-исследовательская работа');
 

@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"ssr/internal/dto"
@@ -9,11 +9,11 @@ import (
 
 type Work struct {
 	*Base
-	repoWork IRepoWork
-	repoSsr  IRepoSSR
+	repoWork WorkRepo
+	repoSsr  RelationRepo
 }
 
-func NewWork(rWork IRepoWork, rSsr IRepoSSR, l logger.Interface) *Work {
+func NewWork(rWork WorkRepo, rSsr RelationRepo, l logger.Interface) *Work {
 	return &Work{
 		Base:     NewBase(l),
 		repoWork: rWork,
@@ -21,7 +21,7 @@ func NewWork(rWork IRepoWork, rSsr IRepoSSR, l logger.Interface) *Work {
 	}
 }
 
-func checkIfBegin(relations []*entity.StudentSsr, workID int) bool {
+func checkIfBegin(relations []*entity.StRelation, workID int) bool {
 	for _, rel := range relations {
 		if rel.Work.WorkID == workID {
 			return true
@@ -31,21 +31,21 @@ func checkIfBegin(relations []*entity.StudentSsr, workID int) bool {
 	return false
 }
 
-func (uc *Work) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
-	dbData, err := uc.repoWork.GetWorksByStudentID(studentID)
+func (service *Work) GetStudentWorks(studentID int) (*dto.StWorks, error) {
+	dbData, err := service.repoWork.GetWorksByStudentID(studentID)
 	if err != nil {
 		return nil, err
 	}
 
-	relations, err := uc.repoSsr.GetStudentRelations(studentID)
+	relations, err := service.repoSsr.GetStudentRelations(studentID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.StudentWork
+	var resp []*dto.StWork
 
 	for _, db := range dbData {
-		resp = append(resp, &dto.StudentWork{
+		resp = append(resp, &dto.StWork{
 			WorkID:      db.WorkID,
 			Kind:        db.WorkKindName,
 			Description: db.Description,
@@ -54,22 +54,22 @@ func (uc *Work) GetStudentWorks(studentID int) (*dto.StudentWorks, error) {
 		})
 	}
 
-	return &dto.StudentWorks{
+	return &dto.StWorks{
 		StudentID: studentID,
 		Works:     resp,
 	}, nil
 }
 
-func (uc *Work) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty, error) {
-	dbData, err := uc.repoWork.GetWorksBySupervisorID(supervisorID)
+func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error) {
+	dbData, err := service.repoWork.GetWorksBySupervisorID(supervisorID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.SupervisorWork
+	var resp []*dto.SvWork
 
 	for _, db := range dbData {
-		resp = append(resp, &dto.SupervisorWork{
+		resp = append(resp, &dto.SvWork{
 			WorkID:      db.WorkID,
 			Kind:        db.WorkKindName,
 			Description: db.Description,
@@ -78,30 +78,30 @@ func (uc *Work) GetSupervisorWorks(supervisorID int) (*dto.SupervisorWorkPlenty,
 		})
 	}
 
-	return &dto.SupervisorWorkPlenty{
+	return &dto.SvWorkPlenty{
 		SupervisorID: supervisorID,
 		Works:        resp,
 	}, nil
 }
 
-func (uc *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
-	dbData, err := uc.repoWork.GetSupervisorsByWorkID(workID)
+func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
+	dbData, err := service.repoWork.GetSupervisorsByWorkID(workID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.WorkSupervisor
+	var resp []*dto.WorkSv
 
 	for _, db := range dbData {
-		resp = append(resp, &dto.WorkSupervisor{
-			SupervisorProfile: dto.SupervisorProfile{
+		resp = append(resp, &dto.WorkSv{
+			SvProfile: dto.SvProfile{
 				SupervisorID: db.SupervisorID,
 				Email:        db.Email,
 				FirstName:    db.FirstName,
 				LastName:     db.LastName,
 				About:        db.About,
 				Birthdate:    misc.Date{Time: db.Birthdate},
-				AvatarUrl:    misc.NullString(db.Avatar),
+				AvatarUrl:    misc.NullString(db.PhotoUrl),
 				Department:   db.DepartmentID,
 			},
 			Head: db.Head,
@@ -109,7 +109,7 @@ func (uc *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error
 		})
 	}
 
-	return &dto.WorkSupervisorPlenty{
+	return &dto.WorkSvPlenty{
 		WorkID:      workID,
 		Supervisors: resp,
 	}, nil

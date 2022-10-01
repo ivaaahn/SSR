@@ -1,4 +1,4 @@
-package usecase
+package service
 
 //
 //import (
@@ -143,13 +143,13 @@ package usecase
 //					BidID:     1,
 //					CreatedAt: time.Time{},
 //					Status:    "wip",
-//					SupervisorProfile: &entity.SupervisorProfile{
+//					SvProfile: &entity.SvProfile{
 //						User: &entity.User{
 //							UserID:    2,
 //							Email:     "kek@kek.com",
 //							FirstName: "Иван",
 //							LastName:  "Иванов",
-//							Avatar:    sql.NullString{},
+//							PhotoUrl:    sql.NullString{},
 //						},
 //						SupervisorID: 1,
 //						Birthdate:    time.Time{},
@@ -184,7 +184,7 @@ package usecase
 //				RelID:     1,
 //				Status:    "wip",
 //				CreatedAt: time.Time{},
-//				Supervisor: dto.SupervisorProfile{
+//				Supervisor: dto.SvProfile{
 //					SupervisorID: 1,
 //					Email:        "kek@kek.com",
 //					FirstName:    "Иван",
@@ -217,13 +217,13 @@ package usecase
 //					BidID:     1,
 //					CreatedAt: time.Time{},
 //					Status:    "wip",
-//					SupervisorProfile: &entity.SupervisorProfile{
+//					SvProfile: &entity.SvProfile{
 //						User: &entity.User{
 //							UserID:    2,
 //							Email:     "kek@kek.com",
 //							FirstName: "Иван",
 //							LastName:  "Иванов",
-//							Avatar:    sql.NullString{},
+//							PhotoUrl:    sql.NullString{},
 //						},
 //						SupervisorID: 1,
 //						Birthdate:    time.Time{},
@@ -258,7 +258,7 @@ package usecase
 //				RelID:     1,
 //				Status:    "wip",
 //				CreatedAt: time.Time{},
-//				Supervisor: dto.SupervisorProfile{
+//				Supervisor: dto.SvProfile{
 //					SupervisorID: 1,
 //					Email:        "kek@kek.com",
 //					FirstName:    "Иван",
@@ -287,7 +287,7 @@ package usecase
 //		t.Run(tt.name, func(t *testing.T) {
 //			ctrl := gomock.NewController(t)
 //
-//			u := NewSSR(tt.repository(ctrl))
+//			u := NewRelation(tt.repository(ctrl))
 //
 //			received, err := u.Create(tt.args.req)
 //

@@ -2,27 +2,27 @@ package http
 
 import (
 	"github.com/labstack/echo/v4"
-	"ssr/internal/usecase"
 	"ssr/pkg/logger"
 )
 
 func NewRouter(
 	echo *echo.Echo,
 	l logger.Interface,
-	auth usecase.IUsecaseAuth,
-	profile usecase.IUsecaseProfile,
-	studentBids usecase.IUsecaseStudentBid,
-	supervisorBids usecase.IUseCaseSupervisorBid,
-	studentWorks usecase.IStudentWorkUC,
-	supervisorWorks usecase.ISupervisorWorkUC,
-	studentRelations usecase.IUseCaseStudentRelation,
-	feedback usecase.IUsecaseFeedback,
+	auth AuthService,
+	stProfile StProfileService,
+	svProfile SvProfileService,
+	stBids StBidService,
+	svBids SvBidService,
+	stWorks StWorkService,
+	svWorks SvWorkService,
+	stRelations StRelationService,
+	feedback FeedbackService,
 ) {
 	g := echo.Group("/api")
 
 	{
 		NewAuthRoutes(g, l, auth)
-		NewStudentRoutes(g, l, profile, studentBids, studentWorks, studentRelations, feedback)
-		NewSupervisorRoutes(g, l, profile, supervisorBids, supervisorWorks)
+		NewStudentRoutes(g, l, stProfile, stBids, stWorks, stRelations, feedback)
+		NewSupervisorRoutes(g, l, svProfile, svBids, svWorks)
 	}
 }

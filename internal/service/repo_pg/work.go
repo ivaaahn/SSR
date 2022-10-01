@@ -7,17 +7,17 @@ import (
 	"ssr/pkg/postgres"
 )
 
-type WorkPgRepo struct {
+type Work struct {
 	*BasePgRepo
 }
 
-func NewWorkPgRepo(pg *postgres.Postgres, l logger.Interface) *WorkPgRepo {
-	return &WorkPgRepo{
+func NewWork(pg *postgres.Postgres, l logger.Interface) *Work {
+	return &Work{
 		BasePgRepo: NewPgRepo(pg, l),
 	}
 }
 
-func (r *WorkPgRepo) GetWorksByStudentID(studentID int) ([]*entity.Work, error) {
+func (r *Work) GetWorksByStudentID(studentID int) ([]*entity.Work, error) {
 	const query = `
 	with const (st_year, st_department_id, curr_month) as (
 		select s.year,
@@ -42,7 +42,7 @@ func (r *WorkPgRepo) GetWorksByStudentID(studentID int) ([]*entity.Work, error) 
 
 	err := r.Conn.Select(&works, query, studentID)
 	if err != nil {
-		err := fmt.Errorf("WorkPgRepo->GetWorksByStudentID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetWorksByStudentID->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (r *WorkPgRepo) GetWorksByStudentID(studentID int) ([]*entity.Work, error) 
 	return works, nil
 }
 
-func (r *WorkPgRepo) GetWorksBySupervisorID(supervisorID int) ([]*entity.WorkOfSupervisor, error) {
+func (r *Work) GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error) {
 	const query = `
 	select w.*, 
 	   	subj.name as subject_name, 
@@ -63,11 +63,11 @@ func (r *WorkPgRepo) GetWorksBySupervisorID(supervisorID int) ([]*entity.WorkOfS
 		join work_kinds wk using (work_kind_id)
 	where s.supervisor_id = $1;
 	`
-	var works []*entity.WorkOfSupervisor
+	var works []*entity.SvWork
 
 	err := r.Conn.Select(&works, query, supervisorID)
 	if err != nil {
-		err := fmt.Errorf("WorkPgRepo->GetWorksBySupervisorID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetWorksBySupervisorID->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (r *WorkPgRepo) GetWorksBySupervisorID(supervisorID int) ([]*entity.WorkOfS
 	return works, nil
 }
 
-func (r *WorkPgRepo) GetSupervisorsByWorkID(workID int) ([]*entity.SupervisorOfWork, error) {
+func (r *Work) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error) {
 	const query = `
 	select 
 	       u.*, 
@@ -88,11 +88,11 @@ func (r *WorkPgRepo) GetSupervisorsByWorkID(workID int) ([]*entity.SupervisorOfW
 	where sw.work_id = $1;
 	`
 
-	var supervisors []*entity.SupervisorOfWork
+	var supervisors []*entity.WorkSv
 
 	err := r.Conn.Select(&supervisors, query, workID)
 	if err != nil {
-		err := fmt.Errorf("WorkPgRepo->GetSupervisorsByWorkID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetSupervisorsByWorkID->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}

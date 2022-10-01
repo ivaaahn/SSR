@@ -11,7 +11,7 @@ type UserInfo struct {
 	AvatarUrl misc.NullString `json:"avatarUrl"`
 }
 
-type StudentProfile struct {
+type StProfile struct {
 	StudentID   int             `json:"studentID"`
 	Email       string          `json:"email"`
 	FirstName   string          `json:"firstName"`
@@ -22,7 +22,7 @@ type StudentProfile struct {
 	Department  string          `json:"department"`
 }
 
-type SupervisorProfile struct {
+type SvProfile struct {
 	SupervisorID int             `json:"supervisorID"`
 	Email        string          `json:"email"`
 	FirstName    string          `json:"firstName"`

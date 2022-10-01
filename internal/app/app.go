@@ -4,12 +4,13 @@ package app
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	m "github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"net/http"
 	"ssr/config"
-	"ssr/internal/controller/http"
-	uc "ssr/internal/usecase"
-	repo "ssr/internal/usecase/repo_pg"
+	ctrl "ssr/internal/controller/http"
+	"ssr/internal/service"
+	"ssr/internal/service/repo_pg"
 	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 	"ssr/pkg/postgres"
@@ -18,10 +19,10 @@ import (
 )
 
 func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
-	server.Use(m.CORS())
-	server.Use(m.Logger())
-	server.Use(m.Recover())
-	server.Use(m.JWTWithConfig(m.JWTConfig{
+	server.Use(middleware.CORS())
+	server.Use(middleware.Logger())
+	server.Use(middleware.Recover())
+	server.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &misc.AppJWTClaims{},
 		SigningKey: []byte(cfg.SigningKey),
 		ContextKey: "ctx",
@@ -34,15 +35,33 @@ func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
 	}))
 }
 
-func setupUC(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
-	authUC := uc.NewAuth(repo.NewAuthPgRepo(pg, l), l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	profileUC := uc.NewProfile(repo.NewProfilePgRepo(pg, l), l)
-	bidUC := uc.NewBid(repo.NewSSRPgRepo(pg, l), l)
-	workUC := uc.NewWork(repo.NewWorkPgRepo(pg, l), repo.NewSSRPgRepo(pg, l), l)
-	ssrUC := uc.NewSSR(repo.NewSSRPgRepo(pg, l), l)
-	feedBackUC := uc.NewFeedback(repo.NewFeedback(pg, l), l)
+func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
+	relationRepo := repo_pg.NewRelation(pg, l)
+	authRepo := repo_pg.NewAuth(pg, l)
+	profileRepo := repo_pg.NewProfile(pg, l)
+	workRepo := repo_pg.NewWork(pg, l)
+	feedbackRepo := repo_pg.NewFeedback(pg, l)
 
-	http.NewRouter(server, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC, feedBackUC)
+	authService := service.NewAuth(authRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileService := service.NewProfile(profileRepo, l)
+	bidService := service.NewBid(relationRepo, l)
+	workService := service.NewWork(workRepo, relationRepo, l)
+	relationService := service.NewRelation(relationRepo, l)
+	feedbackService := service.NewFeedback(feedbackRepo, l)
+
+	ctrl.NewRouter(
+		server,
+		l,
+		authService,
+		profileService,
+		profileService,
+		bidService,
+		bidService,
+		workService,
+		workService,
+		relationService,
+		feedbackService,
+	)
 }
 
 func Run(cfg *config.Config) {
@@ -57,8 +76,10 @@ func Run(cfg *config.Config) {
 
 	server := echo.New()
 	setupMiddlewares(server, cfg)
-	setupUC(server, pg, loggerObject, cfg)
+	makeInjections(server, pg, loggerObject, cfg)
 
 	server.GET("/swagger*", echoSwagger.WrapHandler)
-	server.Logger.Fatal(server.Start(cfg.HTTP.Port))
+	if err := server.Start(cfg.HTTP.Port); err != http.ErrServerClosed {
+		server.Logger.Fatal(err)
+	}
 }
