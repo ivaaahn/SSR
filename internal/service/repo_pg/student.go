@@ -11,15 +11,15 @@ type Student struct {
 	*BasePgRepo
 }
 
-func New(pg *postgres.Postgres, l logger.Interface) *Student {
+func NewStudent(pg *postgres.Postgres, l logger.Interface) *Student {
 	return &Student{
 		BasePgRepo: NewPgRepo(pg, l),
 	}
 }
 
-func (repo *Student) Get(userID int) (*entity.Student, error) {
+func (repo *Student) GetStudent(userID int) (*entity.Student, error) {
 	const query = `
-	select * from users where user_id = $1
+	select * from students where user_id = $1
 	`
 
 	student := entity.Student{}
@@ -34,9 +34,17 @@ func (repo *Student) Get(userID int) (*entity.Student, error) {
 	return &student, nil
 }
 
-func (repo *Student) GetFull(userID int) (*entity.StudentFull, error) {
+func (repo *Student) GetFullStudent(userID int) (*entity.StudentFull, error) {
 	const query = `
-	select *
+	select 
+	    s.student_card, 
+	    s.department_id, 
+	    s.year,
+	    u.email as "user.email", 
+	    u.first_name as "user.first_name", 
+	    u.last_name as "user.last_name", 
+	    u.photo_url as "user.photo_url", 
+	    u.user_id as "user.user_id"
 	from users u 
 		join students s using (user_id)
 	where user_id = $1

@@ -14,7 +14,9 @@ func CheckRole(next echo.HandlerFunc) echo.HandlerFunc {
 		expRole := split[2]
 		_, recRole := misc.ExtractCtx(c)
 
-		if recRole != expRole {
+		mapping := map[string]string{"st": "student", "sv": "supervisor"}
+
+		if mapping[recRole] != expRole {
 			return echo.ErrForbidden
 		}
 

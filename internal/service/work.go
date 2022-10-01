@@ -95,14 +95,13 @@ func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
 	for _, db := range dbData {
 		resp = append(resp, &dto.WorkSv{
 			SvProfile: dto.SvProfile{
-				SupervisorID: db.SupervisorID,
-				Email:        db.Email,
-				FirstName:    db.FirstName,
-				LastName:     db.LastName,
-				About:        db.About,
-				Birthdate:    misc.Date{Time: db.Birthdate},
-				AvatarUrl:    misc.NullString(db.PhotoUrl),
-				Department:   db.DepartmentID,
+				Email:      db.Email,
+				FirstName:  db.FirstName,
+				LastName:   db.LastName,
+				About:      db.About,
+				Birthdate:  misc.Date{Time: db.Birthdate},
+				PhotoUrl:   db.PhotoUrl,
+				Department: db.DepartmentID,
 			},
 			Head: db.Head,
 			Full: db.Full,

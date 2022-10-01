@@ -8,48 +8,48 @@ import (
 
 type Profile struct {
 	*Base
-	repo ProfileRepo
+	stRepo StudentRepo
+	svRepo SupervisorRepo
 }
 
-func NewProfile(r ProfileRepo, l logger.Interface) *Profile {
+func NewProfile(stRepo StudentRepo, svRepo SupervisorRepo, l logger.Interface) *Profile {
 	return &Profile{
-		Base: NewBase(l),
-		repo: r,
+		Base:   NewBase(l),
+		stRepo: stRepo,
+		svRepo: svRepo,
 	}
 }
 
-func (uc *Profile) GetStudentProfile(email string) (*dto.StProfile, error) {
-	dbData, err := uc.repo.GetStProfile(email)
+func (uc *Profile) GetStudentProfile(userID int) (*dto.StProfile, error) {
+	dbData, err := uc.stRepo.GetFullStudent(userID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &dto.StProfile{
-		StudentID:   dbData.StudentID,
-		Email:       dbData.Email,
-		FirstName:   dbData.FirstName,
-		LastName:    dbData.LastName,
-		AvatarUrl:   misc.NullString(dbData.PhotoUrl),
+		Email:       dbData.User.Email,
+		FirstName:   dbData.User.FirstName,
+		LastName:    dbData.User.LastName,
+		PhotoUrl:    dbData.User.PhotoUrl,
 		Year:        dbData.Year,
 		StudentCard: dbData.StudentCard,
 		Department:  dbData.DepartmentID,
 	}, nil
 }
 
-func (uc *Profile) GetSupervisorProfile(email string) (*dto.SvProfile, error) {
-	dbData, err := uc.repo.GetSvProfile(email)
+func (uc *Profile) GetSupervisorProfile(userID int) (*dto.SvProfile, error) {
+	dbData, err := uc.svRepo.GetFullSupervisor(userID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &dto.SvProfile{
-		SupervisorID: dbData.SupervisorID,
-		Email:        dbData.Email,
-		FirstName:    dbData.FirstName,
-		LastName:     dbData.LastName,
-		AvatarUrl:    misc.NullString(dbData.PhotoUrl),
-		About:        dbData.About,
-		Birthdate:    misc.Date{Time: dbData.Birthdate},
-		Department:   dbData.DepartmentID,
+		Email:      dbData.User.Email,
+		FirstName:  dbData.User.FirstName,
+		LastName:   dbData.User.LastName,
+		PhotoUrl:   dbData.User.PhotoUrl,
+		About:      dbData.About,
+		Birthdate:  misc.Date{Time: dbData.Birthdate},
+		Department: dbData.DepartmentID,
 	}, nil
 }

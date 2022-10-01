@@ -12,9 +12,7 @@ func NewRouter(
 	stProfile StProfileService,
 	svProfile SvProfileService,
 	stBids StBidService,
-	svBids SvBidService,
 	stWorks StWorkService,
-	svWorks SvWorkService,
 	stRelations StRelationService,
 	feedback FeedbackService,
 ) {
@@ -23,6 +21,6 @@ func NewRouter(
 	{
 		NewAuthRoutes(g, l, auth)
 		NewStudentRoutes(g, l, stProfile, stBids, stWorks, stRelations, feedback)
-		NewSupervisorRoutes(g, l, svProfile, svBids, svWorks)
+		NewSupervisorRoutes(g, l, svProfile)
 	}
 }

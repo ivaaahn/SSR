@@ -191,7 +191,7 @@ package service
 //					LastName:     "Иванов",
 //					About:        "Обо мне",
 //					Birthdate:    misc.Date{},
-//					AvatarUrl:    misc.NullString{},
+//					PhotoUrl:    misc.NullString{},
 //					Department:   "ИУ7",
 //				},
 //				Work: dto.Work{
@@ -265,7 +265,7 @@ package service
 //					LastName:     "Иванов",
 //					About:        "Обо мне",
 //					Birthdate:    misc.Date{},
-//					AvatarUrl:    misc.NullString{},
+//					PhotoUrl:    misc.NullString{},
 //					Department:   "ИУ7",
 //				},
 //				Work: dto.Work{

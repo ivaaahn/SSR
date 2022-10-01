@@ -9,10 +9,10 @@ type (
 		Login(email, password string) (*dto.LoginResponse, error)
 	}
 	StProfileService interface {
-		GetStudentProfile(email string) (*dto.StProfile, error)
+		GetStudentProfile(userID int) (*dto.StProfile, error)
 	}
 	SvProfileService interface {
-		GetSupervisorProfile(email string) (*dto.SvProfile, error)
+		GetSupervisorProfile(userID int) (*dto.SvProfile, error)
 	}
 	StBidService interface {
 		GetStudentBids(studentID int) (*dto.StBids, error)

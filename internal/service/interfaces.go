@@ -5,8 +5,14 @@ import (
 )
 
 type (
-	AuthRepo interface {
-		GetUserByEmail(email string) (*entity.Auth, error)
+	UserRepo interface {
+		GetUserByEmail(email string) (*entity.User, error)
+	}
+	StudentRepo interface {
+		GetFullStudent(userID int) (*entity.StudentFull, error)
+	}
+	SupervisorRepo interface {
+		GetFullSupervisor(userID int) (*entity.SupervisorFull, error)
 	}
 	ProfileRepo interface {
 		GetStProfile(email string) (*entity.StProfile, error)

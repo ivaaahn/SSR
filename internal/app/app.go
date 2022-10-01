@@ -37,13 +37,15 @@ func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
 
 func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
 	relationRepo := repo_pg.NewRelation(pg, l)
-	authRepo := repo_pg.NewAuth(pg, l)
-	profileRepo := repo_pg.NewProfile(pg, l)
+	//profileRepo := repo_pg.NewProfile(pg, l)
 	workRepo := repo_pg.NewWork(pg, l)
 	feedbackRepo := repo_pg.NewFeedback(pg, l)
+	userRepo := repo_pg.NewUser(pg, l)
+	studentRepo := repo_pg.NewStudent(pg, l)
+	supervisorRepo := repo_pg.NewSupervisor(pg, l)
 
-	authService := service.NewAuth(authRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	profileService := service.NewProfile(profileRepo, l)
+	authService := service.NewAuth(userRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileService := service.NewProfile(studentRepo, supervisorRepo, l)
 	bidService := service.NewBid(relationRepo, l)
 	workService := service.NewWork(workRepo, relationRepo, l)
 	relationService := service.NewRelation(relationRepo, l)
@@ -56,8 +58,6 @@ func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, 
 		profileService,
 		profileService,
 		bidService,
-		bidService,
-		workService,
 		workService,
 		relationService,
 		feedbackService,

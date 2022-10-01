@@ -29,14 +29,15 @@ type student struct {
 // @Router       /api/student/profile [get]
 // @Security	 Auth
 func (ctrl *student) getProfile(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
+	rawUserID, _ := misc.ExtractCtx(ctx)
+	userID, _ := strconv.Atoi(rawUserID)
 
-	profileDto, err := ctrl.profileService.GetStudentProfile(email)
+	profileDTO, err := ctrl.profileService.GetStudentProfile(userID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
 
-	return ctx.JSON(http.StatusOK, profileDto)
+	return ctx.JSON(http.StatusOK, profileDTO)
 }
 
 // ShowAccount godoc

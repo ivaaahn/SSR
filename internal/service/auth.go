@@ -11,12 +11,12 @@ import (
 
 type auth struct {
 	*Base
-	repo       AuthRepo
+	repo       UserRepo
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuth(r AuthRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *auth {
+func NewAuth(r UserRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *auth {
 	return &auth{
 		Base:       NewBase(l),
 		repo:       r,
@@ -36,7 +36,7 @@ func (service *auth) Login(email, password string) (*dto.LoginResponse, error) {
 		return nil, err
 	}
 
-	tokenClaims := misc.NewAppJWTClaims(service.tokenExp, dbData.Email, string(dbData.Role))
+	tokenClaims := misc.NewAppJWTClaims(service.tokenExp, dbData.UserID, string(dbData.Role))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
 	tokenStr, err := token.SignedString(service.signingKey)
@@ -46,8 +46,8 @@ func (service *auth) Login(email, password string) (*dto.LoginResponse, error) {
 	}
 
 	return &dto.LoginResponse{
-		Token: tokenStr,
-		Email: dbData.Email,
-		Role:  string(dbData.Role),
+		Token:  tokenStr,
+		UserID: dbData.UserID,
+		Role:   string(dbData.Role),
 	}, nil
 }

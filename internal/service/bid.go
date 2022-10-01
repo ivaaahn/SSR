@@ -33,15 +33,14 @@ func (service *Bid) GetStudentBids(studentID int) (*dto.StBids, error) {
 			Status:    db.Status,
 			CreatedAt: db.CreatedAt,
 			Supervisor: dto.SvProfile{
-				SupervisorID: db.SupervisorID,
-				Email:        db.Email,
-				FirstName:    db.FirstName,
-				LastName:     db.LastName,
-				About:        db.About,
+				Email:     db.Email,
+				FirstName: db.FirstName,
+				LastName:  db.LastName,
+				About:     db.About,
 				Birthdate: misc.Date{
 					Time: db.Birthdate,
 				},
-				AvatarUrl:  misc.NullString(db.PhotoUrl),
+				PhotoUrl:   db.PhotoUrl,
 				Department: db.SvProfile.DepartmentID,
 			},
 			Work: dto.Work{
@@ -75,12 +74,11 @@ func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 			Status:    db.Status,
 			CreatedAt: db.CreatedAt,
 			Student: dto.StProfile{
-				StudentID:  db.StudentID,
 				Email:      db.Email,
 				FirstName:  db.FirstName,
 				LastName:   db.LastName,
 				Year:       db.Year,
-				AvatarUrl:  misc.NullString(db.PhotoUrl),
+				PhotoUrl:   db.PhotoUrl,
 				Department: db.StProfile.DepartmentID,
 			},
 			Work: dto.Work{
