@@ -10,6 +10,7 @@ type (
 	}
 	StudentRepo interface {
 		GetFullStudent(userID int) (*entity.StudentFull, error)
+		GetStudent(userID int) (*entity.Student, error)
 	}
 	SupervisorRepo interface {
 		GetFullSupervisor(userID int) (*entity.SupervisorFull, error)
@@ -27,9 +28,9 @@ type (
 		UpdateStatus(id int, newStatus entity.StatusSSR) (int, error)
 	}
 	WorkRepo interface {
-		GetWorksByStudentID(studentID int) ([]*entity.Work, error)
-		GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error)
-		GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error)
+		GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error)
+		//GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error)
+		//GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error)
 	}
 	FeedbackRepo interface {
 		Create(studentID, supervisorID, workID int, content string) (int, error)

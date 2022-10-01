@@ -12,5 +12,5 @@ type StViewRelation struct {
 	Status     string    `json:"status"`
 	CreatedAt  time.Time `json:"createdAt"`
 	Supervisor SvProfile `json:"supervisor"`
-	Work       Work      `json:"work"`
+	Work       WorkResp  `json:"work"`
 }

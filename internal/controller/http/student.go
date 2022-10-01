@@ -68,7 +68,7 @@ func (ctrl *student) getBids(ctx echo.Context) error {
 // @Tags         student
 // @Param        student_id query int  true  "Student ID"
 // @Produce      json
-// @Success      200  {object}  dto.StWorks
+// @Success      200  {object}  dto.StWorkPlenty
 // @Router       /api/student/work [get]
 // @Security	 Auth
 func (ctrl *student) getWorks(ctx echo.Context) error {
@@ -88,24 +88,24 @@ func (ctrl *student) getWorks(ctx echo.Context) error {
 // ShowAccount godoc
 // @Summary      GetUserByEmail supervisors of the work
 // @Tags         student
-// @Param        work_id query int  true  "Work ID"
+// @Param        work_id query int  true  "WorkResp ID"
 // @Produce      json
 // @Success      200  {object}  dto.WorkSvPlenty
 // @Router       /api/student/work/supervisor [get]
 // @Security	 Auth
-func (ctrl *student) getSupervisorsOfWork(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
-
-	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
-	if err != nil {
-		return echo.ErrNotFound
-	}
-
-	return ctx.JSON(http.StatusOK, respDTO)
-}
+//func (ctrl *student) getSupervisorsOfWork(ctx echo.Context) error {
+//	email, _ := misc.ExtractCtx(ctx)
+//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//
+//	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
+//
+//	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
+//	if err != nil {
+//		return echo.ErrNotFound
+//	}
+//
+//	return ctx.JSON(http.StatusOK, respDTO)
+//}
 
 // ShowAccount godoc
 // @Summary      Apply bid
@@ -234,7 +234,7 @@ func NewStudentRoutes(
 		student.PUT("/bid", ctrl.applyBid)
 		student.POST("/ssr", ctrl.createSSR)
 		student.GET("/work", ctrl.getWorks)
-		student.GET("/work/supervisor_id", ctrl.getSupervisorsOfWork)
+		//student.GET("/work/supervisor_id", ctrl.getSupervisorsOfWork)
 		student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
 		student.PUT("/feedback", ctrl.provideFeedback)
 	}

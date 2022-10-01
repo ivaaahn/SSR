@@ -57,14 +57,13 @@ func (service *Relation) Create(data *dto.CreateSSR) (*dto.StViewRelation, error
 			PhotoUrl:   ssr.PhotoUrl,
 			Department: ssr.DepartmentID,
 		},
-		Work: dto.Work{
+		Work: dto.WorkResp{
 			WorkID:      ssr.WorkID,
-			Name:        ssr.Work.WorkKindName,
 			Description: ssr.Work.Description,
 			Semester:    ssr.Work.Semester,
 			Subject: dto.SubjectResp{
 				SubjectID:  ssr.SubjectID,
-				Name:       ssr.SubjectName,
+				Name:       ssr.Subject.Name,
 				Department: ssr.DepartmentID,
 			},
 		},

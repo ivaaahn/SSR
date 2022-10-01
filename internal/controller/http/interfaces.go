@@ -26,8 +26,8 @@ type (
 		Create(data *dto.CreateSSR) (*dto.StViewRelation, error)
 	}
 	StWorkService interface {
-		GetStudentWorks(studentID int) (*dto.StWorks, error)
-		GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error)
+		GetStudentWorks(studentID int) (*dto.StWorkPlenty, error)
+		//GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error)
 	}
 	SvWorkService interface {
 		GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error)

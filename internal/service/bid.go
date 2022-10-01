@@ -43,14 +43,17 @@ func (service *Bid) GetStudentBids(studentID int) (*dto.StBids, error) {
 				PhotoUrl:   db.PhotoUrl,
 				Department: db.SvProfile.DepartmentID,
 			},
-			Work: dto.Work{
+			Work: dto.WorkResp{
 				WorkID:      db.WorkID,
-				Name:        db.WorkKind.WorkKindName,
 				Description: db.Work.Description,
 				Semester:    db.Work.Semester,
+				Kind: dto.WorkKindResp{
+					ID:   db.WorkKind.WorkKindID,
+					Name: db.WorkKind.Name,
+				},
 				Subject: dto.SubjectResp{
 					SubjectID:  db.SubjectID,
-					Name:       db.Subject.SubjectName,
+					Name:       db.Subject.Name,
 					Department: db.Subject.DepartmentID,
 				},
 			},
@@ -81,14 +84,16 @@ func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 				PhotoUrl:   db.PhotoUrl,
 				Department: db.StProfile.DepartmentID,
 			},
-			Work: dto.Work{
-				WorkID:      db.WorkID,
-				Name:        db.WorkKind.WorkKindName,
+			Work: dto.WorkResp{
 				Description: db.Work.Description,
 				Semester:    db.Work.Semester,
+				Kind: dto.WorkKindResp{
+					ID:   db.WorkKind.WorkKindID,
+					Name: db.WorkKind.Name,
+				},
 				Subject: dto.SubjectResp{
 					SubjectID:  db.SubjectID,
-					Name:       db.Subject.SubjectName,
+					Name:       db.Subject.Name,
 					Department: db.Subject.DepartmentID,
 				},
 			},

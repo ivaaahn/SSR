@@ -17,38 +17,62 @@ func NewWork(pg *postgres.Postgres, l logger.Interface) *Work {
 	}
 }
 
-func (r *Work) GetWorksByStudentID(studentID int) ([]*entity.Work, error) {
+func (r *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error) {
 	const query = `
-	with const (st_year, st_department_id, curr_month) as (
-		select s.year,
-			   s.department_id,
-			   extract('month' from current_date)
-		from students s
-		where student_id = $1
-	)
-	select w.*,
-	   	wk.name as work_kind_name,
-	   	subj.name as subject_name
+	select w.work_id, description, semester,
+	   	wk.name as "work_kind.name",
+	   	subj.name as "subject.name",
+		subj.department_id as "subject.department_id"
 	from works w
 		join work_kinds wk using (work_kind_id)
 		join subjects subj using (subject_id)
-		join const c on true
-	where (((curr_month between 2 and 8) and (semester = st_year * 2))
-		or (semester = st_year * 2 - 1))
-	  and subj.department_id = c.st_department_id;
+	where subj.department_id = $1 and w.semester = $2;
 	`
 
 	var works []*entity.Work
 
-	err := r.Conn.Select(&works, query, studentID)
+	err := r.Conn.Select(&works, query, departmentID, semester)
 	if err != nil {
-		err := fmt.Errorf("Work->GetWorksByStudentID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetStudentWorks->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
 
 	return works, nil
 }
+
+//func (r *Work) GetStudentWorks(studentID int) ([]*entity.Work, error) {
+//	const query = `
+//	with const (st_year, st_department_id, curr_month) as (
+//		select s.year,
+//			   s.department_id,
+//			   extract('month' from current_date)
+//		from students s
+//		where user_id = $1
+//	)
+//	select w.*,
+//	   	wk.name as "work_kind.name",
+//	   	subj.name as "subject.name"
+//	from works w
+//		join work_kinds wk using (work_kind_id)
+//		join subjects subj using (subject_id)
+//		join const c on true
+//	where (((curr_month between 2 and 8) and (semester = st_year * 2))
+//		or (semester = st_year * 2 - 1))
+//	  and subj.department_id = c.st_department_id;
+//	`
+//
+//	var works []*entity.Work
+//
+//	err := r.Conn.Select(&works, query, studentID)
+//	if err != nil {
+//		err := fmt.Errorf("Work->GetStudentWorks->r.Conn.Select: %w", err)
+//		r.l.Error(err)
+//		return nil, err
+//	}
+//
+//	return works, nil
+//}
 
 func (r *Work) GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error) {
 	const query = `

@@ -9,7 +9,7 @@ type StBid struct {
 	Status     string    `json:"status"`
 	CreatedAt  time.Time `json:"createdAt"`
 	Supervisor SvProfile `json:"supervisor"`
-	Work       Work      `json:"work"`
+	Work       WorkResp  `json:"work"`
 }
 
 type StBids struct {
@@ -21,7 +21,7 @@ type SvBid struct {
 	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"createdAt"`
 	Student   StProfile `json:"student"`
-	Work      Work      `json:"work"`
+	Work      WorkResp  `json:"work"`
 }
 
 type SvBids struct {

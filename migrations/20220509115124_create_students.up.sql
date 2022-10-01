@@ -12,6 +12,6 @@ ALTER TABLE "students"
 
 
 insert into "students" (user_id, student_card, year, department_id)
-VALUES (1, 'ida19u463', 3, 'ИУ7'),
-       (5, 'bma19u463', 3, 'ИУ7'),
-       (6, 'vdv19u463', 3, 'ИУ7');
+VALUES (1, 'ida19u463', 4, 'ИУ7'),
+       (5, 'bma19u463', 4, 'ИУ7'),
+       (6, 'vdv19u463', 4, 'ИУ7');
