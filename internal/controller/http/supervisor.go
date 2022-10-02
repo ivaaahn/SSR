@@ -25,7 +25,7 @@ type supervisor struct {
 // @Router       /api/v1/supervisors/{supervisor_id}/profile [get]
 // @Security	 OAuth2Password
 func (ctrl *supervisor) getProfile(ctx echo.Context) error {
-	supervisorID, _ := strconv.Atoi(ctx.Param("student_id"))
+	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
 
 	respDTO, err := ctrl.profileService.GetSupervisorProfile(supervisorID)
 	if err != nil {
@@ -36,16 +36,16 @@ func (ctrl *supervisor) getProfile(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
-// // ShowAccount godoc
-// // @Summary      Get supervisor's works
-// // @Tags         supervisor
-// // @Param        supervisor_id path int  true  "Supervisor ID"
-// // @Produce      json
-// // @Success      200  {object}  dto.SvWorkPlenty
-// // @Router       /api/v1/supervisors/{supervisor_id}/work [get]
-// // @Security	 	OAuth2Password
+// ShowAccount godoc
+// @Summary      Get supervisor's works
+// @Tags         supervisor
+// @Param        supervisor_id path int  true  "Supervisor ID"
+// @Produce      json
+// @Success      200  {object}  dto.SvWorkPlenty
+// @Router       /api/v1/supervisors/{supervisor_id}/works [get]
+// @Security	 	OAuth2Password
 func (ctrl *supervisor) getWorks(ctx echo.Context) error {
-	supervisorID, _ := strconv.Atoi(ctx.Param("student_id"))
+	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
 
 	respDTO, err := ctrl.workService.GetSupervisorWorks(supervisorID)
 	if err != nil {
@@ -126,8 +126,8 @@ func NewSupervisorRoutes(
 	g := router.Group("/supervisors", middlewares.MakeAuthMiddleware(config), middlewares.CheckRole)
 
 	{
-		g.GET("/supervisor_id/profile", ctrl.getProfile)
-		g.GET("/supervisor_id/works", ctrl.getWorks)
+		g.GET("/:supervisor_id/profile", ctrl.getProfile)
+		g.GET("/:supervisor_id/works", ctrl.getWorks)
 		//g.GET("/bid", ctrl.getBids)
 		//g.POST("/bid/resolve", ctrl.resolveBid)
 		//g.GET("/work", ctrl.getWorks)

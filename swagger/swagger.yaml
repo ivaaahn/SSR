@@ -68,6 +68,22 @@ definitions:
       lastName:
         type: string
     type: object
+  dto.SvWorkPlenty:
+    properties:
+      works:
+        items:
+          $ref: '#/definitions/dto.SvWorkResp'
+        type: array
+    type: object
+  dto.SvWorkResp:
+    properties:
+      is_full:
+        type: boolean
+      is_head:
+        type: boolean
+      work:
+        $ref: '#/definitions/dto.WorkResp'
+    type: object
   dto.WorkKindResp:
     properties:
       id:
@@ -187,6 +203,26 @@ paths:
       security:
       - OAuth2Password: []
       summary: Get supervisor's profile
+      tags:
+      - supervisor
+  /api/v1/supervisors/{supervisor_id}/works:
+    get:
+      parameters:
+      - description: Supervisor ID
+        in: path
+        name: supervisor_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SvWorkPlenty'
+      security:
+      - OAuth2Password: []
+      summary: Get supervisor's works
       tags:
       - supervisor
 schemes:

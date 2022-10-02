@@ -165,6 +165,39 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/supervisors/{supervisor_id}/works": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supervisor"
+                ],
+                "summary": "Get supervisor's works",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Supervisor ID",
+                        "name": "supervisor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SvWorkPlenty"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -270,6 +303,31 @@ const docTemplate = `{
                 },
                 "lastName": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.SvWorkPlenty": {
+            "type": "object",
+            "properties": {
+                "works": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.SvWorkResp"
+                    }
+                }
+            }
+        },
+        "dto.SvWorkResp": {
+            "type": "object",
+            "properties": {
+                "is_full": {
+                    "type": "boolean"
+                },
+                "is_head": {
+                    "type": "boolean"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkResp"
                 }
             }
         },
