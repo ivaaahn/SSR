@@ -28,14 +28,14 @@ type SvBids struct {
 	Bids []*SvBid `json:"bids"`
 }
 
-type ApplyBid struct {
-	StudentID    int `json:"studentID"`
-	SupervisorID int `json:"supervisorID"`
-	WorkID       int `json:"workID"`
+type RelationCreateReq struct {
+	StudentID    int `json:"student_id"`
+	SupervisorID int `json:"supervisor_id"`
+	WorkID       int `json:"work_id"`
 }
 
-type ApplyBidResp struct {
-	BidID int `json:"bidID"`
+type RelationCreateResp struct {
+	RelationID int `json:"relation_id"`
 }
 
 type ResolveBid struct {

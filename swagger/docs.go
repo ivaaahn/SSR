@@ -64,6 +64,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/relations/": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "relation"
+                ],
+                "summary": "Create relation",
+                "parameters": [
+                    {
+                        "description": "Relation data",
+                        "name": "CreateRelation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RelationCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RelationCreateResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/students/{student_id}/profile": {
             "get": {
                 "security": [
@@ -287,6 +325,28 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.RelationCreateReq": {
+            "type": "object",
+            "properties": {
+                "student_id": {
+                    "type": "integer"
+                },
+                "supervisor_id": {
+                    "type": "integer"
+                },
+                "work_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RelationCreateResp": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.StProfile": {
             "type": "object",
             "properties": {
@@ -359,6 +419,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "is_started": {
+                    "description": "TODO",
                     "type": "boolean"
                 },
                 "work": {

@@ -27,7 +27,7 @@ func (f *Feedback) Create(studentID, supervisorID, workID int, content string) (
 	var feedbackID int
 	err := f.Conn.QueryRowx(query, studentID, supervisorID, workID, content).Scan(&feedbackID)
 	if err != nil {
-		err := fmt.Errorf("repo_pg.Feedback->Create->r.Conn.QueryRowx: %w", err)
+		err := fmt.Errorf("repo_pg.Feedback->Accept->r.Conn.QueryRowx: %w", err)
 		f.l.Error(err)
 		return 0, err
 	}

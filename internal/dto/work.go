@@ -15,7 +15,7 @@ type WorkResp struct {
 
 type StWorkResp struct {
 	Work      WorkResp `json:"work"`
-	IsStarted bool     `json:"is_started"`
+	IsStarted bool     `json:"is_started"` // TODO
 }
 
 type StWorkPlenty struct {

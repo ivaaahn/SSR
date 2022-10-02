@@ -13,7 +13,7 @@ type student struct {
 	l                logger.Interface
 	profileService   ProfileService
 	workService      WorkService
-	relationsService StRelationsService
+	relationsService RelationsService
 	feedbackService  FeedbackService
 }
 
@@ -77,32 +77,6 @@ func (ctrl *student) getRelations(ctx echo.Context) error {
 }
 
 //// ShowAccount godoc
-//// @Summary      Apply bid
-//// @Tags         student
-//// @Accept		 json
-//// @Param 		 ApplyBid body dto.ApplyBid true "bid info"
-//// @Produce      json
-//// @Success      200  {object}  dto.ApplyBidResp
-//// @Router       /api/student/bid [put]
-//// @Security	 Auth
-//func (ctrl *student) applyBid(ctx echo.Context) error {
-//	email, _ := misc.ExtractCtx(ctx)
-//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-//
-//	reqDTO := &dto.ApplyBid{}
-//	if err := ctx.Bind(reqDTO); err != nil {
-//		return echo.ErrBadRequest
-//	}
-//
-//	respDTO, err := ctrl.relationsService.Apply(reqDTO)
-//	if err != nil {
-//		return echo.ErrInternalServerError
-//	}
-//
-//	return ctx.JSON(http.StatusCreated, respDTO)
-//}
-
-//// ShowAccount godoc
 //// @Summary      Start SSR
 //// @Tags         student
 //// @Accept		 json
@@ -120,7 +94,7 @@ func (ctrl *student) getRelations(ctx echo.Context) error {
 //		return echo.ErrBadRequest
 //	}
 //
-//	respDTO, err := ctrl.relationService.Create(reqDTO)
+//	respDTO, err := ctrl.relationService.Accept(reqDTO)
 //	if err != nil {
 //		return echo.ErrInternalServerError
 //	}
@@ -183,7 +157,7 @@ func NewStudentRoutes(
 	config *config.Config,
 	profileService ProfileService,
 	worksService WorkService,
-	relationService StRelationsService,
+	relationService RelationsService,
 	feedbackService FeedbackService,
 ) {
 	ctrl := &student{

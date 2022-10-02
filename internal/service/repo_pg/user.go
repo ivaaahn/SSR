@@ -28,7 +28,7 @@ func (r *User) CreateUser(email, password, firstName, lastName, photoUrl string,
 	fmt.Println(res) //TODO
 
 	if err != nil {
-		err := fmt.Errorf("Auth->Create->repo.Conn.Exec: %w", err)
+		err := fmt.Errorf("Auth->Accept->repo.Conn.Exec: %w", err)
 		r.l.Error(err) // TODO
 		return err
 	}

@@ -165,15 +165,15 @@ func (repo *Relation) Create(studentID, supervisorID, workID int) (int, error) {
 	returning ssr_id;
 	`
 
-	var bidID int
-	err := repo.Conn.QueryRowx(query, studentID, supervisorID, workID).Scan(&bidID)
+	var relationID int
+	err := repo.Conn.QueryRowx(query, studentID, supervisorID, workID).Scan(&relationID)
 	if err != nil {
-		err := fmt.Errorf("Relation->Create->repo.Conn.QueryRowx: %w", err)
+		err := fmt.Errorf("RelationRepo->Create->repo.Conn.QueryRowx: %w", err)
 		repo.l.Error(err)
 		return 0, err
 	}
 
-	return bidID, nil
+	return relationID, nil
 }
 
 func (repo *Relation) UpdateStatus(id int, newStatus entity.StatusSSR) (int, error) {

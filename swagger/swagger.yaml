@@ -11,6 +11,20 @@ definitions:
       user_id:
         type: integer
     type: object
+  dto.RelationCreateReq:
+    properties:
+      student_id:
+        type: integer
+      supervisor_id:
+        type: integer
+      work_id:
+        type: integer
+    type: object
+  dto.RelationCreateResp:
+    properties:
+      relation_id:
+        type: integer
+    type: object
   dto.StProfile:
     properties:
       department:
@@ -58,6 +72,7 @@ definitions:
   dto.StWorkResp:
     properties:
       is_started:
+        description: TODO
         type: boolean
       work:
         $ref: '#/definitions/dto.WorkResp'
@@ -191,6 +206,29 @@ paths:
       summary: Login into account
       tags:
       - auth
+  /api/v1/relations/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Relation data
+        in: body
+        name: CreateRelation
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RelationCreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RelationCreateResp'
+      security:
+      - OAuth2Password: []
+      summary: Create relation
+      tags:
+      - relation
   /api/v1/students/{student_id}/profile:
     get:
       parameters:

@@ -2,7 +2,6 @@ package service
 
 import (
 	"ssr/internal/dto"
-	"ssr/internal/entity"
 	"ssr/pkg/logger"
 )
 
@@ -58,24 +57,24 @@ func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 	return &dto.SvBids{Bids: resp}, nil
 }
 
-func (service *Bid) Apply(data *dto.ApplyBid) (*dto.ApplyBidResp, error) {
-	bidID, err := service.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &dto.ApplyBidResp{BidID: bidID}, nil
-}
-
-func (service *Bid) Resolve(data *dto.ResolveBid) error {
-	var status entity.StatusSSR
-
-	if data.Accept {
-		status = "accepted"
-	} else {
-		status = "rejected"
-	}
-
-	_, err := service.repo.UpdateStatus(data.BidID, status)
-	return err
-}
+//func (service *Bid) Apply(data *dto.RelationCreateReq) (*dto.RelationCreateResp, error) {
+//	bidID, err := service.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return &dto.RelationCreateResp{BidID: bidID}, nil
+//}
+//
+//func (service *Bid) Resolve(data *dto.ResolveBid) error {
+//	var status entity.StatusSSR
+//
+//	if data.Accept {
+//		status = "accepted"
+//	} else {
+//		status = "rejected"
+//	}
+//
+//	_, err := service.repo.UpdateStatus(data.BidID, status)
+//	return err
+//}

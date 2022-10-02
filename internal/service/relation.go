@@ -77,8 +77,16 @@ func (service *Relation) CheckIfStudentBeginWork(studentID, workID int) (bool, e
 	return false, nil
 }
 
-//
-//func (service *Relation) Create(data *dto.CreateSSR) (*dto.StViewRelation, error) {
+func (service *Relation) Create(data *dto.RelationCreateReq) (*dto.RelationCreateResp, error) {
+	relationID, err := service.repo.Create(data.StudentID, data.SupervisorID, data.WorkID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.RelationCreateResp{RelationID: relationID}, nil
+}
+
+//func (service *Relation) Accept(data *dto.CreateSSR) (*dto.StViewRelation, error) {
 //	ssrID, err := service.repo.UpdateStatus(data.BidID, "wip")
 //	if err != nil {
 //		return nil, err
@@ -107,7 +115,7 @@ func (service *Relation) CheckIfStudentBeginWork(studentID, workID int) (bool, e
 //			Description: ssr.Work.Description,
 //			Semester:    ssr.Work.Semester,
 //			Subject: dto.SubjectResp{
-//				ID:  ssr.ID,
+//				ID:         ssr.ID,
 //				Name:       ssr.Subject.Name,
 //				Department: ssr.DepartmentID,
 //			},

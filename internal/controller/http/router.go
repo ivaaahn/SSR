@@ -15,7 +15,7 @@ func NewRouter(
 	auth AuthService,
 	profiles ProfileService,
 	works WorkService,
-	stRelations StRelationsService,
+	relations RelationsService,
 	feedback FeedbackService,
 ) {
 	g := server.Group("/api/v1")
@@ -23,8 +23,9 @@ func NewRouter(
 
 	{
 		NewAuthRoutes(g, l, auth)
-		NewStudentRoutes(g, l, config, profiles, works, stRelations, feedback)
+		NewStudentRoutes(g, l, config, profiles, works, relations, feedback)
 		NewSupervisorRoutes(g, l, config, profiles, works)
 		NewWorksRoutes(g, l, config, works)
+		NewRelationRoutes(g, l, config, relations)
 	}
 }
