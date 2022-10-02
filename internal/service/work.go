@@ -60,11 +60,11 @@ func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
 	//	return nil, err
 	//}
 
-	var resp []*dto.StWork
+	var resp []*dto.StWorkResp
 
 	for _, work := range worksData {
-		resp = append(resp, &dto.StWork{
-			Work: &dto.WorkResp{
+		resp = append(resp, &dto.StWorkResp{
+			Work: dto.WorkResp{
 				WorkID:      work.WorkID,
 				Description: work.Description,
 				Semester:    work.Semester,
@@ -85,30 +85,40 @@ func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
 	}, nil
 }
 
-//
-//func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error) {
-//	dbData, err := service.workRepo.GetWorksBySupervisorID(supervisorID)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var resp []*dto.SvWork
-//
-//	for _, db := range dbData {
-//		resp = append(resp, &dto.SvWork{
-//			WorkID:      db.WorkID,
-//			Kind:        db.WorkKindName,
-//			Description: db.Description,
-//			Subject:     db.SubjectName,
-//			Head:        db.Head,
-//		})
-//	}
-//
-//	return &dto.SvWorkPlenty{
-//		SupervisorID: supervisorID,
-//		Works:        resp,
-//	}, nil
-//}
+func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error) {
+	worksData, err := service.workRepo.GetSupervisorWorks(supervisorID)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*dto.SvWorkResp
+
+	for _, db := range worksData {
+		resp = append(resp, &dto.SvWorkResp{
+			Work: dto.WorkResp{
+				WorkID:      db.WorkID,
+				Description: db.Description,
+				Semester:    db.Semester,
+				Subject: dto.SubjectResp{
+					SubjectID:  db.Subject.SubjectID,
+					Name:       db.Subject.Name,
+					Department: db.Subject.DepartmentID,
+				},
+				Kind: dto.WorkKindResp{
+					ID:   db.WorkKind.WorkKindID,
+					Name: db.WorkKind.Name,
+				},
+			},
+			IsHead: db.IsHead,
+			IsFull: db.IsFull,
+		})
+	}
+
+	return &dto.SvWorkPlenty{
+		Works: resp,
+	}, nil
+}
+
 //
 //func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
 //	dbData, err := service.workRepo.GetSupervisorsByWorkID(workID)

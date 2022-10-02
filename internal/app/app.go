@@ -5,34 +5,19 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 	"ssr/config"
 	ctrl "ssr/internal/controller/http"
 	"ssr/internal/service"
 	"ssr/internal/service/repo_pg"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 	"ssr/pkg/postgres"
-	_ "ssr/swagger"
-	"strings"
 )
 
-func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
+func setupMiddlewares(server *echo.Echo) {
 	server.Use(middleware.CORS())
 	server.Use(middleware.Logger())
 	server.Use(middleware.Recover())
-	server.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &misc.AppJWTClaims{},
-		SigningKey: []byte(cfg.SigningKey),
-		ContextKey: "ctx",
-		Skipper: func(c echo.Context) bool {
-			// Skip middleware if 'login' or 'swagger'
-			path := c.Request().URL.Path
-			split := strings.Split(path, "/")
-			return split[2] == "auth" || split[1] == "swagger"
-		},
-	}))
 }
 
 func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
@@ -54,10 +39,12 @@ func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, 
 	ctrl.NewRouter(
 		server,
 		l,
+		cfg,
 		authService,
 		profileService,
 		profileService,
 		bidService,
+		workService,
 		workService,
 		relationService,
 		feedbackService,
@@ -75,10 +62,9 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	server := echo.New()
-	setupMiddlewares(server, cfg)
+	setupMiddlewares(server)
 	makeInjections(server, pg, loggerObject, cfg)
 
-	server.GET("/swagger*", echoSwagger.WrapHandler)
 	if err := server.Start(cfg.HTTP.Port); err != http.ErrServerClosed {
 		server.Logger.Fatal(err)
 	}

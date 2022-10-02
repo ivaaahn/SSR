@@ -29,7 +29,7 @@ type (
 	}
 	WorkRepo interface {
 		GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error)
-		//GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error)
+		GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error)
 		//GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error)
 	}
 	FeedbackRepo interface {

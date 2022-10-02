@@ -1,13 +1,11 @@
 package http
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"ssr/config"
 	"ssr/internal/controller/http/middlewares"
-	"ssr/internal/dto"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 	"strconv"
 )
 
@@ -21,18 +19,18 @@ type student struct {
 }
 
 // ShowAccount godoc
-// @Summary      GetUserByEmail student's profile
+// @Summary      Get student's profile
 // @Tags         student
 // @Produce      json
+// @Param        student_id path int  true  "Student ID"
 // @Success      200  {object}  dto.StProfile
 // @Failure      404
-// @Router       /api/student/profile [get]
-// @Security	 Auth
+// @Router       /api/v1/students/{student_id}/profile [get]
+// @Security	 OAuth2Password
 func (ctrl *student) getProfile(ctx echo.Context) error {
-	rawUserID, _ := misc.ExtractCtx(ctx)
-	userID, _ := strconv.Atoi(rawUserID)
+	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
 
-	profileDTO, err := ctrl.profileService.GetStudentProfile(userID)
+	profileDTO, err := ctrl.profileService.GetStudentProfile(studentID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -40,42 +38,36 @@ func (ctrl *student) getProfile(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, profileDTO)
 }
 
-// ShowAccount godoc
-// @Summary      GetUserByEmail student's bids
-// @Tags         student
-// @Produce      json
-// @Param        student_id query int  true  "Student ID"
-// @Success      200  {object}  dto.StBids
-// @Failure      404
-// @Router       /api/student/bid [get]
-// @Security	 Auth
-func (ctrl *student) getBids(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
-
-	respDTO, err := ctrl.bidService.GetStudentBids(studentID)
-	if err != nil {
-		return echo.ErrNotFound
-	}
-
-	return ctx.JSON(http.StatusOK, respDTO)
-}
+//// ShowAccount godoc
+//// @Summary      GetUserByEmail student's bids
+//// @Tags         student
+//// @Produce      json
+//// @Param        student_id path int  true  "Student ID"
+//// @Success      200  {object}  dto.StBids
+//// @Failure      404
+//// @Router       /api/students/{student_id}/bids [get]
+//// @Security	 Authorization
+//func (ctrl *student) getBids(ctx echo.Context) error {
+//	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
+//
+//	respDTO, err := ctrl.bidService.GetStudentBids(studentID)
+//	if err != nil {
+//		return echo.ErrNotFound
+//	}
+//
+//	return ctx.JSON(http.StatusOK, respDTO)
+//}
 
 // ShowAccount godoc
-// @Summary      GetUserByEmail student's works
+// @Summary      Get student's works
 // @Tags         student
-// @Param        student_id query int  true  "Student ID"
+// @Param        student_id path int  true  "Student ID"
 // @Produce      json
 // @Success      200  {object}  dto.StWorkPlenty
-// @Router       /api/student/work [get]
-// @Security	 Auth
+// @Router       /api/v1/students/{student_id}/works [get]
+// @Security	 OAuth2Password
 func (ctrl *student) getWorks(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	studentID, _ := strconv.Atoi(ctx.QueryParam("student_id"))
+	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
 
 	respDTO, err := ctrl.workService.GetStudentWorks(studentID)
 	if err != nil {
@@ -107,110 +99,111 @@ func (ctrl *student) getWorks(ctx echo.Context) error {
 //	return ctx.JSON(http.StatusOK, respDTO)
 //}
 
-// ShowAccount godoc
-// @Summary      Apply bid
-// @Tags         student
-// @Accept		 json
-// @Param 		 ApplyBid body dto.ApplyBid true "bid info"
-// @Produce      json
-// @Success      200  {object}  dto.ApplyBidResp
-// @Router       /api/student/bid [put]
-// @Security	 Auth
-func (ctrl *student) applyBid(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//// ShowAccount godoc
+//// @Summary      Apply bid
+//// @Tags         student
+//// @Accept		 json
+//// @Param 		 ApplyBid body dto.ApplyBid true "bid info"
+//// @Produce      json
+//// @Success      200  {object}  dto.ApplyBidResp
+//// @Router       /api/student/bid [put]
+//// @Security	 Auth
+//func (ctrl *student) applyBid(ctx echo.Context) error {
+//	email, _ := misc.ExtractCtx(ctx)
+//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//
+//	reqDTO := &dto.ApplyBid{}
+//	if err := ctx.Bind(reqDTO); err != nil {
+//		return echo.ErrBadRequest
+//	}
+//
+//	respDTO, err := ctrl.bidService.Apply(reqDTO)
+//	if err != nil {
+//		return echo.ErrInternalServerError
+//	}
+//
+//	return ctx.JSON(http.StatusCreated, respDTO)
+//}
 
-	reqDTO := &dto.ApplyBid{}
-	if err := ctx.Bind(reqDTO); err != nil {
-		return echo.ErrBadRequest
-	}
+//// ShowAccount godoc
+//// @Summary      Start SSR
+//// @Tags         student
+//// @Accept		 json
+//// @Param 		 ApplyBid body dto.CreateSSR true "ssr info"
+//// @Produce      json
+//// @Success      200  {object}  dto.StViewRelation
+//// @Router       /api/student/ssr [post]
+//// @Security	 Auth
+//func (ctrl *student) createSSR(ctx echo.Context) error {
+//	email, _ := misc.ExtractCtx(ctx)
+//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//
+//	reqDTO := &dto.CreateSSR{}
+//	if err := ctx.Bind(reqDTO); err != nil {
+//		return echo.ErrBadRequest
+//	}
+//
+//	respDTO, err := ctrl.relationService.Create(reqDTO)
+//	if err != nil {
+//		return echo.ErrInternalServerError
+//	}
+//
+//	return ctx.JSON(http.StatusCreated, respDTO)
+//}
 
-	respDTO, err := ctrl.bidService.Apply(reqDTO)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
+//// ShowAccount godoc
+//// @Summary      Provide a feedback
+//// @Tags         student
+//// @Accept		 json
+//// @Param 		 Feedback body dto.FeedbackReq true "feedback info"
+//// @Produce      json
+//// @Success      201  {object}  dto.FeedbackAddResp
+//// @Failure      500
+//// @Router       /api/student/feedback [put]
+//// @Security	 Authorization
+//func (ctrl *student) provideFeedback(ctx echo.Context) error {
+//	email, _ := misc.ExtractCtx(ctx)
+//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//
+//	reqDTO := &dto.FeedbackReq{}
+//	if err := ctx.Bind(reqDTO); err != nil {
+//		return echo.ErrBadRequest
+//	}
+//
+//	id, err := ctrl.feedbackService.Add(reqDTO)
+//	if err != nil {
+//		return echo.NewHTTPError(http.StatusConflict)
+//	}
+//
+//	return ctx.JSON(http.StatusCreated, dto.FeedbackAddResp{FeedbackID: id})
+//}
 
-	return ctx.JSON(http.StatusCreated, respDTO)
-}
-
-// ShowAccount godoc
-// @Summary      Start SSR
-// @Tags         student
-// @Accept		 json
-// @Param 		 ApplyBid body dto.CreateSSR true "ssr info"
-// @Produce      json
-// @Success      200  {object}  dto.StViewRelation
-// @Router       /api/student/ssr [post]
-// @Security	 Auth
-func (ctrl *student) createSSR(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	reqDTO := &dto.CreateSSR{}
-	if err := ctx.Bind(reqDTO); err != nil {
-		return echo.ErrBadRequest
-	}
-
-	respDTO, err := ctrl.relationService.Create(reqDTO)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-
-	return ctx.JSON(http.StatusCreated, respDTO)
-}
-
-// ShowAccount godoc
-// @Summary      Provide a feedback
-// @Tags         student
-// @Accept		 json
-// @Param 		 Feedback body dto.FeedbackReq true "feedback info"
-// @Produce      json
-// @Success      201  {object}  dto.FeedbackAddResp
-// @Failure      500
-// @Router       /api/student/feedback [put]
-// @Security	 Auth
-func (ctrl *student) provideFeedback(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	reqDTO := &dto.FeedbackReq{}
-	if err := ctx.Bind(reqDTO); err != nil {
-		return echo.ErrBadRequest
-	}
-
-	id, err := ctrl.feedbackService.Add(reqDTO)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusConflict)
-	}
-
-	return ctx.JSON(http.StatusCreated, dto.FeedbackAddResp{FeedbackID: id})
-}
-
-// ShowAccount godoc
-// @Summary      Get feedbacks on the supervisor.
-// @Tags         student
-// @Param        supervisor_id path integer true "Supervisor ID"
-// @Produce      json
-// @Success      200  {object}  dto.FeedbackPlenty
-// @Router       /api/student/feedback [get]
-// @Security	 Auth
-func (ctrl *student) getFeedback(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
-
-	respDTO, err := ctrl.feedbackService.GetOnSupervisor(supervisorID)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-
-	return ctx.JSON(http.StatusOK, respDTO)
-}
+//// ShowAccount godoc
+//// @Summary      Get feedbacks on the supervisor.
+//// @Tags         student
+//// @Param        supervisor_id path integer true "Supervisor ID"
+//// @Produce      json
+//// @Success      200  {object}  dto.FeedbackPlenty
+//// @Router       /api/student/feedback [get]
+//// @Security	 Auth
+//func (ctrl *student) getFeedback(ctx echo.Context) error {
+//	email, _ := misc.ExtractCtx(ctx)
+//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
+//
+//	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
+//
+//	respDTO, err := ctrl.feedbackService.GetOnSupervisor(supervisorID)
+//	if err != nil {
+//		return echo.ErrInternalServerError
+//	}
+//
+//	return ctx.JSON(http.StatusOK, respDTO)
+//}
 
 func NewStudentRoutes(
 	router *echo.Group,
 	l logger.Interface,
+	config *config.Config,
 	profileService StProfileService,
 	bidsService StBidService,
 	worksService StWorkService,
@@ -226,17 +219,17 @@ func NewStudentRoutes(
 		feedbackService,
 	}
 
-	student := router.Group("/student", middlewares.CheckRole)
+	student := router.Group("/students", middlewares.MakeAuthMiddleware(config), middlewares.CheckRole)
 
 	{
-		student.GET("/profile", ctrl.getProfile)
-		student.GET("/bid", ctrl.getBids)
-		student.PUT("/bid", ctrl.applyBid)
-		student.POST("/ssr", ctrl.createSSR)
-		student.GET("/work", ctrl.getWorks)
+		student.GET("/:student_id/profile", ctrl.getProfile)
+		student.GET("/:student_id/works", ctrl.getWorks)
+		//student.GET("/bid", ctrl.getBids)
+		//student.PUT("/bid", ctrl.applyBid)
+		//student.POST("/ssr", ctrl.createSSR)
 		//student.GET("/work/supervisor_id", ctrl.getSupervisorsOfWork)
-		student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
-		student.PUT("/feedback", ctrl.provideFeedback)
+		//student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
+		//student.PUT("/feedback", ctrl.provideFeedback)
 	}
 
 }

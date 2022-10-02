@@ -19,8 +19,10 @@ func NewWork(pg *postgres.Postgres, l logger.Interface) *Work {
 
 func (r *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error) {
 	const query = `
-	select w.work_id, description, semester,
+	select w.work_id, w.description, w.semester,
 	   	wk.name as "work_kind.name",
+	   	wk.work_kind_id as "work_kind.work_kind_id",
+	   	subj.subject_id as "subject.subject_id",
 	   	subj.name as "subject.name",
 		subj.department_id as "subject.department_id"
 	from works w
@@ -41,57 +43,27 @@ func (r *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Wor
 	return works, nil
 }
 
-//func (r *Work) GetStudentWorks(studentID int) ([]*entity.Work, error) {
-//	const query = `
-//	with const (st_year, st_department_id, curr_month) as (
-//		select s.year,
-//			   s.department_id,
-//			   extract('month' from current_date)
-//		from students s
-//		where user_id = $1
-//	)
-//	select w.*,
-//	   	wk.name as "work_kind.name",
-//	   	subj.name as "subject.name"
-//	from works w
-//		join work_kinds wk using (work_kind_id)
-//		join subjects subj using (subject_id)
-//		join const c on true
-//	where (((curr_month between 2 and 8) and (semester = st_year * 2))
-//		or (semester = st_year * 2 - 1))
-//	  and subj.department_id = c.st_department_id;
-//	`
-//
-//	var works []*entity.Work
-//
-//	err := r.Conn.Select(&works, query, studentID)
-//	if err != nil {
-//		err := fmt.Errorf("Work->GetStudentWorks->r.Conn.Select: %w", err)
-//		r.l.Error(err)
-//		return nil, err
-//	}
-//
-//	return works, nil
-//}
-
-func (r *Work) GetWorksBySupervisorID(supervisorID int) ([]*entity.SvWork, error) {
+func (r *Work) GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error) {
 	const query = `
-	select w.*, 
-	   	subj.name as subject_name, 
-	   	wk.name as work_kind_name, 
-	   	sw.is_head as head
+	select w.work_id, w.description, w.semester, 
+	   	wk.name as "work_kind.name",
+		wk.work_kind_id as "work_kind.work_kind_id",
+	   	subj.subject_id as "subject.subject_id",
+	   	subj.name as "subject.name",
+		subj.department_id as "subject.department_id",
+	   	sw.is_head,
+	   	sw.is_full 
 	from works w
 		join supervisor_work sw using (work_id)
-		join supervisors s using (supervisor_id)
 		join subjects subj using (subject_id)
 		join work_kinds wk using (work_kind_id)
-	where s.supervisor_id = $1;
+	where sw.supervisor_id = $1;
 	`
 	var works []*entity.SvWork
 
 	err := r.Conn.Select(&works, query, supervisorID)
 	if err != nil {
-		err := fmt.Errorf("Work->GetWorksBySupervisorID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetSupervisorWorks->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}

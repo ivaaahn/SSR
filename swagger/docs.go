@@ -64,11 +64,11 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/student/bid": {
+        "/api/v1/students/{student_id}/profile": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
@@ -77,151 +77,16 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserByEmail student's bids",
+                "summary": "Get student's profile",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Student ID",
                         "name": "student_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.StBids"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Apply bid",
-                "parameters": [
-                    {
-                        "description": "bid info",
-                        "name": "ApplyBid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApplyBid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApplyBidResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/student/feedback": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Get feedbacks on the supervisor.",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Supervisor ID",
-                        "name": "supervisor_id",
                         "in": "path",
                         "required": true
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.FeedbackPlenty"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Provide a feedback",
-                "parameters": [
-                    {
-                        "description": "feedback info",
-                        "name": "Feedback",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.FeedbackReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.FeedbackAddResp"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/student/profile": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "GetUserByEmail student's profile",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -235,49 +100,11 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/student/ssr": {
-            "post": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Start SSR",
-                "parameters": [
-                    {
-                        "description": "ssr info",
-                        "name": "ApplyBid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateSSR"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.StViewRelation"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/student/work": {
+        "/api/v1/students/{student_id}/works": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
@@ -286,13 +113,13 @@ const docTemplate = `{
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserByEmail student's works",
+                "summary": "Get student's works",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Student ID",
                         "name": "student_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -300,50 +127,17 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StWorks"
+                            "$ref": "#/definitions/dto.StWorkPlenty"
                         }
                     }
                 }
             }
         },
-        "/api/student/work/supervisor": {
+        "/api/v1/supervisors/{supervisor_id}/profile": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "GetUserByEmail supervisors of the work",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Work ID",
-                        "name": "work_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.WorkSvPlenty"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/bid": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
@@ -352,75 +146,16 @@ const docTemplate = `{
                 "tags": [
                     "supervisor"
                 ],
-                "summary": "GetUserByEmail supervisor's bids",
+                "summary": "Get supervisor's profile",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Supervisor ID",
                         "name": "supervisor_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.SvBids"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/bid/resolve": {
-            "post": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "Accept or Decline student's bid",
-                "parameters": [
-                    {
-                        "description": "bid info",
-                        "name": "ResolveBid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ResolveBid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ResolveBidResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/profile": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "GetUserByEmail supervisor's profile",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -430,210 +165,29 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/api/supervisor/work": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "GetUserByEmail supervisor's works",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Supervisor ID",
-                        "name": "supervisor_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.SvWorkPlenty"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "dto.ApplyBid": {
-            "type": "object",
-            "properties": {
-                "studentID": {
-                    "type": "integer"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ApplyBidResp": {
-            "type": "object",
-            "properties": {
-                "bidID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CreateSSR": {
-            "type": "object",
-            "properties": {
-                "bidID": {
-                    "type": "integer"
-                },
-                "studentID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackAddResp": {
-            "type": "object",
-            "properties": {
-                "feedback_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackPlenty": {
-            "type": "object",
-            "properties": {
-                "feedbacks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.FeedbackResp"
-                    }
-                }
-            }
-        },
-        "dto.FeedbackReq": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "studentID": {
-                    "type": "integer"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackResp": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "studentID": {
-                    "type": "integer"
-                },
-                "student_full_name": {
-                    "type": "string"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                },
-                "work_kind": {
-                    "type": "string"
-                },
-                "work_subject": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
-                "email": {
+                "access_token": {
                     "type": "string"
                 },
                 "role": {
                     "type": "string"
                 },
-                "token": {
+                "token_type": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.ResolveBid": {
-            "type": "object",
-            "properties": {
-                "accept": {
-                    "type": "boolean"
                 },
-                "bidID": {
+                "user_id": {
                     "type": "integer"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ResolveBidResp": {
-            "type": "object",
-            "properties": {
-                "new_status": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.StBid": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "supervisor": {
-                    "$ref": "#/definitions/dto.SvProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.Work"
-                }
-            }
-        },
-        "dto.StBids": {
-            "type": "object",
-            "properties": {
-                "bids": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.StBid"
-                    }
                 }
             }
         },
         "dto.StProfile": {
             "type": "object",
             "properties": {
-                "avatarUrl": {
-                    "type": "string"
-                },
                 "department": {
                     "type": "string"
                 },
@@ -646,68 +200,36 @@ const docTemplate = `{
                 "lastName": {
                     "type": "string"
                 },
-                "studentCard": {
+                "photoUrl": {
                     "type": "string"
                 },
-                "studentID": {
-                    "type": "integer"
+                "studentCard": {
+                    "type": "string"
                 },
                 "year": {
                     "type": "integer"
                 }
             }
         },
-        "dto.StViewRelation": {
+        "dto.StWorkPlenty": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "supervisor": {
-                    "$ref": "#/definitions/dto.SvProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.Work"
-                }
-            }
-        },
-        "dto.StWork": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_started": {
-                    "type": "boolean"
-                },
-                "kind": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.StWorks": {
-            "type": "object",
-            "properties": {
-                "studentID": {
-                    "type": "integer"
-                },
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StWork"
+                        "$ref": "#/definitions/dto.StWorkResp"
                     }
+                }
+            }
+        },
+        "dto.StWorkResp": {
+            "type": "object",
+            "properties": {
+                "is_started": {
+                    "type": "boolean"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkResp"
                 }
             }
         },
@@ -717,42 +239,11 @@ const docTemplate = `{
                 "department": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "subjectID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.SvBid": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "status": {
+                "name": {
                     "type": "string"
-                },
-                "student": {
-                    "$ref": "#/definitions/dto.StProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.Work"
-                }
-            }
-        },
-        "dto.SvBids": {
-            "type": "object",
-            "properties": {
-                "bids": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SvBid"
-                    }
                 }
             }
         },
@@ -779,57 +270,31 @@ const docTemplate = `{
                 },
                 "lastName": {
                     "type": "string"
-                },
-                "supervisorID": {
-                    "type": "integer"
                 }
             }
         },
-        "dto.SvWork": {
+        "dto.WorkKindResp": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "head": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "kind": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.SvWorkPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "works": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SvWork"
-                    }
-                }
-            }
-        },
-        "dto.Work": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.WorkResp": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "$ref": "#/definitions/dto.WorkKindResp"
                 },
                 "semester": {
                     "type": "integer"
@@ -838,62 +303,13 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.SubjectResp"
                 }
             }
-        },
-        "dto.WorkSv": {
-            "type": "object",
-            "properties": {
-                "about": {
-                    "type": "string"
-                },
-                "avatarUrl": {
-                    "type": "string"
-                },
-                "birthdate": {
-                    "type": "string"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "firstName": {
-                    "type": "string"
-                },
-                "full": {
-                    "type": "boolean"
-                },
-                "head": {
-                    "type": "boolean"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.WorkSvPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.WorkSv"
-                    }
-                },
-                "workID": {
-                    "type": "integer"
-                }
-            }
         }
     },
     "securityDefinitions": {
-        "Auth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+        "OAuth2Password": {
+            "type": "oauth2",
+            "flow": "password",
+            "tokenUrl": "http://localhost:8080/api/v1/auth/login"
         }
     }
 }`

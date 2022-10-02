@@ -15,7 +15,8 @@ type Work struct {
 
 type SvWork struct {
 	*Work
-	Head bool `db:"head"`
+	IsHead bool `db:"is_head"`
+	IsFull bool `db:"is_full"`
 }
 
 type WorkSv struct {

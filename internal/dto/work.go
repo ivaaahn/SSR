@@ -13,26 +13,27 @@ type WorkResp struct {
 	Kind        WorkKindResp `json:"kind"`
 }
 
-type StWork struct {
-	Work      *WorkResp `json:"work"`
-	IsStarted bool      `json:"is_started"`
+type StWorkResp struct {
+	Work      WorkResp `json:"work"`
+	IsStarted bool     `json:"is_started"`
 }
 
 type StWorkPlenty struct {
-	Works []*StWork `json:"works"`
+	Works []*StWorkResp `json:"works"`
 }
 
-type SvWork struct {
-	Work *WorkSv `json:"work"`
-	Head bool    `json:"head"`
+type SvWorkResp struct {
+	Work   WorkResp `json:"work"`
+	IsHead bool     `json:"is_head"`
+	IsFull bool     `json:"is_full"`
 }
 
 type SvWorkPlenty struct {
-	Works []*SvWork `json:"works"`
+	Works []*SvWorkResp `json:"works"`
 }
 
 type WorkSv struct {
-	*SvProfile
+	SvProfile
 	Head bool `json:"head"`
 	Full bool `json:"full"`
 }

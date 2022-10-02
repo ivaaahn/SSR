@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-type auth struct {
+type Auth struct {
 	*Base
 	repo       UserRepo
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuth(r UserRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *auth {
-	return &auth{
+func NewAuth(r UserRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *Auth {
+	return &Auth{
 		Base:       NewBase(l),
 		repo:       r,
 		tokenExp:   time.Duration(tokenExpMinutes) * time.Minute,
@@ -25,7 +25,7 @@ func NewAuth(r UserRepo, l logger.Interface, tokenExpMinutes int, signingKey []b
 	}
 }
 
-func (service *auth) Login(email, password string) (*dto.LoginResponse, error) {
+func (service *Auth) Login(email, password string) (*dto.LoginResponse, error) {
 	dbData, err := service.repo.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
@@ -46,8 +46,9 @@ func (service *auth) Login(email, password string) (*dto.LoginResponse, error) {
 	}
 
 	return &dto.LoginResponse{
-		Token:  tokenStr,
-		UserID: dbData.UserID,
-		Role:   string(dbData.Role),
+		Token:     tokenStr,
+		TokenType: "Bearer",
+		UserID:    dbData.UserID,
+		Role:      string(dbData.Role),
 	}, nil
 }
