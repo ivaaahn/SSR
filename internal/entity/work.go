@@ -6,21 +6,21 @@ type WorkKind struct {
 }
 
 type Work struct {
-	*WorkKind   `db:"work_kind"`
-	*Subject    `db:"subject"`
+	WorkKind    `db:"work_kind"`
+	Subject     `db:"subject"`
 	WorkID      int `db:"work_id"`
 	Description string
 	Semester    int8
 }
 
 type SvWork struct {
-	*Work
+	Work
 	IsHead bool `db:"is_head"`
 	IsFull bool `db:"is_full"`
 }
 
 type WorkSv struct {
-	*SupervisorFull `db:"sv"`
-	IsHead          bool `db:"is_head"`
-	IsFull          bool `db:"is_full"`
+	SupervisorFull `db:"sv"`
+	IsHead         bool `db:"is_head"`
+	IsFull         bool `db:"is_full"`
 }

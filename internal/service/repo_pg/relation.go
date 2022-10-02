@@ -49,71 +49,81 @@ func (repo *Relation) GetStudentRelation(studentID, ssrID int) (*entity.StRelati
 	return &ssr, nil
 }
 
-func (repo *Relation) GetStudentBids(studentID int) ([]*entity.StRelation, error) {
-	query := `
-	select 
-		ssr.ssr_id,
-		ssr.status as ssr_status,
-		ssr.created_at,
-		sv.*,
-		u.*,
-		w.*,
-		wk.name as work_kind_name,
-		subj.name as subject_name,
-		subj.department_id as subject_department_id
-	from ssr 
-		join supervisors sv using (supervisor_id)
-		join users u using (user_id)
-		join works w using (work_id)
-		join work_kinds wk using (work_kind_id)
-		join subjects subj using (subject_id)
-	where ssr.status in ('pending','rejected', 'cancelled','accepted') and ssr.student_id = $1;
-	`
-
-	var bids []*entity.StRelation
-
-	err := repo.Conn.Select(&bids, query, studentID)
-	if err != nil {
-		err := fmt.Errorf("Relation->GetStudentBids->repo.Conn.Select: %w", err)
-		repo.l.Error(err)
-		return nil, err
-	}
-
-	return bids, nil
-}
-
 func (repo *Relation) GetStudentRelations(studentID int) ([]*entity.StRelation, error) {
 	query := `
 	select 
 		ssr.ssr_id,
-		ssr.status as ssr_status,
+		ssr.status,
 		ssr.created_at,
-		sv.*,
-		u.*,
-		w.*,
-		wk.name as work_kind_name,
-		subj.name as subject_name,
-		subj.department_id as subject_department_id
+		sv.birthdate as "sv.birthdate",
+		sv.about as "sv.about",
+		sv.department_id as "sv.department_id",
+		u.email as "sv.user.email", 
+	    u.first_name as "sv.user.first_name", 
+	    u.last_name as "sv.user.last_name", 
+	    u.photo_url as "sv.user.photo_url", 
+	    u.user_id as "sv.user.user_id",
+		w.semester as "work.semester",
+		w.description as "work.description",
+		w.work_id as "work.work_id",
+		wk.name as "work.work_kind.name",
+		wk.work_kind_id as "work.work_kind.work_kind_id",
+		subj.subject_id as "work.subject.subject_id",
+		subj.name as "work.subject.name",
+		subj.department_id as "work.subject.department_id"
 	from ssr 
-		join supervisors sv using (supervisor_id)
+		join supervisors sv on ssr.supervisor_id = sv.user_id
 		join users u using (user_id)
 		join works w using (work_id)
 		join work_kinds wk using (work_kind_id)
 		join subjects subj using (subject_id)
-	where ssr.status in ('wip', 'done') and ssr.student_id = $1;
+	where ssr.student_id = $1;
 	`
 
 	var bids []*entity.StRelation
 
 	err := repo.Conn.Select(&bids, query, studentID)
 	if err != nil {
-		err := fmt.Errorf("Relation->GetStudentBids->repo.Conn.Select: %w", err)
+		err := fmt.Errorf("Relation->GetStudentRelations->repo.Conn.Select: %w", err)
 		repo.l.Error(err)
 		return nil, err
 	}
 
 	return bids, nil
 }
+
+//func (repo *Relation) GetStudentRelations(studentID int) ([]*entity.StRelation, error) {
+//	query := `
+//	select
+//		ssr.ssr_id,
+//		ssr.status as ssr_status,
+//		ssr.created_at,
+//		sv.*,
+//		u.*,
+//		w.*,
+//		wk.name as work_kind_name,
+//		subj.name as subject_name,
+//		subj.department_id as subject_department_id
+//	from ssr
+//		join supervisors sv using (supervisor_id)
+//		join users u using (user_id)
+//		join works w using (work_id)
+//		join work_kinds wk using (work_kind_id)
+//		join subjects subj using (subject_id)
+//	where ssr.status in ('wip', 'done') and ssr.student_id = $1;
+//	`
+//
+//	var bids []*entity.StRelation
+//
+//	err := repo.Conn.Select(&bids, query, studentID)
+//	if err != nil {
+//		err := fmt.Errorf("Relation->GetStudentRelations->repo.Conn.Select: %w", err)
+//		repo.l.Error(err)
+//		return nil, err
+//	}
+//
+//	return bids, nil
+//}
 
 func (repo *Relation) GetSupervisorBids(supervisorID int) ([]*entity.SvRelation, error) {
 	query := `

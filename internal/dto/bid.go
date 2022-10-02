@@ -4,16 +4,16 @@ import (
 	"time"
 )
 
-type StBid struct {
+type StRelationResp struct {
 	BidID      int       `json:"id"`
 	Status     string    `json:"status"`
-	CreatedAt  time.Time `json:"createdAt"`
+	CreatedAt  time.Time `json:"created_at"`
 	Supervisor SvProfile `json:"supervisor"`
 	Work       WorkResp  `json:"work"`
 }
 
-type StBids struct {
-	Bids []*StBid `json:"bids"`
+type StRelationPlenty struct {
+	Relations []*StRelationResp `json:"relations"`
 }
 
 type SvBid struct {

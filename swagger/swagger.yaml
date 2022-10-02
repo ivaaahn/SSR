@@ -28,6 +28,26 @@ definitions:
       year:
         type: integer
     type: object
+  dto.StRelationPlenty:
+    properties:
+      relations:
+        items:
+          $ref: '#/definitions/dto.StRelationResp'
+        type: array
+    type: object
+  dto.StRelationResp:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      supervisor:
+        $ref: '#/definitions/dto.SvProfile'
+      work:
+        $ref: '#/definitions/dto.WorkResp'
+    type: object
   dto.StWorkPlenty:
     properties:
       works:
@@ -191,6 +211,28 @@ paths:
       security:
       - OAuth2Password: []
       summary: Get student's profile
+      tags:
+      - student
+  /api/v1/students/{student_id}/relations:
+    get:
+      parameters:
+      - description: Student ID
+        in: path
+        name: student_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StRelationPlenty'
+        "404":
+          description: Not Found
+      security:
+      - OAuth2Password: []
+      summary: Get student's bids
       tags:
       - student
   /api/v1/students/{student_id}/works:

@@ -10,12 +10,11 @@ import (
 )
 
 type student struct {
-	l               logger.Interface
-	profileService  ProfileService
-	bidService      StBidService
-	workService     WorkService
-	relationService StRelationService
-	feedbackService FeedbackService
+	l                logger.Interface
+	profileService   ProfileService
+	workService      WorkService
+	relationsService StRelationsService
+	feedbackService  FeedbackService
 }
 
 // ShowAccount godoc
@@ -38,26 +37,6 @@ func (ctrl *student) getProfile(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, profileDTO)
 }
 
-//// ShowAccount godoc
-//// @Summary      GetUserByEmail student's bids
-//// @Tags         student
-//// @Produce      json
-//// @Param        student_id path int  true  "Student ID"
-//// @Success      200  {object}  dto.StBids
-//// @Failure      404
-//// @Router       /api/students/{student_id}/bids [get]
-//// @Security	 Authorization
-//func (ctrl *student) getBids(ctx echo.Context) error {
-//	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
-//
-//	respDTO, err := ctrl.bidService.GetStudentBids(studentID)
-//	if err != nil {
-//		return echo.ErrNotFound
-//	}
-//
-//	return ctx.JSON(http.StatusOK, respDTO)
-//}
-
 // ShowAccount godoc
 // @Summary      Get student's works
 // @Tags         student
@@ -70,6 +49,26 @@ func (ctrl *student) getWorks(ctx echo.Context) error {
 	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
 
 	respDTO, err := ctrl.workService.GetStudentWorks(studentID)
+	if err != nil {
+		return echo.ErrNotFound
+	}
+
+	return ctx.JSON(http.StatusOK, respDTO)
+}
+
+// ShowAccount godoc
+// @Summary      Get student's bids
+// @Tags         student
+// @Produce      json
+// @Param        student_id path int  true  "Student ID"
+// @Success      200  {object}  dto.StRelationPlenty
+// @Failure      404
+// @Router       /api/v1/students/{student_id}/relations [get]
+// @Security	 OAuth2Password
+func (ctrl *student) getRelations(ctx echo.Context) error {
+	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
+
+	respDTO, err := ctrl.relationsService.GetStudentRelations(studentID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -95,7 +94,7 @@ func (ctrl *student) getWorks(ctx echo.Context) error {
 //		return echo.ErrBadRequest
 //	}
 //
-//	respDTO, err := ctrl.bidService.Apply(reqDTO)
+//	respDTO, err := ctrl.relationsService.Apply(reqDTO)
 //	if err != nil {
 //		return echo.ErrInternalServerError
 //	}
@@ -183,15 +182,13 @@ func NewStudentRoutes(
 	l logger.Interface,
 	config *config.Config,
 	profileService ProfileService,
-	bidsService StBidService,
 	worksService WorkService,
-	relationService StRelationService,
+	relationService StRelationsService,
 	feedbackService FeedbackService,
 ) {
 	ctrl := &student{
 		l,
 		profileService,
-		bidsService,
 		worksService,
 		relationService,
 		feedbackService,
@@ -202,7 +199,7 @@ func NewStudentRoutes(
 	{
 		student.GET("/:student_id/profile", ctrl.getProfile)
 		student.GET("/:student_id/works", ctrl.getWorks)
-		//student.GET("/bid", ctrl.getBids)
+		student.GET("/:student_id/relations", ctrl.getRelations)
 		//student.PUT("/bid", ctrl.applyBid)
 		//student.POST("/ssr", ctrl.createSSR)
 		//student.GET("/work/supervisor_id", ctrl.getSupervisors)

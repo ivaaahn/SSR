@@ -15,17 +15,17 @@ type (
 	SvProfileService interface {
 		GetSupervisorProfile(userID int) (*dto.SvProfile, error)
 	}
-	StBidService interface {
-		GetStudentBids(studentID int) (*dto.StBids, error)
-		Apply(data *dto.ApplyBid) (*dto.ApplyBidResp, error)
+	StRelationsService interface {
+		GetStudentRelations(studentID int) (*dto.StRelationPlenty, error)
+		//Apply(data *dto.ApplyBid) (*dto.ApplyBidResp, error)
 	}
 	SvBidService interface {
 		GetSupervisorBids(supervisorID int) (*dto.SvBids, error)
 		Resolve(data *dto.ResolveBid) error
 	}
-	StRelationService interface {
-		Create(data *dto.CreateSSR) (*dto.StViewRelation, error)
-	}
+	//StRelationService interface {
+	//	Create(data *dto.CreateSSR) (*dto.StViewRelation, error)
+	//}
 	WorkService interface {
 		GetStudentWorks(studentID int) (*dto.StWorkPlenty, error)
 		GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error)

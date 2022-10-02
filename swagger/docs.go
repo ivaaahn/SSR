@@ -100,6 +100,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/students/{student_id}/relations": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "student"
+                ],
+                "summary": "Get student's bids",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Student ID",
+                        "name": "student_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StRelationPlenty"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/api/v1/students/{student_id}/works": {
             "get": {
                 "security": [
@@ -274,6 +310,37 @@ const docTemplate = `{
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.StRelationPlenty": {
+            "type": "object",
+            "properties": {
+                "relations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StRelationResp"
+                    }
+                }
+            }
+        },
+        "dto.StRelationResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "supervisor": {
+                    "$ref": "#/definitions/dto.SvProfile"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkResp"
                 }
             }
         },

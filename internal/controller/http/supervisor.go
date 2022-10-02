@@ -12,7 +12,7 @@ import (
 type supervisor struct {
 	l              logger.Interface
 	profileService ProfileService
-	//bidService     SvBidService
+	//relationsService     SvBidService
 	workService WorkService
 }
 
@@ -71,7 +71,7 @@ func (ctrl *supervisor) getWorks(ctx echo.Context) error {
 //
 //		supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
 //
-//		respDTO, err := ctrl.bidService.GetSupervisorBids(supervisorID)
+//		respDTO, err := ctrl.relationsService.GetSupervisorBids(supervisorID)
 //		if err != nil {
 //			ctrl.l.Error(err)
 //			return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
@@ -98,7 +98,7 @@ func (ctrl *supervisor) getWorks(ctx echo.Context) error {
 //			return echo.ErrBadRequest
 //		}
 //
-//		if err := ctrl.bidService.Resolve(reqDTO); err != nil {
+//		if err := ctrl.relationsService.Resolve(reqDTO); err != nil {
 //			return echo.NewHTTPError(http.StatusInternalServerError)
 //		}
 //
@@ -118,7 +118,7 @@ func NewSupervisorRoutes(
 	l logger.Interface,
 	config *config.Config,
 	profileService ProfileService,
-	// bidService SvBidService,
+	// relationsService SvBidService,
 	workService WorkService,
 ) {
 	ctrl := &supervisor{l, profileService, workService}

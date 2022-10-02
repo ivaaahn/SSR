@@ -4,7 +4,6 @@ import (
 	"ssr/internal/dto"
 	"ssr/internal/entity"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 )
 
 type Bid struct {
@@ -19,50 +18,6 @@ func NewBid(r RelationRepo, l logger.Interface) *Bid {
 	}
 }
 
-func (service *Bid) GetStudentBids(studentID int) (*dto.StBids, error) {
-	dbData, err := service.repo.GetStudentBids(studentID)
-	if err != nil {
-		return nil, err
-	}
-
-	var resp []*dto.StBid
-
-	for _, db := range dbData {
-		resp = append(resp, &dto.StBid{
-			BidID:     db.BidID,
-			Status:    db.Status,
-			CreatedAt: db.CreatedAt,
-			Supervisor: dto.SvProfile{
-				Email:     db.Email,
-				FirstName: db.FirstName,
-				LastName:  db.LastName,
-				About:     db.About,
-				Birthdate: misc.Date{
-					Time: db.Birthdate,
-				},
-				PhotoUrl:   db.PhotoUrl,
-				Department: db.SvProfile.DepartmentID,
-			},
-			Work: dto.WorkResp{
-				WorkID:      db.WorkID,
-				Description: db.Work.Description,
-				Semester:    db.Work.Semester,
-				Kind: dto.WorkKindResp{
-					ID:   db.WorkKind.WorkKindID,
-					Name: db.WorkKind.Name,
-				},
-				Subject: dto.SubjectResp{
-					SubjectID:  db.SubjectID,
-					Name:       db.Subject.Name,
-					Department: db.Subject.DepartmentID,
-				},
-			},
-		})
-	}
-
-	return &dto.StBids{Bids: resp}, nil
-}
-
 func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 	dbData, err := service.repo.GetSupervisorBids(supervisorID)
 	if err != nil {
@@ -73,7 +28,7 @@ func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 
 	for _, db := range dbData {
 		resp = append(resp, &dto.SvBid{
-			BidID:     db.BidID,
+			BidID:     db.RelationID,
 			Status:    db.Status,
 			CreatedAt: db.CreatedAt,
 			Student: dto.StProfile{
@@ -92,7 +47,7 @@ func (service *Bid) GetSupervisorBids(supervisorID int) (*dto.SvBids, error) {
 					Name: db.WorkKind.Name,
 				},
 				Subject: dto.SubjectResp{
-					SubjectID:  db.SubjectID,
+					ID:         db.SubjectID,
 					Name:       db.Subject.Name,
 					Department: db.Subject.DepartmentID,
 				},

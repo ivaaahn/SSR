@@ -31,7 +31,7 @@ func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, 
 
 	authService := service.NewAuth(userRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
 	profileService := service.NewProfile(studentRepo, supervisorRepo, l)
-	bidService := service.NewBid(relationRepo, l)
+	//bidService := service.NewBid(relationRepo, l)
 	workService := service.NewWork(workRepo, relationRepo, studentRepo, l)
 	relationService := service.NewRelation(relationRepo, l)
 	feedbackService := service.NewFeedback(feedbackRepo, l)
@@ -42,7 +42,6 @@ func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, 
 		cfg,
 		authService,
 		profileService,
-		bidService,
 		workService,
 		relationService,
 		feedbackService,

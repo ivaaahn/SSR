@@ -20,17 +20,17 @@ type WaypointRelation struct {
 }
 
 type StRelation struct {
-	BidID     int       `db:"ssr_id"`
-	CreatedAt time.Time `db:"created_at"`
-	Status    string    `db:"ssr_status"`
-	*SvProfile
-	*Work
+	RelationID     int       `db:"ssr_id"`
+	CreatedAt      time.Time `db:"created_at"`
+	Status         string    `db:"status"`
+	SupervisorFull `db:"sv"`
+	Work           `db:"work"`
 }
 
 type SvRelation struct {
-	BidID     int       `db:"ssr_id"`
-	CreatedAt time.Time `db:"created_at"`
-	Status    string    `db:"ssr_status"`
+	RelationID int       `db:"ssr_id"`
+	CreatedAt  time.Time `db:"created_at"`
+	Status     string    `db:"ssr_status"`
 	*StProfile
 	*Work
 }

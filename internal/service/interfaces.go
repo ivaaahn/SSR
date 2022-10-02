@@ -21,9 +21,8 @@ type (
 	}
 	RelationRepo interface {
 		Create(studentID, supervisorID, workID int) (int, error)
-		GetStudentBids(studentID int) ([]*entity.StRelation, error)
-		GetSupervisorBids(studentID int) ([]*entity.SvRelation, error)
 		GetStudentRelations(studentID int) ([]*entity.StRelation, error)
+		GetSupervisorBids(studentID int) ([]*entity.SvRelation, error)
 		GetStudentRelation(studentID, ssrID int) (*entity.StRelation, error)
 		UpdateStatus(id int, newStatus entity.StatusSSR) (int, error)
 	}

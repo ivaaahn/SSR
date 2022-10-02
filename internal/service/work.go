@@ -70,10 +70,12 @@ func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
 				Description: work.Description,
 				Semester:    work.Semester,
 				Subject: dto.SubjectResp{
+					ID:         work.Subject.SubjectID,
 					Name:       work.Subject.Name,
 					Department: work.Subject.DepartmentID,
 				},
 				Kind: dto.WorkKindResp{
+					ID:   work.WorkKind.WorkKindID,
 					Name: work.WorkKind.Name,
 				},
 				//IsStarted: service.checkIfBegin(relations, work.WorkID), TODO
@@ -101,7 +103,7 @@ func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, er
 				Description: db.Description,
 				Semester:    db.Semester,
 				Subject: dto.SubjectResp{
-					SubjectID:  db.Subject.SubjectID,
+					ID:         db.Subject.SubjectID,
 					Name:       db.Subject.Name,
 					Department: db.Subject.DepartmentID,
 				},

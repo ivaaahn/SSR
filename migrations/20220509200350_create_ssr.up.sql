@@ -28,3 +28,7 @@ ALTER TABLE "ssr"
 CREATE INDEX ON "ssr" (status, supervisor_id);
 CREATE INDEX ON "ssr" (status, student_id);
 CREATE INDEX ON "ssr" (status, work_id);
+
+
+insert into ssr(status, created_at, supervisor_id, work_id, student_id)
+    VALUES ('pending', '2022-09-01', 2, 1, 1)
