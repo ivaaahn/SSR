@@ -71,15 +71,20 @@ func (r *Work) GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error) {
 	return works, nil
 }
 
-func (r *Work) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error) {
+func (r *Work) GetWorkSupervisors(workID int) ([]*entity.WorkSv, error) {
 	const query = `
 	select 
-	       u.*, 
-	       sv.*, 
-	       sw.is_full as "full", 
-	       sw.is_head as head
+		sv.about as "sv.about",
+		sv.birthdate as "sv.birthdate",   	        
+		sv.department_id as "sv.department_id",
+		u.email as "sv.user.email",
+		u.first_name as "sv.user.first_name",
+		u.last_name as "sv.user.last_name",
+		u.photo_url as "sv.user.photo_url",
+		sw.is_full as is_full, 
+		sw.is_head as is_head
 	from supervisors sv
-		join supervisor_work sw using (supervisor_id)
+		join supervisor_work sw on sv.user_id = sw.supervisor_id
 		join users u using (user_id)
 	where sw.work_id = $1;
 	`
@@ -88,7 +93,7 @@ func (r *Work) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSv, error) {
 
 	err := r.Conn.Select(&supervisors, query, workID)
 	if err != nil {
-		err := fmt.Errorf("Work->GetSupervisorsByWorkID->r.Conn.Select: %w", err)
+		err := fmt.Errorf("Work->GetWorkSupervisors->r.Conn.Select: %w", err)
 		r.l.Error(err)
 		return nil, err
 	}

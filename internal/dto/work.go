@@ -34,8 +34,8 @@ type SvWorkPlenty struct {
 
 type WorkSv struct {
 	SvProfile
-	Head bool `json:"head"`
-	Full bool `json:"full"`
+	IsHead bool `json:"head"`
+	IsFull bool `json:"full"`
 }
 
 type WorkSvPlenty struct {

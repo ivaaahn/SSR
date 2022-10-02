@@ -4,6 +4,7 @@ import (
 	"ssr/internal/dto"
 	"ssr/internal/entity"
 	"ssr/pkg/logger"
+	"ssr/pkg/misc"
 	"time"
 )
 
@@ -119,33 +120,31 @@ func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, er
 	}, nil
 }
 
-//
-//func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
-//	dbData, err := service.workRepo.GetSupervisorsByWorkID(workID)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var resp []*dto.WorkSv
-//
-//	for _, db := range dbData {
-//		resp = append(resp, &dto.WorkSv{
-//			SvProfile: dto.SvProfile{
-//				Email:      db.Email,
-//				FirstName:  db.FirstName,
-//				LastName:   db.LastName,
-//				About:      db.About,
-//				Birthdate:  misc.Date{Time: db.Birthdate},
-//				PhotoUrl:   db.PhotoUrl,
-//				Department: db.DepartmentID,
-//			},
-//			Head: db.Head,
-//			Full: db.Full,
-//		})
-//	}
-//
-//	return &dto.WorkSvPlenty{
-//		WorkID:      workID,
-//		Supervisors: resp,
-//	}, nil
-//}
+func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
+	supervisorsData, err := service.workRepo.GetWorkSupervisors(workID)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*dto.WorkSv
+
+	for _, db := range supervisorsData {
+		resp = append(resp, &dto.WorkSv{
+			SvProfile: dto.SvProfile{
+				Email:      db.User.Email,
+				FirstName:  db.User.FirstName,
+				LastName:   db.User.LastName,
+				About:      db.SupervisorFull.About,
+				Birthdate:  misc.Date{Time: db.SupervisorFull.Birthdate},
+				PhotoUrl:   db.User.PhotoUrl,
+				Department: db.DepartmentID,
+			},
+			IsHead: db.IsHead,
+			IsFull: db.IsFull,
+		})
+	}
+
+	return &dto.WorkSvPlenty{
+		Supervisors: resp,
+	}, nil
+}

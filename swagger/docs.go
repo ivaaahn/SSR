@@ -198,6 +198,39 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/works/{work_id}/supervisors": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "works"
+                ],
+                "summary": "Get supervisors of the work",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Work ID",
+                        "name": "work_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.WorkSvPlenty"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -359,6 +392,49 @@ const docTemplate = `{
                 },
                 "subject": {
                     "$ref": "#/definitions/dto.SubjectResp"
+                }
+            }
+        },
+        "dto.WorkSv": {
+            "type": "object",
+            "properties": {
+                "about": {
+                    "type": "string"
+                },
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "full": {
+                    "type": "boolean"
+                },
+                "head": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WorkSvPlenty": {
+            "type": "object",
+            "properties": {
+                "supervisors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WorkSv"
+                    }
                 }
             }
         }

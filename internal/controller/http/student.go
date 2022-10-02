@@ -11,9 +11,9 @@ import (
 
 type student struct {
 	l               logger.Interface
-	profileService  StProfileService
+	profileService  ProfileService
 	bidService      StBidService
-	workService     StWorkService
+	workService     WorkService
 	relationService StRelationService
 	feedbackService FeedbackService
 }
@@ -76,28 +76,6 @@ func (ctrl *student) getWorks(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, respDTO)
 }
-
-// ShowAccount godoc
-// @Summary      GetUserByEmail supervisors of the work
-// @Tags         student
-// @Param        work_id query int  true  "WorkResp ID"
-// @Produce      json
-// @Success      200  {object}  dto.WorkSvPlenty
-// @Router       /api/student/work/supervisor [get]
-// @Security	 Auth
-//func (ctrl *student) getSupervisorsOfWork(ctx echo.Context) error {
-//	email, _ := misc.ExtractCtx(ctx)
-//	ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-//
-//	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
-//
-//	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
-//	if err != nil {
-//		return echo.ErrNotFound
-//	}
-//
-//	return ctx.JSON(http.StatusOK, respDTO)
-//}
 
 //// ShowAccount godoc
 //// @Summary      Apply bid
@@ -204,9 +182,9 @@ func NewStudentRoutes(
 	router *echo.Group,
 	l logger.Interface,
 	config *config.Config,
-	profileService StProfileService,
+	profileService ProfileService,
 	bidsService StBidService,
-	worksService StWorkService,
+	worksService WorkService,
 	relationService StRelationService,
 	feedbackService FeedbackService,
 ) {
@@ -227,7 +205,7 @@ func NewStudentRoutes(
 		//student.GET("/bid", ctrl.getBids)
 		//student.PUT("/bid", ctrl.applyBid)
 		//student.POST("/ssr", ctrl.createSSR)
-		//student.GET("/work/supervisor_id", ctrl.getSupervisorsOfWork)
+		//student.GET("/work/supervisor_id", ctrl.getSupervisors)
 		//student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
 		//student.PUT("/feedback", ctrl.provideFeedback)
 	}

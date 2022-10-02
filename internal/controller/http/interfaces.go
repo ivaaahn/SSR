@@ -8,8 +8,9 @@ type (
 	AuthService interface {
 		Login(email, password string) (*dto.LoginResponse, error)
 	}
-	StProfileService interface {
+	ProfileService interface {
 		GetStudentProfile(userID int) (*dto.StProfile, error)
+		GetSupervisorProfile(userID int) (*dto.SvProfile, error)
 	}
 	SvProfileService interface {
 		GetSupervisorProfile(userID int) (*dto.SvProfile, error)
@@ -25,12 +26,10 @@ type (
 	StRelationService interface {
 		Create(data *dto.CreateSSR) (*dto.StViewRelation, error)
 	}
-	StWorkService interface {
+	WorkService interface {
 		GetStudentWorks(studentID int) (*dto.StWorkPlenty, error)
-		//GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error)
-	}
-	SvWorkService interface {
 		GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error)
+		GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error)
 	}
 	FeedbackService interface {
 		Add(data *dto.FeedbackReq) (int, error)

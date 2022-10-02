@@ -10,7 +10,7 @@ type Supervisor struct {
 }
 
 type SupervisorFull struct {
-	User         *User
+	User         *User `db:"user"`
 	Birthdate    time.Time
 	About        string
 	DepartmentID string `db:"department_id"`

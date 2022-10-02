@@ -20,7 +20,7 @@ type SvWork struct {
 }
 
 type WorkSv struct {
-	*SvProfile
-	Head bool `db:"head"`
-	Full bool `db:"full"`
+	*SupervisorFull `db:"sv"`
+	IsHead          bool `db:"is_head"`
+	IsFull          bool `db:"is_full"`
 }

@@ -11,9 +11,9 @@ import (
 
 type supervisor struct {
 	l              logger.Interface
-	profileService SvProfileService
+	profileService ProfileService
 	//bidService     SvBidService
-	workService SvWorkService
+	workService WorkService
 }
 
 // ShowAccount godoc
@@ -117,9 +117,9 @@ func NewSupervisorRoutes(
 	router *echo.Group,
 	l logger.Interface,
 	config *config.Config,
-	profileService SvProfileService,
+	profileService ProfileService,
 	// bidService SvBidService,
-	workService SvWorkService,
+	workService WorkService,
 ) {
 	ctrl := &supervisor{l, profileService, workService}
 

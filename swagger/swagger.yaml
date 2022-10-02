@@ -104,6 +104,34 @@ definitions:
       subject:
         $ref: '#/definitions/dto.SubjectResp'
     type: object
+  dto.WorkSv:
+    properties:
+      about:
+        type: string
+      avatarUrl:
+        type: string
+      birthdate:
+        type: string
+      department:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      full:
+        type: boolean
+      head:
+        type: boolean
+      lastName:
+        type: string
+    type: object
+  dto.WorkSvPlenty:
+    properties:
+      supervisors:
+        items:
+          $ref: '#/definitions/dto.WorkSv'
+        type: array
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -225,6 +253,26 @@ paths:
       summary: Get supervisor's works
       tags:
       - supervisor
+  /api/v1/works/{work_id}/supervisors:
+    get:
+      parameters:
+      - description: Work ID
+        in: path
+        name: work_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.WorkSvPlenty'
+      security:
+      - OAuth2Password: []
+      summary: Get supervisors of the work
+      tags:
+      - works
 schemes:
 - http
 securityDefinitions:

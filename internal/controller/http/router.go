@@ -13,11 +13,9 @@ func NewRouter(
 	l logger.Interface,
 	config *config.Config,
 	auth AuthService,
-	stProfile StProfileService,
-	svProfile SvProfileService,
+	profiles ProfileService,
 	stBids StBidService,
-	stWorks StWorkService,
-	svWorks SvWorkService,
+	works WorkService,
 	stRelations StRelationService,
 	feedback FeedbackService,
 ) {
@@ -26,7 +24,8 @@ func NewRouter(
 
 	{
 		NewAuthRoutes(g, l, auth)
-		NewStudentRoutes(g, l, config, stProfile, stBids, stWorks, stRelations, feedback)
-		NewSupervisorRoutes(g, l, config, svProfile, svWorks)
+		NewStudentRoutes(g, l, config, profiles, stBids, works, stRelations, feedback)
+		NewSupervisorRoutes(g, l, config, profiles, works)
+		NewWorksRoutes(g, l, config, works)
 	}
 }
