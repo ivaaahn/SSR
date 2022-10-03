@@ -113,6 +113,26 @@ func (ctrl *supervisor) getWorks(ctx echo.Context) error {
 //
 //		return ctx.JSON(http.StatusOK, resp)
 //	}
+
+//// ShowAccount godoc
+//// @Summary      Get supervisors of the work
+//// @Tags         supervisors
+//// @Param        work_id path int true "Work ID"
+//// @Produce      json
+//// @Success      200  {object}  dto.WorkSupervisorPlenty
+//// @Router       /api/v1/supervisors [get]
+//// @Security	 OAuth2Password
+//func (ctrl *supervisor) getSupervisors(ctx echo.Context) error {
+//	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
+//
+//	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
+//	if err != nil {
+//		return echo.ErrNotFound
+//	}
+//
+//	return ctx.JSON(http.StatusOK, respDTO)
+//}
+
 func NewSupervisorRoutes(
 	router *echo.Group,
 	l logger.Interface,
@@ -128,6 +148,7 @@ func NewSupervisorRoutes(
 	{
 		g.GET("/:supervisor_id/profile", ctrl.getProfile)
 		g.GET("/:supervisor_id/works", ctrl.getWorks)
+		//g.GET("/", ctrl.getSupervisors)
 		//g.GET("/bid", ctrl.getBids)
 		//g.POST("/bid/resolve", ctrl.resolveBid)
 		//g.GET("/work", ctrl.getWorks)

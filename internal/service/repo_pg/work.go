@@ -17,7 +17,7 @@ func NewWork(pg *postgres.Postgres, l logger.Interface) *Work {
 	}
 }
 
-func (r *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error) {
+func (repo *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error) {
 	const query = `
 	select w.work_id, w.description, w.semester,
 	   	wk.name as "work_kind.name",
@@ -33,17 +33,17 @@ func (r *Work) GetStudentWorks(departmentID string, semester int) ([]*entity.Wor
 
 	var works []*entity.Work
 
-	err := r.Conn.Select(&works, query, departmentID, semester)
+	err := repo.Conn.Select(&works, query, departmentID, semester)
 	if err != nil {
-		err := fmt.Errorf("Work->GetStudentWorks->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Work->GetStudentWorks->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return works, nil
 }
 
-func (r *Work) GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error) {
+func (repo *Work) GetSupervisorWorks(supervisorID int) ([]*entity.SupervisorViewWork, error) {
 	const query = `
 	select w.work_id, w.description, w.semester, 
 	   	wk.name as "work_kind.name",
@@ -59,44 +59,41 @@ func (r *Work) GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error) {
 		join work_kinds wk using (work_kind_id)
 	where sw.supervisor_id = $1;
 	`
-	var works []*entity.SvWork
+	var works []*entity.SupervisorViewWork
 
-	err := r.Conn.Select(&works, query, supervisorID)
+	err := repo.Conn.Select(&works, query, supervisorID)
 	if err != nil {
-		err := fmt.Errorf("Work->GetSupervisorWorks->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Work->GetSupervisorWorks->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
 	return works, nil
 }
 
-func (r *Work) GetWorkSupervisors(workID int) ([]*entity.WorkSv, error) {
+func (repo *Work) Get(workID int) (*entity.Work, error) {
 	const query = `
 	select 
-		sv.about as "sv.about",
-		sv.birthdate as "sv.birthdate",   	        
-		sv.department_id as "sv.department_id",
-		u.email as "sv.user.email",
-		u.first_name as "sv.user.first_name",
-		u.last_name as "sv.user.last_name",
-		u.photo_url as "sv.user.photo_url",
-		sw.is_full as is_full, 
-		sw.is_head as is_head
-	from supervisors sv
-		join supervisor_work sw on sv.user_id = sw.supervisor_id
-		join users u using (user_id)
-	where sw.work_id = $1;
+	    w.work_id, w.description, w.semester,
+		wk.work_kind_id as "work_kind.work_kind_id",
+		wk.name as "work_kind.name",
+		s.subject_id as "subject.subject_id",
+		s.name as "subject.name",
+		s.department_id as "subject.department_id"
+	from works w
+		join work_kinds  wk using ("work_kind_id")
+		join subjects s using ("subject_id")
+	where work_id = $1
 	`
 
-	var supervisors []*entity.WorkSv
+	work := entity.Work{}
 
-	err := r.Conn.Select(&supervisors, query, workID)
+	err := repo.Conn.Get(&work, query, workID)
 	if err != nil {
-		err := fmt.Errorf("Work->GetWorkSupervisors->r.Conn.Select: %w", err)
-		r.l.Error(err)
+		err := fmt.Errorf("Work->Get->repo.Conn.Get(): %w", err)
+		repo.l.Error(err)
 		return nil, err
 	}
 
-	return supervisors, nil
+	return &work, nil
 }

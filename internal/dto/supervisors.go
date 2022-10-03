@@ -24,7 +24,3 @@ type WorkSupervisorShort struct {
 	IsHead bool `json:"head"`
 	IsFull bool `json:"full"`
 }
-
-type WorkSupervisorPlenty struct {
-	Supervisors []*WorkSupervisorShort `json:"supervisors"`
-}

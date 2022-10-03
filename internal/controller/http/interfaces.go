@@ -19,9 +19,10 @@ type (
 		Get(RelationID int) (*dto.RelationResp, error)
 	}
 	WorkService interface {
+		//GetPlenty() (*dto.WorkPlenty, error)
+		Get(workID int) (*dto.WorkFullResp, error)
 		GetStudentWorks(studentID int) (*dto.StudentViewWorkPlenty, error)
 		GetSupervisorWorks(supervisorID int) (*dto.SupervisorViewWorkPlenty, error)
-		GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error)
 	}
 	FeedbackService interface {
 		Add(data *dto.FeedbackReq) (int, error)

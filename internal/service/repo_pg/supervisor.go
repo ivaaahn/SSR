@@ -61,3 +61,35 @@ func (repo *Supervisor) GetFullSupervisor(userID int) (*entity.Supervisor, error
 
 	return &supervisorFull, nil
 }
+
+func (repo *Supervisor) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSupervisor, error) {
+	const query = `
+	select 
+		sv.about as "sv.about",
+		sv.birthdate as "sv.birthdate",   	        
+		sv.department_id as "sv.department_id",
+
+	    u.user_id as "sv.user.user_id",
+		u.email as "sv.user.email",
+		u.first_name as "sv.user.first_name",
+		u.last_name as "sv.user.last_name",
+		u.photo_url as "sv.user.photo_url",
+		sw.is_full as is_full, 
+		sw.is_head as is_head
+	from supervisors sv
+		join supervisor_work sw on sv.user_id = sw.supervisor_id
+		join users u using (user_id)
+	where sw.work_id = $1;
+	`
+
+	var supervisors []*entity.WorkSupervisor
+
+	err := repo.Conn.Select(&supervisors, query, workID)
+	if err != nil {
+		err := fmt.Errorf("Work->GetSupervisorsByWorkID->repo.Conn.Select: %w", err)
+		repo.l.Error(err)
+		return nil, err
+	}
+
+	return supervisors, nil
+}

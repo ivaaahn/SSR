@@ -14,6 +14,7 @@ type (
 	}
 	SupervisorRepo interface {
 		GetFullSupervisor(userID int) (*entity.Supervisor, error)
+		GetSupervisorsByWorkID(workID int) ([]*entity.WorkSupervisor, error)
 	}
 	ProfileRepo interface {
 		GetStProfile(email string) (*entity.StProfile, error)
@@ -28,12 +29,15 @@ type (
 		GetRelationStatus(studentID, workID int) (entity.StatusSSR, error)
 	}
 	WorkRepo interface {
+		Get(workID int) (*entity.Work, error)
 		GetStudentWorks(departmentID string, semester int) ([]*entity.Work, error)
-		GetSupervisorWorks(supervisorID int) ([]*entity.SvWork, error)
-		GetWorkSupervisors(workID int) ([]*entity.WorkSv, error)
+		GetSupervisorWorks(supervisorID int) ([]*entity.SupervisorViewWork, error)
 	}
 	FeedbackRepo interface {
 		Create(studentID, supervisorID, workID int, content string) (int, error)
 		GetBySupervisorID(supervisorID int) ([]*entity.Feedback, error)
+	}
+	WaypointRepo interface {
+		GetPlenty(workID int) ([]*entity.Waypoint, error)
 	}
 )

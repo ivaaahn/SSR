@@ -156,7 +156,7 @@ func NewStudentRoutes(
 		//student.GET("/:student_id/relations", ctrl.get)
 		//student.PUT("/bid", ctrl.applyBid)
 		//student.POST("/ssr", ctrl.createSSR)
-		//student.GET("/work/supervisor_id", ctrl.getSupervisors)
+		//student.GET("/work/supervisor_id", ctrl.getPlenty)
 		//student.GET("/feedback/:supervisor_id", ctrl.getFeedback)
 		//student.PUT("/feedback", ctrl.provideFeedback)
 	}

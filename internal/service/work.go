@@ -4,6 +4,7 @@ import (
 	"ssr/internal/dto"
 	"ssr/internal/entity"
 	"ssr/pkg/logger"
+	"ssr/pkg/misc"
 	"time"
 )
 
@@ -12,14 +13,25 @@ type Work struct {
 	workRepo     WorkRepo
 	relationRepo RelationRepo
 	stRepo       StudentRepo
+	svRepo       SupervisorRepo
+	waypointRepo WaypointRepo
 }
 
-func NewWork(workRepo WorkRepo, ssrRepo RelationRepo, stRepo StudentRepo, l logger.Interface) *Work {
+func NewWork(
+	workRepo WorkRepo,
+	ssrRepo RelationRepo,
+	stRepo StudentRepo,
+	svRepo SupervisorRepo,
+	waypointRepo WaypointRepo,
+	l logger.Interface,
+) *Work {
 	return &Work{
 		Base:         NewBase(l),
 		workRepo:     workRepo,
 		relationRepo: ssrRepo,
 		stRepo:       stRepo,
+		svRepo:       svRepo,
+		waypointRepo: waypointRepo,
 	}
 }
 
@@ -111,17 +123,35 @@ func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SupervisorViewWo
 	}, nil
 }
 
-func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
-	supervisorsData, err := service.workRepo.GetWorkSupervisors(workID)
+func (service *Work) Get(workID int) (*dto.WorkFullResp, error) {
+	workData, err := service.workRepo.Get(workID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.WorkSupervisorShort
+	waypointsData, err := service.waypointRepo.GetPlenty(workID)
+	if err != nil {
+		return nil, err
+	}
 
+	var waypoints []*dto.WaypointResp
+	for _, waypointData := range waypointsData {
+		waypoints = append(waypoints, &dto.WaypointResp{
+			Title:       waypointData.Title,
+			Description: waypointData.Description,
+			Deadline:    misc.Date{Time: waypointData.Deadline},
+		})
+	}
+
+	supervisorsData, err := service.svRepo.GetSupervisorsByWorkID(workID)
+	if err != nil {
+		return nil, err
+	}
+	var supervisors []*dto.WorkSupervisorShort
 	for _, db := range supervisorsData {
-		resp = append(resp, &dto.WorkSupervisorShort{
+		supervisors = append(supervisors, &dto.WorkSupervisorShort{
 			SupervisorShort: dto.SupervisorShort{
+				UserID:    db.Supervisor.User.UserID,
 				FirstName: db.User.FirstName,
 				LastName:  db.User.LastName,
 			},
@@ -130,7 +160,56 @@ func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, 
 		})
 	}
 
-	return &dto.WorkSupervisorPlenty{
-		Supervisors: resp,
+	return &dto.WorkFullResp{
+		WorkID:      workData.WorkID,
+		Description: workData.Description,
+		Semester:    workData.Semester,
+		Subject: dto.SubjectResp{
+			ID:         workData.Subject.SubjectID,
+			Name:       workData.Subject.Name,
+			Department: workData.Subject.DepartmentID,
+		},
+		Kind: dto.WorkKindResp{
+			ID:   workData.WorkKind.WorkKindID,
+			Name: workData.WorkKind.Name,
+		},
+		Waypoints:   waypoints,
+		Supervisors: supervisors,
 	}, nil
 }
+
+//
+//func (service *Work) GetPlenty(workID int) (*dto.WorkFullResp, error) {
+//	workData, err := service.workRepo.Get(workID)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	waypointsData, err := service.waypointRepo.GetPlenty(workID)
+//
+//	var waypoints []*dto.WaypointResp
+//
+//	for _, waypointData := range waypointsData {
+//		waypoints = append(waypoints, &dto.WaypointResp{
+//			Title:       waypointData.Title,
+//			Description: waypointData.Description,
+//			Deadline:    misc.Date{Time: waypointData.Deadline},
+//		})
+//	}
+//
+//	return &dto.WorkFullResp{
+//		WorkID:      workData.WorkID,
+//		Description: workData.Description,
+//		Semester:    workData.Semester,
+//		Subject: dto.SubjectResp{
+//			ID:         workData.Subject.SubjectID,
+//			Name:       workData.Subject.Name,
+//			Department: workData.Subject.DepartmentID,
+//		},
+//		Kind: dto.WorkKindResp{
+//			ID:   workData.WorkKind.WorkKindID,
+//			Name: workData.WorkKind.Name,
+//		},
+//		Waypoints: waypoints,
+//	}, nil
+//}

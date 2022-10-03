@@ -312,7 +312,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/works/{work_id}/supervisors": {
+        "/api/v1/works/{work_id}": {
             "get": {
                 "security": [
                     {
@@ -339,7 +339,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.WorkSupervisorPlenty"
+                            "$ref": "#/definitions/dto.WorkFullResp"
                         }
                     }
                 }
@@ -429,14 +429,8 @@ const docTemplate = `{
                 "student": {
                     "$ref": "#/definitions/dto.StudentShort"
                 },
-                "student_id": {
-                    "type": "integer"
-                },
                 "supervisor": {
                     "$ref": "#/definitions/dto.SupervisorShort"
-                },
-                "supervisor_id": {
-                    "type": "integer"
                 },
                 "work": {
                     "$ref": "#/definitions/dto.WorkShortResp"
@@ -511,10 +505,6 @@ const docTemplate = `{
         "dto.StudentViewWorkShortResp": {
             "type": "object",
             "properties": {
-                "is_started": {
-                    "description": "TODO",
-                    "type": "boolean"
-                },
                 "work": {
                     "$ref": "#/definitions/dto.WorkShortResp"
                 }
@@ -602,6 +592,52 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.WaypointResp": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WorkFullResp": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "$ref": "#/definitions/dto.WorkKindResp"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "subject": {
+                    "$ref": "#/definitions/dto.SubjectResp"
+                },
+                "supervisors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WorkSupervisorShort"
+                    }
+                },
+                "waypoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WaypointResp"
+                    }
+                }
+            }
+        },
         "dto.WorkKindResp": {
             "type": "object",
             "properties": {
@@ -644,17 +680,6 @@ const docTemplate = `{
                 },
                 "subject": {
                     "$ref": "#/definitions/dto.SubjectResp"
-                }
-            }
-        },
-        "dto.WorkSupervisorPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.WorkSupervisorShort"
-                    }
                 }
             }
         },
