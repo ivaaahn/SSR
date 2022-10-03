@@ -38,7 +38,7 @@ func (service *Profile) GetStudentProfile(userID int) (*dto.Student, error) {
 }
 
 func (service *Profile) GetSupervisorProfile(userID int) (*dto.Supervisor, error) {
-	dbData, err := service.svRepo.GetFullSupervisor(userID)
+	dbData, err := service.svRepo.GetSupervisor(userID)
 	if err != nil {
 		return nil, err
 	}

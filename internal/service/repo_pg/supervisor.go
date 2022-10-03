@@ -17,24 +17,24 @@ func NewSupervisor(pg *postgres.Postgres, l logger.Interface) *Supervisor {
 	}
 }
 
-func (repo *Supervisor) GetSupervisor(userID int) (*entity.SupervisorShort, error) {
+func (repo *Supervisor) GetSupervisorShort(userID int) (*entity.SupervisorShort, error) {
 	const query = `
 	select * from supervisors where user_id = $1
 	`
 
-	supervisor := entity.SupervisorShort{}
+	supervisorShort := entity.SupervisorShort{}
 
-	err := repo.Conn.Get(&supervisor, query, userID)
+	err := repo.Conn.Get(&supervisorShort, query, userID)
 	if err != nil {
 		err := fmt.Errorf("SupervisorShort->Get->repo.Conn.Get(): %w", err)
 		repo.l.Error(err)
 		return nil, err
 	}
 
-	return &supervisor, nil
+	return &supervisorShort, nil
 }
 
-func (repo *Supervisor) GetFullSupervisor(userID int) (*entity.Supervisor, error) {
+func (repo *Supervisor) GetSupervisor(userID int) (*entity.Supervisor, error) {
 	const query = `
 	select 
 	    s.about, 
@@ -50,16 +50,16 @@ func (repo *Supervisor) GetFullSupervisor(userID int) (*entity.Supervisor, error
 	where user_id = $1
 	`
 
-	supervisorFull := entity.Supervisor{}
+	supervisor := entity.Supervisor{}
 
-	err := repo.Conn.Get(&supervisorFull, query, userID)
+	err := repo.Conn.Get(&supervisor, query, userID)
 	if err != nil {
 		err := fmt.Errorf("SupervisorShort->GetFull->repo.Conn.Get(): %w", err)
 		repo.l.Error(err)
 		return nil, err
 	}
 
-	return &supervisorFull, nil
+	return &supervisor, nil
 }
 
 func (repo *Supervisor) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSupervisor, error) {

@@ -13,7 +13,7 @@ type (
 		GetStudentShort(userID int) (*entity.StudentShort, error)
 	}
 	SupervisorRepo interface {
-		GetFullSupervisor(userID int) (*entity.Supervisor, error)
+		GetSupervisor(userID int) (*entity.Supervisor, error)
 		GetSupervisorsByWorkID(workID int) ([]*entity.WorkSupervisor, error)
 	}
 	ProfileRepo interface {
