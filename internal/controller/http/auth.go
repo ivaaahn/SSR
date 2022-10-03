@@ -17,8 +17,8 @@ type auth struct {
 // @Tags         auth
 // @Accept       x-www-form-urlencoded
 // @Produce      json
-// @Param        username formData  string  true  "User email"
-// @Param        password formData  string  true  "User password"
+// @Param        username formData  string  true  "UserFull email"
+// @Param        password formData  string  true  "UserFull password"
 // @Success      200  {object}  dto.LoginResponse
 // @Failure      401
 // @Failure      500

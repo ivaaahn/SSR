@@ -35,14 +35,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User email",
+                        "description": "UserFull email",
                         "name": "username",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "User password",
+                        "description": "UserFull password",
                         "name": "password",
                         "in": "formData",
                         "required": true
@@ -65,6 +65,45 @@ const docTemplate = `{
             }
         },
         "/api/v1/relations/": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "relation"
+                ],
+                "summary": "Get relations",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Student ID",
+                        "name": "student_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Supervisor ID",
+                        "name": "supervisor_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RelationPlenty"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -93,10 +132,46 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RelationCreateResp"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "relation"
+                ],
+                "summary": "Update relation",
+                "parameters": [
+                    {
+                        "description": "Relation data",
+                        "name": "CreateRelation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RelationUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RelationCreateResp"
+                            "$ref": "#/definitions/dto.RelationResp"
                         }
                     }
                 }
@@ -129,43 +204,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StProfile"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                }
-            }
-        },
-        "/api/v1/students/{student_id}/relations": {
-            "get": {
-                "security": [
-                    {
-                        "OAuth2Password": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Get student's bids",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Student ID",
-                        "name": "student_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.StRelationPlenty"
+                            "$ref": "#/definitions/dto.Student"
                         }
                     },
                     "404": {
@@ -201,7 +240,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StWorkPlenty"
+                            "$ref": "#/definitions/dto.StudentViewWorkPlenty"
                         }
                     }
                 }
@@ -234,7 +273,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SvProfile"
+                            "$ref": "#/definitions/dto.Supervisor"
                         }
                     }
                 }
@@ -267,7 +306,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SvWorkPlenty"
+                            "$ref": "#/definitions/dto.SupervisorViewWorkPlenty"
                         }
                     }
                 }
@@ -300,7 +339,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.WorkSvPlenty"
+                            "$ref": "#/definitions/dto.WorkSupervisorPlenty"
                         }
                     }
                 }
@@ -347,7 +386,75 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.StProfile": {
+        "dto.RelationPlenty": {
+            "type": "object",
+            "properties": {
+                "relations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RelationShortResp"
+                    }
+                }
+            }
+        },
+        "dto.RelationResp": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "student": {
+                    "$ref": "#/definitions/dto.Student"
+                },
+                "supervisor": {
+                    "$ref": "#/definitions/dto.Supervisor"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkResp"
+                }
+            }
+        },
+        "dto.RelationShortResp": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "student": {
+                    "$ref": "#/definitions/dto.StudentShort"
+                },
+                "student_id": {
+                    "type": "integer"
+                },
+                "supervisor": {
+                    "$ref": "#/definitions/dto.SupervisorShort"
+                },
+                "supervisor_id": {
+                    "type": "integer"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkShortResp"
+                }
+            }
+        },
+        "dto.RelationUpdateReq": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Student": {
             "type": "object",
             "properties": {
                 "department": {
@@ -356,66 +463,52 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
+                "first_name": {
                     "type": "string"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
                 },
-                "photoUrl": {
+                "photo_url": {
                     "type": "string"
                 },
-                "studentCard": {
+                "student_card": {
                     "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "year": {
                     "type": "integer"
                 }
             }
         },
-        "dto.StRelationPlenty": {
+        "dto.StudentShort": {
             "type": "object",
             "properties": {
-                "relations": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.StRelationResp"
-                    }
-                }
-            }
-        },
-        "dto.StRelationResp": {
-            "type": "object",
-            "properties": {
-                "created_at": {
+                "first_name": {
                     "type": "string"
                 },
-                "id": {
+                "last_name": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "supervisor": {
-                    "$ref": "#/definitions/dto.SvProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.WorkResp"
                 }
             }
         },
-        "dto.StWorkPlenty": {
+        "dto.StudentViewWorkPlenty": {
             "type": "object",
             "properties": {
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StWorkResp"
+                        "$ref": "#/definitions/dto.StudentViewWorkShortResp"
                     }
                 }
             }
         },
-        "dto.StWorkResp": {
+        "dto.StudentViewWorkShortResp": {
             "type": "object",
             "properties": {
                 "is_started": {
@@ -423,7 +516,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "work": {
-                    "$ref": "#/definitions/dto.WorkResp"
+                    "$ref": "#/definitions/dto.WorkShortResp"
                 }
             }
         },
@@ -441,13 +534,10 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SvProfile": {
+        "dto.Supervisor": {
             "type": "object",
             "properties": {
                 "about": {
-                    "type": "string"
-                },
-                "avatarUrl": {
                     "type": "string"
                 },
                 "birthdate": {
@@ -459,26 +549,46 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
+                "first_name": {
                     "type": "string"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
-        "dto.SvWorkPlenty": {
+        "dto.SupervisorShort": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.SupervisorViewWorkPlenty": {
             "type": "object",
             "properties": {
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SvWorkResp"
+                        "$ref": "#/definitions/dto.SupervisorViewWorkShortResp"
                     }
                 }
             }
         },
-        "dto.SvWorkResp": {
+        "dto.SupervisorViewWorkShortResp": {
             "type": "object",
             "properties": {
                 "is_full": {
@@ -488,7 +598,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "work": {
-                    "$ref": "#/definitions/dto.WorkResp"
+                    "$ref": "#/definitions/dto.WorkShortResp"
                 }
             }
         },
@@ -523,25 +633,35 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.WorkSv": {
+        "dto.WorkShortResp": {
             "type": "object",
             "properties": {
-                "about": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
                 },
-                "avatarUrl": {
-                    "type": "string"
+                "kind": {
+                    "$ref": "#/definitions/dto.WorkKindResp"
                 },
-                "birthdate": {
-                    "type": "string"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "firstName": {
+                "subject": {
+                    "$ref": "#/definitions/dto.SubjectResp"
+                }
+            }
+        },
+        "dto.WorkSupervisorPlenty": {
+            "type": "object",
+            "properties": {
+                "supervisors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WorkSupervisorShort"
+                    }
+                }
+            }
+        },
+        "dto.WorkSupervisorShort": {
+            "type": "object",
+            "properties": {
+                "first_name": {
                     "type": "string"
                 },
                 "full": {
@@ -550,19 +670,11 @@ const docTemplate = `{
                 "head": {
                     "type": "boolean"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.WorkSvPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.WorkSv"
-                    }
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         }

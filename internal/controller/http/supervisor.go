@@ -21,7 +21,7 @@ type supervisor struct {
 // @Tags         supervisor
 // @Produce      json
 // @Param        supervisor_id path int  true  "Supervisor ID"
-// @Success      200  {object}  dto.SvProfile
+// @Success      200  {object}  dto.Supervisor
 // @Router       /api/v1/supervisors/{supervisor_id}/profile [get]
 // @Security	 OAuth2Password
 func (ctrl *supervisor) getProfile(ctx echo.Context) error {
@@ -41,7 +41,7 @@ func (ctrl *supervisor) getProfile(ctx echo.Context) error {
 // @Tags         supervisor
 // @Param        supervisor_id path int  true  "Supervisor ID"
 // @Produce      json
-// @Success      200  {object}  dto.SvWorkPlenty
+// @Success      200  {object}  dto.SupervisorViewWorkPlenty
 // @Router       /api/v1/supervisors/{supervisor_id}/works [get]
 // @Security	 	OAuth2Password
 func (ctrl *supervisor) getWorks(ctx echo.Context) error {
@@ -71,7 +71,7 @@ func (ctrl *supervisor) getWorks(ctx echo.Context) error {
 //
 //		supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
 //
-//		respDTO, err := ctrl.relationsService.GetSupervisorBids(supervisorID)
+//		respDTO, err := ctrl.relationsService.GetSupervisorRelations(supervisorID)
 //		if err != nil {
 //			ctrl.l.Error(err)
 //			return echo.NewHTTPError(http.StatusInternalServerError, "TODO")

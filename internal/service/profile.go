@@ -20,13 +20,13 @@ func NewProfile(stRepo StudentRepo, svRepo SupervisorRepo, l logger.Interface) *
 	}
 }
 
-func (uc *Profile) GetStudentProfile(userID int) (*dto.StProfile, error) {
-	dbData, err := uc.stRepo.GetFullStudent(userID)
+func (uc *Profile) GetStudentProfile(userID int) (*dto.Student, error) {
+	dbData, err := uc.stRepo.GetStudent(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &dto.StProfile{
+	return &dto.Student{
 		Email:       dbData.User.Email,
 		FirstName:   dbData.User.FirstName,
 		LastName:    dbData.User.LastName,
@@ -37,13 +37,13 @@ func (uc *Profile) GetStudentProfile(userID int) (*dto.StProfile, error) {
 	}, nil
 }
 
-func (uc *Profile) GetSupervisorProfile(userID int) (*dto.SvProfile, error) {
+func (uc *Profile) GetSupervisorProfile(userID int) (*dto.Supervisor, error) {
 	dbData, err := uc.svRepo.GetFullSupervisor(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &dto.SvProfile{
+	return &dto.Supervisor{
 		Email:      dbData.User.Email,
 		FirstName:  dbData.User.FirstName,
 		LastName:   dbData.User.LastName,

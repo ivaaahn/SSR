@@ -17,12 +17,20 @@ func NewStudent(pg *postgres.Postgres, l logger.Interface) *Student {
 	}
 }
 
-func (repo *Student) GetStudent(userID int) (*entity.Student, error) {
+func (repo *Student) GetStudentShort(userID int) (*entity.StudentShort, error) {
 	const query = `
-	select * from students where user_id = $1
+	select 
+	     s.year, 
+	     s.department_id,
+		 u.last_name as "user.last_name",
+		 u.first_name as "user.first_name",
+		 u.user_id as "user.user_id"
+	from students s
+		join users u on s.user_id = u.user_id
+	where u.user_id = $1
 	`
 
-	student := entity.Student{}
+	student := entity.StudentShort{}
 
 	err := repo.Conn.Get(&student, query, userID)
 	if err != nil {
@@ -34,7 +42,7 @@ func (repo *Student) GetStudent(userID int) (*entity.Student, error) {
 	return &student, nil
 }
 
-func (repo *Student) GetFullStudent(userID int) (*entity.StudentFull, error) {
+func (repo *Student) GetStudent(userID int) (*entity.Student, error) {
 	const query = `
 	select 
 	    s.student_card, 
@@ -50,7 +58,7 @@ func (repo *Student) GetFullStudent(userID int) (*entity.StudentFull, error) {
 	where user_id = $1
 	`
 
-	studentFull := entity.StudentFull{}
+	studentFull := entity.Student{}
 
 	err := repo.Conn.Get(&studentFull, query, userID)
 	if err != nil {

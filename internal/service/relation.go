@@ -2,6 +2,7 @@ package service
 
 import (
 	"ssr/internal/dto"
+	"ssr/internal/entity"
 	"ssr/pkg/logger"
 	"ssr/pkg/misc"
 )
@@ -18,34 +19,38 @@ func NewRelation(r RelationRepo, l logger.Interface) *Relation {
 	}
 }
 
-func (service *Relation) GetStudentRelations(studentID int) (*dto.StRelationPlenty, error) {
-	dbData, err := service.repo.GetStudentRelations(studentID)
+func (service *Relation) GetPlenty(studentID, supervisorID int) (*dto.RelationPlenty, error) {
+	var relations []*entity.RelationShort
+	var err error
+
+	if studentID != 0 {
+		relations, err = service.repo.GetRelationsByStudentID(studentID)
+	} else {
+		relations, err = service.repo.GetRelationsBySupervisorID(supervisorID)
+	}
+
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.StRelationResp
+	var resp []*dto.RelationShortResp
 
-	for _, db := range dbData {
-		resp = append(resp, &dto.StRelationResp{
-			BidID:     db.RelationID,
-			Status:    db.Status,
-			CreatedAt: db.CreatedAt,
-			Supervisor: dto.SvProfile{
-				Email:     db.User.Email,
-				FirstName: db.User.FirstName,
-				LastName:  db.User.LastName,
-				About:     db.SupervisorFull.About,
-				Birthdate: misc.Date{
-					Time: db.Birthdate,
-				},
-				PhotoUrl:   db.User.PhotoUrl,
-				Department: db.SupervisorFull.DepartmentID,
+	for _, db := range relations {
+		resp = append(resp, &dto.RelationShortResp{
+			RelationID: db.RelationID,
+			Status:     db.Status,
+			Supervisor: dto.SupervisorShort{
+				UserID:    db.SupervisorShort.User.UserID,
+				FirstName: db.SupervisorShort.User.FirstName,
+				LastName:  db.SupervisorShort.User.LastName,
 			},
-			Work: dto.WorkResp{
-				WorkID:      db.WorkID,
-				Description: db.Work.Description,
-				Semester:    db.Work.Semester,
+			Student: dto.StudentShort{
+				UserID:    db.StudentShort.User.UserID,
+				FirstName: db.StudentShort.User.FirstName,
+				LastName:  db.StudentShort.User.LastName,
+			},
+			Work: dto.WorkShortResp{
+				WorkID: db.WorkID,
 				Kind: dto.WorkKindResp{
 					ID:   db.WorkKind.WorkKindID,
 					Name: db.WorkKind.Name,
@@ -59,22 +64,53 @@ func (service *Relation) GetStudentRelations(studentID int) (*dto.StRelationPlen
 		})
 	}
 
-	return &dto.StRelationPlenty{Relations: resp}, nil
+	return &dto.RelationPlenty{Relations: resp}, nil
 }
 
-func (service *Relation) CheckIfStudentBeginWork(studentID, workID int) (bool, error) {
-	relations, err := service.repo.GetStudentRelations(studentID)
+func (service *Relation) Get(id int) (*dto.RelationResp, error) {
+	rel, err := service.repo.Get(id)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	for _, rel := range relations {
-		if rel.Work.WorkID == workID {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return &dto.RelationResp{
+		RelationID: rel.RelationID,
+		Status:     rel.Status,
+		Supervisor: dto.Supervisor{
+			UserID:     rel.Supervisor.User.UserID,
+			Email:      rel.Supervisor.User.Email,
+			FirstName:  rel.Supervisor.User.FirstName,
+			LastName:   rel.Supervisor.User.LastName,
+			About:      rel.Supervisor.About,
+			Birthdate:  misc.Date{Time: rel.Supervisor.Birthdate},
+			PhotoUrl:   rel.Supervisor.User.PhotoUrl,
+			Department: rel.Supervisor.DepartmentID,
+		},
+		Work: dto.WorkResp{
+			WorkID: rel.WorkID,
+			Kind: dto.WorkKindResp{
+				ID:   rel.WorkKind.WorkKindID,
+				Name: rel.WorkKind.Name,
+			},
+			Subject: dto.SubjectResp{
+				ID:         rel.SubjectID,
+				Name:       rel.Subject.Name,
+				Department: rel.Subject.DepartmentID,
+			},
+			Description: rel.Work.Description,
+			Semester:    rel.Work.Semester,
+		},
+		Student: dto.Student{
+			UserID:      rel.Student.User.UserID,
+			Email:       rel.Student.User.Email,
+			FirstName:   rel.Student.User.FirstName,
+			LastName:    rel.Student.User.LastName,
+			PhotoUrl:    rel.Student.User.PhotoUrl,
+			Year:        rel.Student.Year,
+			StudentCard: rel.Student.StudentCard,
+			Department:  rel.Student.DepartmentID,
+		},
+	}, nil
 }
 
 func (service *Relation) Create(data *dto.RelationCreateReq) (*dto.RelationCreateResp, error) {
@@ -86,13 +122,51 @@ func (service *Relation) Create(data *dto.RelationCreateReq) (*dto.RelationCreat
 	return &dto.RelationCreateResp{RelationID: relationID}, nil
 }
 
+func (service *Relation) Update(data *dto.RelationUpdateReq) (*dto.RelationResp, error) {
+	relationID, err := service.repo.Update(data.RelationID, data.Status)
+	if err != nil {
+		return nil, err
+	}
+
+	relation, err := service.repo.Get(relationID)
+
+	return &dto.RelationResp{
+		RelationID: relation.RelationID,
+		Work: dto.WorkResp{
+			WorkID:      relation.Work.WorkID,
+			Description: relation.Work.Description,
+			Semester:    relation.Semester,
+			Subject: dto.SubjectResp{
+				ID:         relation.Subject.SubjectID,
+				Name:       relation.Subject.Name,
+				Department: relation.Subject.DepartmentID,
+			},
+			Kind: dto.WorkKindResp{
+				ID:   relation.WorkKind.WorkKindID,
+				Name: relation.WorkKind.Name,
+			},
+		},
+		Student: dto.Student{
+			UserID:      relation.Student.User.UserID,
+			Email:       relation.Student.User.Email,
+			FirstName:   relation.Student.User.FirstName,
+			LastName:    relation.Student.User.LastName,
+			PhotoUrl:    relation.Student.User.PhotoUrl,
+			Year:        relation.Student.Year,
+			StudentCard: relation.Student.StudentCard,
+			Department:  relation.Student.DepartmentID,
+		},
+		Status: relation.Status,
+	}, nil
+}
+
 //func (service *Relation) Accept(data *dto.CreateSSR) (*dto.StViewRelation, error) {
-//	ssrID, err := service.repo.UpdateStatus(data.BidID, "wip")
+//	ssrID, err := service.repo.Update(data.BidID, "wip")
 //	if err != nil {
 //		return nil, err
 //	}
 //
-//	ssr, err := service.repo.GetStudentRelation(data.StudentID, ssrID)
+//	ssr, err := service.repo.Get(data.StudentID, ssrID)
 //	if err != nil {
 //		return nil, err
 //	}
@@ -101,11 +175,11 @@ func (service *Relation) Create(data *dto.RelationCreateReq) (*dto.RelationCreat
 //		RelID:     ssr.RelationID,
 //		Status:    ssr.Status,
 //		CreatedAt: ssr.CreatedAt,
-//		Supervisor: dto.SvProfile{
-//			Email:      ssr.SvProfile.Email,
-//			FirstName:  ssr.SvProfile.FirstName,
-//			LastName:   ssr.SvProfile.LastName,
-//			About:      ssr.SvProfile.About,
+//		Supervisor: dto.Supervisor{
+//			Email:      ssr.Supervisor.Email,
+//			FirstName:  ssr.Supervisor.FirstName,
+//			LastName:   ssr.Supervisor.LastName,
+//			About:      ssr.Supervisor.About,
 //			Birthdate:  misc.Date{Time: ssr.Birthdate},
 //			PhotoUrl:   ssr.PhotoUrl,
 //			Department: ssr.DepartmentID,

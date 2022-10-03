@@ -36,12 +36,12 @@ func (r *User) CreateUser(email, password, firstName, lastName, photoUrl string,
 	return nil
 }
 
-func (r *User) GetUserByEmail(email string) (*entity.User, error) {
-	user := entity.User{}
+func (r *User) GetUserByEmail(email string) (*entity.UserFull, error) {
+	user := entity.UserFull{}
 
 	err := r.Conn.Get(&user, "select * from users where email = $1", email)
 	if err != nil {
-		err := fmt.Errorf("User->r.Conn.Get(): %w", err)
+		err := fmt.Errorf("UserFull->r.Conn.Get(): %w", err)
 		r.l.Error(err)
 		return nil, err
 	}
@@ -49,12 +49,12 @@ func (r *User) GetUserByEmail(email string) (*entity.User, error) {
 	return &user, nil
 }
 
-func (r *User) GetUserByID(userID int) (*entity.User, error) {
-	auth := entity.User{}
+func (r *User) GetUserByID(userID int) (*entity.UserFull, error) {
+	auth := entity.UserFull{}
 
 	err := r.Conn.Get(&auth, "select * from user where user_id = $1", userID)
 	if err != nil {
-		err := fmt.Errorf("User->r.Conn.Get(): %w", err)
+		err := fmt.Errorf("UserFull->r.Conn.Get(): %w", err)
 		r.l.Error(err)
 		return nil, err
 	}

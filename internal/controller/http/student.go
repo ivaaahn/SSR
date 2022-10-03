@@ -22,7 +22,7 @@ type student struct {
 // @Tags         student
 // @Produce      json
 // @Param        student_id path int  true  "Student ID"
-// @Success      200  {object}  dto.StProfile
+// @Success      200  {object}  dto.Student
 // @Failure      404
 // @Router       /api/v1/students/{student_id}/profile [get]
 // @Security	 OAuth2Password
@@ -42,33 +42,13 @@ func (ctrl *student) getProfile(ctx echo.Context) error {
 // @Tags         student
 // @Param        student_id path int  true  "Student ID"
 // @Produce      json
-// @Success      200  {object}  dto.StWorkPlenty
+// @Success      200  {object}  dto.StudentViewWorkPlenty
 // @Router       /api/v1/students/{student_id}/works [get]
 // @Security	 OAuth2Password
 func (ctrl *student) getWorks(ctx echo.Context) error {
 	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
 
 	respDTO, err := ctrl.workService.GetStudentWorks(studentID)
-	if err != nil {
-		return echo.ErrNotFound
-	}
-
-	return ctx.JSON(http.StatusOK, respDTO)
-}
-
-// ShowAccount godoc
-// @Summary      Get student's bids
-// @Tags         student
-// @Produce      json
-// @Param        student_id path int  true  "Student ID"
-// @Success      200  {object}  dto.StRelationPlenty
-// @Failure      404
-// @Router       /api/v1/students/{student_id}/relations [get]
-// @Security	 OAuth2Password
-func (ctrl *student) getRelations(ctx echo.Context) error {
-	studentID, _ := strconv.Atoi(ctx.Param("student_id"))
-
-	respDTO, err := ctrl.relationsService.GetStudentRelations(studentID)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -173,7 +153,7 @@ func NewStudentRoutes(
 	{
 		student.GET("/:student_id/profile", ctrl.getProfile)
 		student.GET("/:student_id/works", ctrl.getWorks)
-		student.GET("/:student_id/relations", ctrl.getRelations)
+		//student.GET("/:student_id/relations", ctrl.get)
 		//student.PUT("/bid", ctrl.applyBid)
 		//student.POST("/ssr", ctrl.createSSR)
 		//student.GET("/work/supervisor_id", ctrl.getSupervisors)

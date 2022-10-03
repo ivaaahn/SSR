@@ -4,27 +4,26 @@ import (
 	"ssr/internal/dto"
 	"ssr/internal/entity"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 	"time"
 )
 
 type Work struct {
 	*Base
-	workRepo WorkRepo
-	ssrRepo  RelationRepo
-	stRepo   StudentRepo
+	workRepo     WorkRepo
+	relationRepo RelationRepo
+	stRepo       StudentRepo
 }
 
 func NewWork(workRepo WorkRepo, ssrRepo RelationRepo, stRepo StudentRepo, l logger.Interface) *Work {
 	return &Work{
-		Base:     NewBase(l),
-		workRepo: workRepo,
-		ssrRepo:  ssrRepo,
-		stRepo:   stRepo,
+		Base:         NewBase(l),
+		workRepo:     workRepo,
+		relationRepo: ssrRepo,
+		stRepo:       stRepo,
 	}
 }
 
-func (service *Work) checkIfBegin(relations []*entity.StRelation, workID int) bool {
+func (service *Work) checkIfBegin(relations []*entity.Relation, workID int) bool {
 	for _, rel := range relations {
 		if rel.Work.WorkID == workID {
 			return true
@@ -43,8 +42,8 @@ func (service *Work) recognizeSemester(studentYear int) int {
 	}
 }
 
-func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
-	studentData, err := service.stRepo.GetStudent(studentID)
+func (service *Work) GetStudentWorks(studentID int) (*dto.StudentViewWorkPlenty, error) {
+	studentData, err := service.stRepo.GetStudentShort(studentID)
 	if err != nil {
 		return nil, err
 	}
@@ -56,19 +55,12 @@ func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
 		return nil, err
 	}
 
-	//relationsData, err := service.ssrRepo.GetStudentRelations(studentID)
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	var resp []*dto.StWorkResp
+	var resp []*dto.StudentViewWorkShortResp
 
 	for _, work := range worksData {
-		resp = append(resp, &dto.StWorkResp{
-			Work: dto.WorkResp{
-				WorkID:      work.WorkID,
-				Description: work.Description,
-				Semester:    work.Semester,
+		resp = append(resp, &dto.StudentViewWorkShortResp{
+			Work: dto.WorkShortResp{
+				WorkID: work.WorkID,
 				Subject: dto.SubjectResp{
 					ID:         work.Subject.SubjectID,
 					Name:       work.Subject.Name,
@@ -78,30 +70,27 @@ func (service *Work) GetStudentWorks(studentID int) (*dto.StWorkPlenty, error) {
 					ID:   work.WorkKind.WorkKindID,
 					Name: work.WorkKind.Name,
 				},
-				//IsStarted: service.checkIfBegin(relations, work.WorkID), TODO
 			},
 		})
 	}
 
-	return &dto.StWorkPlenty{
+	return &dto.StudentViewWorkPlenty{
 		Works: resp,
 	}, nil
 }
 
-func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, error) {
+func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SupervisorViewWorkPlenty, error) {
 	worksData, err := service.workRepo.GetSupervisorWorks(supervisorID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.SvWorkResp
+	var resp []*dto.SupervisorViewWorkShortResp
 
 	for _, db := range worksData {
-		resp = append(resp, &dto.SvWorkResp{
-			Work: dto.WorkResp{
-				WorkID:      db.WorkID,
-				Description: db.Description,
-				Semester:    db.Semester,
+		resp = append(resp, &dto.SupervisorViewWorkShortResp{
+			Work: dto.WorkShortResp{
+				WorkID: db.WorkID,
 				Subject: dto.SubjectResp{
 					ID:         db.Subject.SubjectID,
 					Name:       db.Subject.Name,
@@ -117,36 +106,31 @@ func (service *Work) GetSupervisorWorks(supervisorID int) (*dto.SvWorkPlenty, er
 		})
 	}
 
-	return &dto.SvWorkPlenty{
+	return &dto.SupervisorViewWorkPlenty{
 		Works: resp,
 	}, nil
 }
 
-func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSvPlenty, error) {
+func (service *Work) GetWorkSupervisors(workID int) (*dto.WorkSupervisorPlenty, error) {
 	supervisorsData, err := service.workRepo.GetWorkSupervisors(workID)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*dto.WorkSv
+	var resp []*dto.WorkSupervisorShort
 
 	for _, db := range supervisorsData {
-		resp = append(resp, &dto.WorkSv{
-			SvProfile: dto.SvProfile{
-				Email:      db.User.Email,
-				FirstName:  db.User.FirstName,
-				LastName:   db.User.LastName,
-				About:      db.SupervisorFull.About,
-				Birthdate:  misc.Date{Time: db.SupervisorFull.Birthdate},
-				PhotoUrl:   db.User.PhotoUrl,
-				Department: db.DepartmentID,
+		resp = append(resp, &dto.WorkSupervisorShort{
+			SupervisorShort: dto.SupervisorShort{
+				FirstName: db.User.FirstName,
+				LastName:  db.User.LastName,
 			},
 			IsHead: db.IsHead,
 			IsFull: db.IsFull,
 		})
 	}
 
-	return &dto.WorkSvPlenty{
+	return &dto.WorkSupervisorPlenty{
 		Supervisors: resp,
 	}, nil
 }

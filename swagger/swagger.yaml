@@ -25,57 +25,92 @@ definitions:
       relation_id:
         type: integer
     type: object
-  dto.StProfile:
+  dto.RelationPlenty:
+    properties:
+      relations:
+        items:
+          $ref: '#/definitions/dto.RelationShortResp'
+        type: array
+    type: object
+  dto.RelationResp:
+    properties:
+      relation_id:
+        type: integer
+      status:
+        type: string
+      student:
+        $ref: '#/definitions/dto.Student'
+      supervisor:
+        $ref: '#/definitions/dto.Supervisor'
+      work:
+        $ref: '#/definitions/dto.WorkResp'
+    type: object
+  dto.RelationShortResp:
+    properties:
+      relation_id:
+        type: integer
+      status:
+        type: string
+      student:
+        $ref: '#/definitions/dto.StudentShort'
+      student_id:
+        type: integer
+      supervisor:
+        $ref: '#/definitions/dto.SupervisorShort'
+      supervisor_id:
+        type: integer
+      work:
+        $ref: '#/definitions/dto.WorkShortResp'
+    type: object
+  dto.RelationUpdateReq:
+    properties:
+      relation_id:
+        type: integer
+      status:
+        type: string
+    type: object
+  dto.Student:
     properties:
       department:
         type: string
       email:
         type: string
-      firstName:
+      first_name:
         type: string
-      lastName:
+      last_name:
         type: string
-      photoUrl:
+      photo_url:
         type: string
-      studentCard:
+      student_card:
         type: string
+      user_id:
+        type: integer
       year:
         type: integer
     type: object
-  dto.StRelationPlenty:
+  dto.StudentShort:
     properties:
-      relations:
-        items:
-          $ref: '#/definitions/dto.StRelationResp'
-        type: array
-    type: object
-  dto.StRelationResp:
-    properties:
-      created_at:
+      first_name:
         type: string
-      id:
+      last_name:
+        type: string
+      user_id:
         type: integer
-      status:
-        type: string
-      supervisor:
-        $ref: '#/definitions/dto.SvProfile'
-      work:
-        $ref: '#/definitions/dto.WorkResp'
     type: object
-  dto.StWorkPlenty:
+  dto.StudentViewWorkPlenty:
     properties:
       works:
         items:
-          $ref: '#/definitions/dto.StWorkResp'
+          $ref: '#/definitions/dto.StudentViewWorkShortResp'
         type: array
     type: object
-  dto.StWorkResp:
+  dto.StudentViewWorkShortResp:
     properties:
       is_started:
         description: TODO
         type: boolean
       work:
-        $ref: '#/definitions/dto.WorkResp'
+        $ref: '#/definitions/dto.WorkShortResp'
     type: object
   dto.SubjectResp:
     properties:
@@ -86,11 +121,9 @@ definitions:
       name:
         type: string
     type: object
-  dto.SvProfile:
+  dto.Supervisor:
     properties:
       about:
-        type: string
-      avatarUrl:
         type: string
       birthdate:
         type: string
@@ -98,26 +131,39 @@ definitions:
         type: string
       email:
         type: string
-      firstName:
+      first_name:
         type: string
-      lastName:
+      last_name:
         type: string
+      photo_url:
+        type: string
+      user_id:
+        type: integer
     type: object
-  dto.SvWorkPlenty:
+  dto.SupervisorShort:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.SupervisorViewWorkPlenty:
     properties:
       works:
         items:
-          $ref: '#/definitions/dto.SvWorkResp'
+          $ref: '#/definitions/dto.SupervisorViewWorkShortResp'
         type: array
     type: object
-  dto.SvWorkResp:
+  dto.SupervisorViewWorkShortResp:
     properties:
       is_full:
         type: boolean
       is_head:
         type: boolean
       work:
-        $ref: '#/definitions/dto.WorkResp'
+        $ref: '#/definitions/dto.WorkShortResp'
     type: object
   dto.WorkKindResp:
     properties:
@@ -139,33 +185,34 @@ definitions:
       subject:
         $ref: '#/definitions/dto.SubjectResp'
     type: object
-  dto.WorkSv:
+  dto.WorkShortResp:
     properties:
-      about:
-        type: string
-      avatarUrl:
-        type: string
-      birthdate:
-        type: string
-      department:
-        type: string
-      email:
-        type: string
-      firstName:
+      id:
+        type: integer
+      kind:
+        $ref: '#/definitions/dto.WorkKindResp'
+      subject:
+        $ref: '#/definitions/dto.SubjectResp'
+    type: object
+  dto.WorkSupervisorPlenty:
+    properties:
+      supervisors:
+        items:
+          $ref: '#/definitions/dto.WorkSupervisorShort'
+        type: array
+    type: object
+  dto.WorkSupervisorShort:
+    properties:
+      first_name:
         type: string
       full:
         type: boolean
       head:
         type: boolean
-      lastName:
+      last_name:
         type: string
-    type: object
-  dto.WorkSvPlenty:
-    properties:
-      supervisors:
-        items:
-          $ref: '#/definitions/dto.WorkSv'
-        type: array
+      user_id:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -182,12 +229,12 @@ paths:
       consumes:
       - application/x-www-form-urlencoded
       parameters:
-      - description: User email
+      - description: UserFull email
         in: formData
         name: username
         required: true
         type: string
-      - description: User password
+      - description: UserFull password
         in: formData
         name: password
         required: true
@@ -207,6 +254,52 @@ paths:
       tags:
       - auth
   /api/v1/relations/:
+    get:
+      parameters:
+      - description: Student ID
+        in: query
+        name: student_id
+        type: integer
+      - description: Supervisor ID
+        in: query
+        name: supervisor_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RelationPlenty'
+        "404":
+          description: Not Found
+      security:
+      - OAuth2Password: []
+      summary: Get relations
+      tags:
+      - relation
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Relation data
+        in: body
+        name: CreateRelation
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RelationUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RelationResp'
+      security:
+      - OAuth2Password: []
+      summary: Update relation
+      tags:
+      - relation
     post:
       consumes:
       - application/json
@@ -220,8 +313,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/dto.RelationCreateResp'
       security:
@@ -243,34 +336,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StProfile'
+            $ref: '#/definitions/dto.Student'
         "404":
           description: Not Found
       security:
       - OAuth2Password: []
       summary: Get student's profile
-      tags:
-      - student
-  /api/v1/students/{student_id}/relations:
-    get:
-      parameters:
-      - description: Student ID
-        in: path
-        name: student_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.StRelationPlenty'
-        "404":
-          description: Not Found
-      security:
-      - OAuth2Password: []
-      summary: Get student's bids
       tags:
       - student
   /api/v1/students/{student_id}/works:
@@ -287,7 +358,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.StWorkPlenty'
+            $ref: '#/definitions/dto.StudentViewWorkPlenty'
       security:
       - OAuth2Password: []
       summary: Get student's works
@@ -307,7 +378,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SvProfile'
+            $ref: '#/definitions/dto.Supervisor'
       security:
       - OAuth2Password: []
       summary: Get supervisor's profile
@@ -327,7 +398,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SvWorkPlenty'
+            $ref: '#/definitions/dto.SupervisorViewWorkPlenty'
       security:
       - OAuth2Password: []
       summary: Get supervisor's works
@@ -347,7 +418,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.WorkSvPlenty'
+            $ref: '#/definitions/dto.WorkSupervisorPlenty'
       security:
       - OAuth2Password: []
       summary: Get supervisors of the work

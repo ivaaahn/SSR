@@ -19,7 +19,7 @@ type works struct {
 // @Tags         works
 // @Param        work_id path int true "Work ID"
 // @Produce      json
-// @Success      200  {object}  dto.WorkSvPlenty
+// @Success      200  {object}  dto.WorkSupervisorPlenty
 // @Router       /api/v1/works/{work_id}/supervisors [get]
 // @Security	 OAuth2Password
 func (ctrl *works) getSupervisors(ctx echo.Context) error {
