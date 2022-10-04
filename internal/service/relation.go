@@ -40,12 +40,12 @@ func (service *Relation) GetPlenty(studentID, supervisorID int) (*dto.RelationPl
 			RelationID: db.RelationID,
 			Status:     db.Status,
 			Supervisor: dto.SupervisorShort{
-				UserID:    db.SupervisorShort.User.UserID,
+				UserID:    db.SupervisorShort.User.ID,
 				FirstName: db.SupervisorShort.User.FirstName,
 				LastName:  db.SupervisorShort.User.LastName,
 			},
 			Student: dto.StudentShort{
-				UserID:    db.StudentShort.User.UserID,
+				UserID:    db.StudentShort.User.ID,
 				FirstName: db.StudentShort.User.FirstName,
 				LastName:  db.StudentShort.User.LastName,
 			},
@@ -77,7 +77,7 @@ func (service *Relation) Get(id int) (*dto.RelationResp, error) {
 		RelationID: rel.RelationID,
 		Status:     rel.Status,
 		Supervisor: dto.Supervisor{
-			UserID:     rel.Supervisor.User.UserID,
+			UserID:     rel.Supervisor.User.ID,
 			Email:      rel.Supervisor.User.Email,
 			FirstName:  rel.Supervisor.User.FirstName,
 			LastName:   rel.Supervisor.User.LastName,
@@ -101,7 +101,7 @@ func (service *Relation) Get(id int) (*dto.RelationResp, error) {
 			Semester:    rel.Work.Semester,
 		},
 		Student: dto.Student{
-			UserID:      rel.Student.User.UserID,
+			UserID:      rel.Student.User.ID,
 			Email:       rel.Student.User.Email,
 			FirstName:   rel.Student.User.FirstName,
 			LastName:    rel.Student.User.LastName,
@@ -147,7 +147,7 @@ func (service *Relation) Update(data *dto.RelationUpdateReq) (*dto.RelationResp,
 			},
 		},
 		Student: dto.Student{
-			UserID:      relation.Student.User.UserID,
+			UserID:      relation.Student.User.ID,
 			Email:       relation.Student.User.Email,
 			FirstName:   relation.Student.User.FirstName,
 			LastName:    relation.Student.User.LastName,
@@ -159,40 +159,3 @@ func (service *Relation) Update(data *dto.RelationUpdateReq) (*dto.RelationResp,
 		Status: relation.Status,
 	}, nil
 }
-
-//func (service *Relation) Accept(data *dto.CreateSSR) (*dto.StViewRelation, error) {
-//	ssrID, err := service.repo.Update(data.BidID, "wip")
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	ssr, err := service.repo.Get(data.StudentID, ssrID)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return &dto.StViewRelation{
-//		RelID:     ssr.RelationID,
-//		Status:    ssr.Status,
-//		CreatedAt: ssr.CreatedAt,
-//		Supervisor: dto.Supervisor{
-//			Email:      ssr.Supervisor.Email,
-//			FirstName:  ssr.Supervisor.FirstName,
-//			LastName:   ssr.Supervisor.LastName,
-//			About:      ssr.Supervisor.About,
-//			Birthdate:  misc.Date{Time: ssr.Birthdate},
-//			PhotoUrl:   ssr.PhotoUrl,
-//			Department: ssr.DepartmentID,
-//		},
-//		Work: dto.WorkResp{
-//			WorkID:      ssr.WorkID,
-//			Description: ssr.Work.Description,
-//			Semester:    ssr.Work.Semester,
-//			Subject: dto.SubjectResp{
-//				ID:         ssr.ID,
-//				Name:       ssr.Subject.Name,
-//				Department: ssr.DepartmentID,
-//			},
-//		},
-//	}, nil
-//}

@@ -151,7 +151,7 @@ func (service *Work) Get(workID int) (*dto.WorkFullResp, error) {
 	for _, db := range supervisorsData {
 		supervisors = append(supervisors, &dto.WorkSupervisorShort{
 			SupervisorShort: dto.SupervisorShort{
-				UserID:    db.Supervisor.User.UserID,
+				UserID:    db.Supervisor.User.ID,
 				FirstName: db.User.FirstName,
 				LastName:  db.User.LastName,
 			},
@@ -177,39 +177,3 @@ func (service *Work) Get(workID int) (*dto.WorkFullResp, error) {
 		Supervisors: supervisors,
 	}, nil
 }
-
-//
-//func (service *Work) GetPlenty(workID int) (*dto.WorkFullResp, error) {
-//	workData, err := service.workRepo.Get(workID)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	waypointsData, err := service.waypointRepo.GetPlenty(workID)
-//
-//	var waypoints []*dto.WaypointResp
-//
-//	for _, waypointData := range waypointsData {
-//		waypoints = append(waypoints, &dto.WaypointResp{
-//			Title:       waypointData.Title,
-//			Description: waypointData.Description,
-//			Deadline:    misc.Date{Time: waypointData.Deadline},
-//		})
-//	}
-//
-//	return &dto.WorkFullResp{
-//		WorkID:      workData.WorkID,
-//		Description: workData.Description,
-//		Semester:    workData.Semester,
-//		Subject: dto.SubjectResp{
-//			ID:         workData.Subject.SubjectID,
-//			Name:       workData.Subject.Name,
-//			Department: workData.Subject.DepartmentID,
-//		},
-//		Kind: dto.WorkKindResp{
-//			ID:   workData.WorkKind.WorkKindID,
-//			Name: workData.WorkKind.Name,
-//		},
-//		Waypoints: waypoints,
-//	}, nil
-//}

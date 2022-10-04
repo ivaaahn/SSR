@@ -28,7 +28,7 @@ func (repo *Relation) Get(id int) (*entity.Relation, error) {
 		sv.birthdate as "sv.birthdate",
 		sv.about as "sv.about",
 		
-		svu.user_id as "sv.user.user_id",
+		svu.id as "sv.user.id",
 		svu.email as "sv.user.email",
 		svu.last_name as "sv.user.last_name",
 		svu.first_name as "sv.user.first_name",
@@ -36,7 +36,7 @@ func (repo *Relation) Get(id int) (*entity.Relation, error) {
 		st.year as "st.year",
 		st.department_id as "st.department_id",
 
-		stu.user_id as "st.user.user_id",
+		stu.id as "st.user.id",
 		stu.email as "st.user.email",
 		stu.last_name as "st.user.last_name",
 		stu.first_name as "st.user.first_name",
@@ -53,8 +53,8 @@ func (repo *Relation) Get(id int) (*entity.Relation, error) {
 	from ssr
 		join supervisors sv on ssr.supervisor_id = sv.user_id
 		join students st on ssr.student_id = st.user_id
-		join users stu on st.user_id = stu.user_id
-		join users svu on sv.user_id = svu.user_id
+		join users stu on st.user_id = stu.id
+		join users svu on sv.user_id = svu.id
 		join works w using (work_id)
 		join work_kinds wk using (work_kind_id)
 		join subjects subj using (subject_id)
@@ -80,13 +80,13 @@ func (repo *Relation) GetRelationsBySupervisorID(supervisorID int) ([]*entity.Re
 		ssr.status,
 		
 		sv.department_id as "sv.department_id",
-		svu.user_id as "sv.user.user_id",
+		svu.id as "sv.user.id",
 		svu.last_name as "sv.user.last_name",
 		svu.first_name as "sv.user.first_name",
 		
 		st.year as "st.year",
 		st.department_id as "st.department_id",
-		stu.user_id as "st.user.user_id",
+		stu.id as "st.user.id",
 		stu.last_name as "st.user.last_name",
 		stu.first_name as "st.user.first_name",
 
@@ -102,8 +102,8 @@ func (repo *Relation) GetRelationsBySupervisorID(supervisorID int) ([]*entity.Re
 	from ssr 
 		join supervisors sv on ssr.supervisor_id = sv.user_id
 		join students st on ssr.student_id = st.user_id
-		join users stu on st.user_id = stu.user_id
-		join users svu on sv.user_id = svu.user_id
+		join users stu on st.user_id = stu.id
+		join users svu on sv.user_id = svu.id
 		join works w using (work_id)
 		join work_kinds wk using (work_kind_id)
 		join subjects subj using (subject_id)
@@ -129,13 +129,13 @@ func (repo *Relation) GetRelationsByStudentID(studentID int) ([]*entity.Relation
 		ssr.status,
 		
 		sv.department_id as "sv.department_id",
-		svu.user_id as "sv.user.user_id",
+		svu.id as "sv.user.id",
 		svu.last_name as "sv.user.last_name",
 		svu.first_name as "sv.user.first_name",
 		
 		st.year as "st.year",
 		st.department_id as "st.department_id",
-		stu.user_id as "st.user.user_id",
+		stu.id as "st.user.id",
 		stu.last_name as "st.user.last_name",
 		stu.first_name as "st.user.first_name",
 
@@ -151,8 +151,8 @@ func (repo *Relation) GetRelationsByStudentID(studentID int) ([]*entity.Relation
 	from ssr 
 		join supervisors sv on ssr.supervisor_id = sv.user_id
 		join students st on ssr.student_id = st.user_id
-		join users stu on st.user_id = stu.user_id
-		join users svu on sv.user_id = svu.user_id
+		join users stu on st.user_id = stu.id
+		join users svu on sv.user_id = svu.id
 		join works w using (work_id)
 		join work_kinds wk using (work_kind_id)
 		join subjects subj using (subject_id)

@@ -7,7 +7,7 @@ CREATE TABLE "supervisors"
 );
 
 ALTER TABLE "supervisors"
-    ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id"),
+    ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
     ADD FOREIGN KEY ("department_id") REFERENCES "departments" ("department_id");
 
 

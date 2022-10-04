@@ -52,7 +52,7 @@ func (r *User) GetUserByEmail(email string) (*entity.UserFull, error) {
 func (r *User) GetUserByID(userID int) (*entity.UserFull, error) {
 	auth := entity.UserFull{}
 
-	err := r.Conn.Get(&auth, "select * from user where user_id = $1", userID)
+	err := r.Conn.Get(&auth, "select * from user where id = $1", userID)
 	if err != nil {
 		err := fmt.Errorf("UserFull->r.Conn.Get(): %w", err)
 		r.l.Error(err)

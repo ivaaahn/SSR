@@ -4,7 +4,7 @@ CREATE TABLE "waypoints"
     "work_id"       bigint not null,
     "deadline"      date not null,
     "title"         text not null,
-    "description"       text not null
+    "description"   text not null
 );
 
 

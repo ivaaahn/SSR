@@ -8,7 +8,7 @@ const (
 )
 
 type UserFull struct {
-	UserID    int      `db:"user_id"`
+	ID        int      `db:"id"`
 	Email     string   `db:"email"`
 	FirstName string   `db:"first_name"`
 	LastName  string   `db:"last_name"`
@@ -18,7 +18,7 @@ type UserFull struct {
 }
 
 type User struct {
-	UserID    int    `db:"user_id"`
+	ID        int    `db:"id"`
 	Email     string `db:"email"`
 	FirstName string `db:"first_name"`
 	LastName  string `db:"last_name"`
@@ -26,7 +26,7 @@ type User struct {
 }
 
 type UserShort struct {
-	UserID    int    `db:"user_id"`
+	ID        int    `db:"id"`
 	FirstName string `db:"first_name"`
 	LastName  string `db:"last_name"`
 }

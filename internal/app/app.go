@@ -22,20 +22,16 @@ func setupMiddlewares(server *echo.Echo) {
 
 func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
 	relationRepo := repo_pg.NewRelation(pg, l)
-	//profileRepo := repo_pg.NewProfile(pg, l)
 	workRepo := repo_pg.NewWork(pg, l)
 	waypointRepo := repo_pg.NewWaypointRepo(pg, l)
-	feedbackRepo := repo_pg.NewFeedback(pg, l)
 	userRepo := repo_pg.NewUser(pg, l)
 	studentRepo := repo_pg.NewStudent(pg, l)
 	supervisorRepo := repo_pg.NewSupervisor(pg, l)
 
 	authService := service.NewAuth(userRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
 	profileService := service.NewProfile(studentRepo, supervisorRepo, l)
-	//bidService := service.NewBid(relationRepo, l)
 	workService := service.NewWork(workRepo, relationRepo, studentRepo, supervisorRepo, waypointRepo, l)
 	relationService := service.NewRelation(relationRepo, l)
-	feedbackService := service.NewFeedback(feedbackRepo, l)
 
 	ctrl.NewRouter(
 		server,
@@ -45,7 +41,6 @@ func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, 
 		profileService,
 		workService,
 		relationService,
-		feedbackService,
 	)
 }
 

@@ -36,7 +36,7 @@ func (service *Auth) Login(email, password string) (*dto.LoginResponse, error) {
 		return nil, err
 	}
 
-	tokenClaims := misc.NewAppJWTClaims(service.tokenExp, dbData.UserID, string(dbData.Role))
+	tokenClaims := misc.NewAppJWTClaims(service.tokenExp, dbData.ID, string(dbData.Role))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
 	tokenStr, err := token.SignedString(service.signingKey)
@@ -48,7 +48,7 @@ func (service *Auth) Login(email, password string) (*dto.LoginResponse, error) {
 	return &dto.LoginResponse{
 		Token:     tokenStr,
 		TokenType: "Bearer",
-		UserID:    dbData.UserID,
+		UserID:    dbData.ID,
 		Role:      string(dbData.Role),
 	}, nil
 }

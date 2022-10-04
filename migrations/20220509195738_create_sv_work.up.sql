@@ -1,5 +1,6 @@
 CREATE TABLE "supervisor_work"
 (
+    "id"         bigint generated always as identity unique,
     "work_id"       bigint not null,
     "supervisor_id" bigint not null,
     "is_head"       bool,

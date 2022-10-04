@@ -44,10 +44,10 @@ func (repo *Supervisor) GetSupervisor(userID int) (*entity.Supervisor, error) {
 	    u.first_name as "user.first_name", 
 	    u.last_name as "user.last_name", 
 	    u.photo_url as "user.photo_url", 
-	    u.user_id as "user.user_id"
+	    u.id as "user.id"
 	from users u 
-		join supervisors s using (user_id)
-	where user_id = $1
+		join supervisors s on s.user_id = u.id
+	where u.id = $1
 	`
 
 	supervisor := entity.Supervisor{}
@@ -69,7 +69,7 @@ func (repo *Supervisor) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSuperv
 		sv.birthdate as "sv.birthdate",   	        
 		sv.department_id as "sv.department_id",
 
-	    u.user_id as "sv.user.user_id",
+	    u.id as "sv.user.id",
 		u.email as "sv.user.email",
 		u.first_name as "sv.user.first_name",
 		u.last_name as "sv.user.last_name",
@@ -78,7 +78,7 @@ func (repo *Supervisor) GetSupervisorsByWorkID(workID int) ([]*entity.WorkSuperv
 		sw.is_head as is_head
 	from supervisors sv
 		join supervisor_work sw on sv.user_id = sw.supervisor_id
-		join users u using (user_id)
+		join users u on sv.user_id = u.id
 	where sw.work_id = $1;
 	`
 

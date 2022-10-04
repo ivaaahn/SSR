@@ -24,10 +24,10 @@ func (repo *Student) GetStudentShort(userID int) (*entity.StudentShort, error) {
 	     s.department_id,
 		 u.last_name as "user.last_name",
 		 u.first_name as "user.first_name",
-		 u.user_id as "user.user_id"
+		 u.id as "user.id"
 	from students s
-		join users u on s.user_id = u.user_id
-	where u.user_id = $1
+		join users u on s.user_id = u.id
+	where u.id = $1
 	`
 
 	student := entity.StudentShort{}
@@ -52,10 +52,10 @@ func (repo *Student) GetStudent(userID int) (*entity.Student, error) {
 	    u.first_name as "user.first_name", 
 	    u.last_name as "user.last_name", 
 	    u.photo_url as "user.photo_url", 
-	    u.user_id as "user.user_id"
+	    u.id as "user.id"
 	from users u 
-		join students s using (user_id)
-	where user_id = $1
+		join students s on s.user_id = u.id
+	where u.id = $1
 	`
 
 	studentFull := entity.Student{}

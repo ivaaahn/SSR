@@ -1,16 +1,20 @@
 CREATE TYPE "user_role" AS ENUM (
     'st',
-    'sv'
+    'sv',
+    'su'
     );
 
 CREATE TABLE "users"
 (
-    "user_id"    bigint generated always as identity unique,
+    "id"         bigint generated always as identity unique,
     "email"      varchar unique not null,
+    "is_active"  bool           not null default true,
     "first_name" varchar        not null,
     "last_name"  varchar        not null,
     "photo_url"  varchar        not null,
     "role"       user_role      not null,
+    "created_at" timestamp      not null  default now(),
+    "last_login" timestamp      default now(),
     "password" varchar not null
 );
 

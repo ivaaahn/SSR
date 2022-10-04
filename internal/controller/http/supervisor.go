@@ -12,8 +12,7 @@ import (
 type supervisor struct {
 	l              logger.Interface
 	profileService ProfileService
-	//relationsService     SvBidService
-	workService WorkService
+	workService    WorkService
 }
 
 // ShowAccount godoc
@@ -56,89 +55,11 @@ func (ctrl *supervisor) getWorks(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
-// // ShowAccount godoc
-// // @Summary      GetUserByEmail supervisor's bids
-// // @Tags         supervisor
-// // @Param        supervisor_id query int  true  "Supervisor ID"
-// // @Produce      json
-// // @Success      200  {object}  dto.SvBids
-// // @Router       /api/supervisor/bid [get]
-// // @Security	 Auth
-//
-//	func (ctrl *supervisor) getBids(ctx echo.Context) error {
-//		email, _ := misc.ExtractCtx(ctx)
-//		ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-//
-//		supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
-//
-//		respDTO, err := ctrl.relationsService.GetSupervisorRelations(supervisorID)
-//		if err != nil {
-//			ctrl.l.Error(err)
-//			return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
-//		}
-//
-//		return ctx.JSON(http.StatusOK, respDTO)
-//	}
-//
-// // ShowAccount godoc
-// // @Summary      Accept or Decline student's bid
-// // @Tags         supervisor
-// // @Param 		 ResolveBid body dto.ResolveBid true "bid info"
-// // @Produce      json
-// // @Success      200  {object}  dto.ResolveBidResp
-// // @Router       /api/supervisor/bid/resolve [post]
-// // @Security	 Auth
-//
-//	func (ctrl *supervisor) resolveBid(ctx echo.Context) error {
-//		email, _ := misc.ExtractCtx(ctx)
-//		ctrl.l.Debug(fmt.Sprintf("Email: %s", email))
-//
-//		reqDTO := &dto.ResolveBid{}
-//		if err := ctx.Bind(reqDTO); err != nil {
-//			return echo.ErrBadRequest
-//		}
-//
-//		if err := ctrl.relationsService.Resolve(reqDTO); err != nil {
-//			return echo.NewHTTPError(http.StatusInternalServerError)
-//		}
-//
-//		newStatus := ""
-//		if reqDTO.Accept {
-//			newStatus = "accepted"
-//		} else {
-//			newStatus = "rejected"
-//		}
-//
-//		resp := dto.ResolveBidResp{NewStatus: newStatus}
-//
-//		return ctx.JSON(http.StatusOK, resp)
-//	}
-
-//// ShowAccount godoc
-//// @Summary      Get supervisors of the work
-//// @Tags         supervisors
-//// @Param        work_id path int true "Work ID"
-//// @Produce      json
-//// @Success      200  {object}  dto.WorkSupervisorPlenty
-//// @Router       /api/v1/supervisors [get]
-//// @Security	 OAuth2Password
-//func (ctrl *supervisor) getSupervisors(ctx echo.Context) error {
-//	workID, _ := strconv.Atoi(ctx.QueryParam("work_id"))
-//
-//	respDTO, err := ctrl.workService.GetWorkSupervisors(workID)
-//	if err != nil {
-//		return echo.ErrNotFound
-//	}
-//
-//	return ctx.JSON(http.StatusOK, respDTO)
-//}
-
 func NewSupervisorRoutes(
 	router *echo.Group,
 	l logger.Interface,
 	config *config.Config,
 	profileService ProfileService,
-	// relationsService SvBidService,
 	workService WorkService,
 ) {
 	ctrl := &supervisor{l, profileService, workService}
@@ -148,10 +69,6 @@ func NewSupervisorRoutes(
 	{
 		g.GET("/:supervisor_id/profile", ctrl.getProfile)
 		g.GET("/:supervisor_id/works", ctrl.getWorks)
-		//g.GET("/", ctrl.getSupervisors)
-		//g.GET("/bid", ctrl.getBids)
-		//g.POST("/bid/resolve", ctrl.resolveBid)
-		//g.GET("/work", ctrl.getWorks)
 	}
 
 }

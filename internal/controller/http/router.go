@@ -16,14 +16,13 @@ func NewRouter(
 	profiles ProfileService,
 	works WorkService,
 	relations RelationsService,
-	feedback FeedbackService,
 ) {
 	g := server.Group("/api/v1")
 	g.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	{
 		NewAuthRoutes(g, l, auth)
-		NewStudentRoutes(g, l, config, profiles, works, relations, feedback)
+		NewStudentRoutes(g, l, config, profiles, works, relations)
 		NewSupervisorRoutes(g, l, config, profiles, works)
 		NewWorksRoutes(g, l, config, works)
 		NewRelationRoutes(g, l, config, relations)
