@@ -11,5 +11,5 @@ ALTER TABLE "subjects"
 
 insert into subjects (name, department_id)
 VALUES ('Операционные системы', 'ИУ7'),
-       ('Компьютерная графика', 'ИУ7');
+       ('НИР', 'ИУ7');
 

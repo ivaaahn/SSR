@@ -14,9 +14,7 @@ CREATE TABLE "works"
 );
 
 ALTER TABLE "works"
-    ADD FOREIGN KEY ("subject_id") REFERENCES "subjects" ("subject_id");
-
-ALTER TABLE "works"
+    ADD FOREIGN KEY ("subject_id") REFERENCES "subjects" ("subject_id"),
     ADD FOREIGN KEY ("work_kind_id") REFERENCES "work_kinds" ("work_kind_id");
 
 
@@ -25,5 +23,5 @@ VALUES ('Курсовая работа'),
        ('Научно-исследовательская работа');
 
 insert into "works" (work_kind_id, description, semester, subject_id)
-VALUES (1, 'Только для истинных профессионалов', 6, 1),
-       (2, 'Брезенхем за 20 минту', 6, 2);
+VALUES (1, 'Только для истинных профессионалов', 7, 1),
+       (2, 'Готовься к ВКР', 7, 2);

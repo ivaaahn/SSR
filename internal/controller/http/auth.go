@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"ssr/internal/usecase"
 	"ssr/pkg/logger"
 )
 
-type authRoutes struct {
-	l  logger.Interface
-	uc usecase.IUsecaseAuth
+type auth struct {
+	l       logger.Interface
+	service AuthService
 }
 
 // ShowAccount godoc
@@ -18,19 +17,19 @@ type authRoutes struct {
 // @Tags         auth
 // @Accept       x-www-form-urlencoded
 // @Produce      json
-// @Param        username formData  string  true  "User email"
-// @Param        password formData  string  true  "User password"
+// @Param        username formData  string  true  "UserFull email"
+// @Param        password formData  string  true  "UserFull password"
 // @Success      200  {object}  dto.LoginResponse
 // @Failure      401
 // @Failure      500
 // @Router       /api/auth/login [post]
-func (r *authRoutes) login(ctx echo.Context) error {
+func (ctrl *auth) login(ctx echo.Context) error {
 	email := ctx.FormValue("username")
 	password := ctx.FormValue("password")
 
-	r.l.Debug(fmt.Sprintf("Email %s; Password: %s", email, password))
+	ctrl.l.Debug(fmt.Sprintf("Email %s; Password: %s", email, password))
 
-	respDTO, err := r.uc.Login(email, password)
+	respDTO, err := ctrl.service.Login(email, password)
 	if err != nil {
 		return echo.ErrUnauthorized
 	}
@@ -38,13 +37,12 @@ func (r *authRoutes) login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, respDTO)
 }
 
-func NewAuthRoutes(router *echo.Group, l logger.Interface, uc usecase.IUsecaseAuth) {
-	ar := &authRoutes{l, uc}
+func NewAuthRoutes(router *echo.Group, l logger.Interface, service AuthService) {
+	ctrl := &auth{l, service}
 
 	g := router.Group("/auth")
-
 	{
-		g.POST("/login", ar.login)
+		g.POST("/login", ctrl.login)
 	}
 
 }

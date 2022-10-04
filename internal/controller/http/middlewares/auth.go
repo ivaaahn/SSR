@@ -2,6 +2,8 @@ package middlewares
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"ssr/config"
 	"ssr/pkg/misc"
 	"strings"
 )
@@ -10,11 +12,17 @@ func CheckRole(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		split := strings.Split(c.Request().URL.Path, "/")
 
-		// /api/<role>/... -> ["", "api", "<role>" , ...]
-		expRole := split[2]
+		// /api/<role>/... -> ["", "api", "vNo", "<role>" , ...]
+
+		if len(split) < 4 {
+			return echo.ErrForbidden
+		}
+		expRole := split[3]
 		_, recRole := misc.ExtractCtx(c)
 
-		if recRole != expRole {
+		mapping := map[string]string{"st": "students", "sv": "supervisors"}
+
+		if mapping[recRole] != expRole {
 			return echo.ErrForbidden
 		}
 
@@ -24,4 +32,12 @@ func CheckRole(next echo.HandlerFunc) echo.HandlerFunc {
 
 		return nil
 	}
+}
+
+func MakeAuthMiddleware(config *config.Config) echo.MiddlewareFunc {
+	return middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:     &misc.AppJWTClaims{},
+		SigningKey: []byte(config.SigningKey),
+		ContextKey: "ctx",
+	})
 }

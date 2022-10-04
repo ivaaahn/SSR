@@ -2,27 +2,29 @@ package http
 
 import (
 	"github.com/labstack/echo/v4"
-	"ssr/internal/usecase"
+	echoSwagger "github.com/swaggo/echo-swagger"
+	"ssr/config"
 	"ssr/pkg/logger"
+	_ "ssr/swagger"
 )
 
 func NewRouter(
-	echo *echo.Echo,
+	server *echo.Echo,
 	l logger.Interface,
-	auth usecase.IUsecaseAuth,
-	profile usecase.IUsecaseProfile,
-	studentBids usecase.IUsecaseStudentBid,
-	supervisorBids usecase.IUseCaseSupervisorBid,
-	studentWorks usecase.IStudentWorkUC,
-	supervisorWorks usecase.ISupervisorWorkUC,
-	studentRelations usecase.IUseCaseStudentRelation,
-	feedback usecase.IUsecaseFeedback,
+	config *config.Config,
+	auth AuthService,
+	profiles ProfileService,
+	works WorkService,
+	relations RelationsService,
 ) {
-	g := echo.Group("/api")
+	g := server.Group("/api/v1")
+	g.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	{
 		NewAuthRoutes(g, l, auth)
-		NewStudentRoutes(g, l, profile, studentBids, studentWorks, studentRelations, feedback)
-		NewSupervisorRoutes(g, l, profile, supervisorBids, supervisorWorks)
+		NewStudentRoutes(g, l, config, profiles, works, relations)
+		NewSupervisorRoutes(g, l, config, profiles, works)
+		NewWorksRoutes(g, l, config, works)
+		NewRelationRoutes(g, l, config, relations)
 	}
 }

@@ -1,38 +1,34 @@
 package http
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"ssr/config"
 	"ssr/internal/controller/http/middlewares"
-	"ssr/internal/dto"
-	"ssr/internal/usecase"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 	"strconv"
 )
 
-type supervisorRoutes struct {
-	l         logger.Interface
-	profileUC usecase.IUsecaseProfile
-	bidUC     usecase.IUseCaseSupervisorBid
-	workUC    usecase.ISupervisorWorkUC
+type supervisor struct {
+	l              logger.Interface
+	profileService ProfileService
+	workService    WorkService
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo supervisor's profile
+// @Summary      Get supervisor's profile
 // @Tags         supervisor
 // @Produce      json
-// @Success      200  {object}  dto.SupervisorProfile
-// @Router       /api/supervisor/profile [get]
-// @Security	 Auth
-func (r *supervisorRoutes) getProfile(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+// @Param        supervisor_id path int  true  "Supervisor ID"
+// @Success      200  {object}  dto.Supervisor
+// @Router       /api/v1/supervisors/{supervisor_id}/profile [get]
+// @Security	 OAuth2Password
+func (ctrl *supervisor) getProfile(ctx echo.Context) error {
+	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
 
-	respDTO, err := r.profileUC.GetSupervisorProfile(email)
+	respDTO, err := ctrl.profileService.GetSupervisorProfile(supervisorID)
 	if err != nil {
-		r.l.Error(err)
+		ctrl.l.Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
 	}
 
@@ -40,101 +36,39 @@ func (r *supervisorRoutes) getProfile(ctx echo.Context) error {
 }
 
 // ShowAccount godoc
-// @Summary      GetUserInfo supervisor's works
+// @Summary      Get supervisor's works
 // @Tags         supervisor
-// @Param        supervisor_id query int  true  "Supervisor ID"
+// @Param        supervisor_id path int  true  "Supervisor ID"
 // @Produce      json
-// @Success      200  {object}  dto.SupervisorWorkPlenty
-// @Router       /api/supervisor/work [get]
-// @Security	 Auth
-func (r *supervisorRoutes) getWorks(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
+// @Success      200  {object}  dto.SupervisorViewWorkPlenty
+// @Router       /api/v1/supervisors/{supervisor_id}/works [get]
+// @Security	 	OAuth2Password
+func (ctrl *supervisor) getWorks(ctx echo.Context) error {
+	supervisorID, _ := strconv.Atoi(ctx.Param("supervisor_id"))
 
-	supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
-
-	respDTO, err := r.workUC.GetSupervisorWorks(supervisorID)
+	respDTO, err := ctrl.workService.GetSupervisorWorks(supervisorID)
 	if err != nil {
-		r.l.Error(err)
+		ctrl.l.Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
 	}
 
 	return ctx.JSON(http.StatusOK, respDTO)
-}
-
-// ShowAccount godoc
-// @Summary      GetUserInfo supervisor's bids
-// @Tags         supervisor
-// @Param        supervisor_id query int  true  "Supervisor ID"
-// @Produce      json
-// @Success      200  {object}  dto.SupervisorBids
-// @Router       /api/supervisor/bid [get]
-// @Security	 Auth
-func (r *supervisorRoutes) getBids(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	supervisorID, _ := strconv.Atoi(ctx.QueryParam("supervisor_id"))
-
-	respDTO, err := r.bidUC.GetSupervisorBids(supervisorID)
-	if err != nil {
-		r.l.Error(err)
-		return echo.NewHTTPError(http.StatusInternalServerError, "TODO")
-	}
-
-	return ctx.JSON(http.StatusOK, respDTO)
-}
-
-// ShowAccount godoc
-// @Summary      Accept or Decline student's bid
-// @Tags         supervisor
-// @Param 		 ResolveBid body dto.ResolveBid true "bid info"
-// @Produce      json
-// @Success      200  {object}  dto.ResolveBidResp
-// @Router       /api/supervisor/bid/resolve [post]
-// @Security	 Auth
-func (r *supervisorRoutes) resolveBid(ctx echo.Context) error {
-	email, _ := misc.ExtractCtx(ctx)
-	r.l.Debug(fmt.Sprintf("Email: %s", email))
-
-	reqDTO := &dto.ResolveBid{}
-	if err := ctx.Bind(reqDTO); err != nil {
-		return echo.ErrBadRequest
-	}
-
-	if err := r.bidUC.Resolve(reqDTO); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError)
-	}
-
-	newStatus := ""
-	if reqDTO.Accept {
-		newStatus = "accepted"
-	} else {
-		newStatus = "rejected"
-	}
-
-	resp := dto.ResolveBidResp{NewStatus: newStatus}
-
-	return ctx.JSON(http.StatusOK, resp)
 }
 
 func NewSupervisorRoutes(
 	router *echo.Group,
 	l logger.Interface,
-	profileUC usecase.IUsecaseProfile,
-	bidUC usecase.IUseCaseSupervisorBid,
-	workUC usecase.ISupervisorWorkUC,
+	config *config.Config,
+	profileService ProfileService,
+	workService WorkService,
 ) {
-	r := &supervisorRoutes{l, profileUC, bidUC, workUC}
+	ctrl := &supervisor{l, profileService, workService}
 
-	g := router.Group("/supervisor", middlewares.CheckRole)
+	g := router.Group("/supervisors", middlewares.MakeAuthMiddleware(config), middlewares.CheckRole)
 
 	{
-		g.GET("/profile", r.getProfile)
-		g.GET("/bid", r.getBids)
-		g.POST("/bid/resolve", r.resolveBid)
-		g.GET("/work", r.getWorks)
-		g.GET("/work", r.getWorks)
+		g.GET("/:supervisor_id/profile", ctrl.getProfile)
+		g.GET("/:supervisor_id/works", ctrl.getWorks)
 	}
 
 }

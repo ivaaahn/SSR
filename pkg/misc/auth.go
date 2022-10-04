@@ -3,6 +3,7 @@ package misc
 import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"strconv"
 	"time"
 )
 
@@ -11,11 +12,11 @@ type AppJWTClaims struct {
 	Role string
 }
 
-func NewAppJWTClaims(exp time.Duration, sub, role string) *AppJWTClaims {
+func NewAppJWTClaims(exp time.Duration, sub int, role string) *AppJWTClaims {
 	return &AppJWTClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(exp).Unix(),
-			Subject:   sub,
+			Subject:   strconv.Itoa(sub),
 		},
 		Role: role,
 	}

@@ -5,7 +5,9 @@ import (
 )
 
 type Waypoint struct {
-	WorkID      int
+	WaypointID  int `db:"waypoint_id"`
+	WorkID      int `db:"work_id"`
 	Deadline    time.Time
+	Title       string
 	Description string
 }

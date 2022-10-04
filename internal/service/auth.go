@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"github.com/golang-jwt/jwt"
@@ -11,12 +11,12 @@ import (
 
 type Auth struct {
 	*Base
-	repo       IRepoAuth
+	repo       UserRepo
 	tokenExp   time.Duration
 	signingKey []byte
 }
 
-func NewAuth(r IRepoAuth, l logger.Interface, tokenExpMinutes int, signingKey []byte) *Auth {
+func NewAuth(r UserRepo, l logger.Interface, tokenExpMinutes int, signingKey []byte) *Auth {
 	return &Auth{
 		Base:       NewBase(l),
 		repo:       r,
@@ -25,29 +25,30 @@ func NewAuth(r IRepoAuth, l logger.Interface, tokenExpMinutes int, signingKey []
 	}
 }
 
-func (uc *Auth) Login(email, password string) (*dto.LoginResponse, error) {
-	dbData, err := uc.repo.GetUserInfo(email)
+func (service *Auth) Login(email, password string) (*dto.LoginResponse, error) {
+	dbData, err := service.repo.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(dbData.Password), []byte(password)); err != nil {
-		uc.l.Error(err)
+		service.l.Error(err)
 		return nil, err
 	}
 
-	tokenClaims := misc.NewAppJWTClaims(uc.tokenExp, dbData.Email, string(dbData.Role))
+	tokenClaims := misc.NewAppJWTClaims(service.tokenExp, dbData.ID, string(dbData.Role))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
-	tokenStr, err := token.SignedString(uc.signingKey)
+	tokenStr, err := token.SignedString(service.signingKey)
 	if err != nil {
-		uc.l.Error(err)
+		service.l.Error(err)
 		return nil, err
 	}
 
 	return &dto.LoginResponse{
-		Token: tokenStr,
-		Email: dbData.Email,
-		Role:  string(dbData.Role),
+		Token:     tokenStr,
+		TokenType: "Bearer",
+		UserID:    dbData.ID,
+		Role:      string(dbData.Role),
 	}, nil
 }

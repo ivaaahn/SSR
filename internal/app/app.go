@@ -4,45 +4,44 @@ package app
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	m "github.com/labstack/echo/v4/middleware"
-	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 	"ssr/config"
-	"ssr/internal/controller/http"
-	uc "ssr/internal/usecase"
-	repo "ssr/internal/usecase/repo_pg"
+	ctrl "ssr/internal/controller/http"
+	"ssr/internal/service"
+	"ssr/internal/service/repo_pg"
 	"ssr/pkg/logger"
-	"ssr/pkg/misc"
 	"ssr/pkg/postgres"
-	_ "ssr/swagger"
-	"strings"
 )
 
-func setupMiddlewares(server *echo.Echo, cfg *config.Config) {
-	server.Use(m.CORS())
-	server.Use(m.Logger())
-	server.Use(m.Recover())
-	server.Use(m.JWTWithConfig(m.JWTConfig{
-		Claims:     &misc.AppJWTClaims{},
-		SigningKey: []byte(cfg.SigningKey),
-		ContextKey: "ctx",
-		Skipper: func(c echo.Context) bool {
-			// Skip middleware if 'login' or 'swagger'
-			path := c.Request().URL.Path
-			split := strings.Split(path, "/")
-			return split[2] == "auth" || split[1] == "swagger"
-		},
-	}))
+func setupMiddlewares(server *echo.Echo) {
+	server.Use(middleware.CORS())
+	server.Use(middleware.Logger())
+	server.Use(middleware.Recover())
 }
 
-func setupUC(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
-	authUC := uc.NewAuth(repo.NewAuthPgRepo(pg, l), l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
-	profileUC := uc.NewProfile(repo.NewProfilePgRepo(pg, l), l)
-	bidUC := uc.NewBid(repo.NewSSRPgRepo(pg, l), l)
-	workUC := uc.NewWork(repo.NewWorkPgRepo(pg, l), repo.NewSSRPgRepo(pg, l), l)
-	ssrUC := uc.NewSSR(repo.NewSSRPgRepo(pg, l), l)
-	feedBackUC := uc.NewFeedback(repo.NewFeedback(pg, l), l)
+func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
+	relationRepo := repo_pg.NewRelation(pg, l)
+	workRepo := repo_pg.NewWork(pg, l)
+	waypointRepo := repo_pg.NewWaypointRepo(pg, l)
+	userRepo := repo_pg.NewUser(pg, l)
+	studentRepo := repo_pg.NewStudent(pg, l)
+	supervisorRepo := repo_pg.NewSupervisor(pg, l)
 
-	http.NewRouter(server, l, authUC, profileUC, bidUC, bidUC, workUC, workUC, ssrUC, feedBackUC)
+	authService := service.NewAuth(userRepo, l, cfg.Auth.TokenExp, []byte(cfg.Auth.SigningKey))
+	profileService := service.NewProfile(studentRepo, supervisorRepo, l)
+	workService := service.NewWork(workRepo, relationRepo, studentRepo, supervisorRepo, waypointRepo, l)
+	relationService := service.NewRelation(relationRepo, l)
+
+	ctrl.NewRouter(
+		server,
+		l,
+		cfg,
+		authService,
+		profileService,
+		workService,
+		relationService,
+	)
 }
 
 func Run(cfg *config.Config) {
@@ -56,9 +55,10 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	server := echo.New()
-	setupMiddlewares(server, cfg)
-	setupUC(server, pg, loggerObject, cfg)
+	setupMiddlewares(server)
+	makeInjections(server, pg, loggerObject, cfg)
 
-	server.GET("/swagger*", echoSwagger.WrapHandler)
-	server.Logger.Fatal(server.Start(cfg.HTTP.Port))
+	if err := server.Start(cfg.HTTP.Port); err != http.ErrServerClosed {
+		server.Logger.Fatal(err)
+	}
 }

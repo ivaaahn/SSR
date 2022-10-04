@@ -31,14 +31,14 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User email",
+                        "description": "UserFull email",
                         "name": "username",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "User password",
+                        "description": "UserFull password",
                         "name": "password",
                         "in": "formData",
                         "required": true
@@ -52,122 +52,58 @@
                         }
                     },
                     "401": {
-                        "description": ""
+                        "description": "Unauthorized"
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
         },
-        "/api/student/bid": {
+        "/api/v1/relations/": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "student"
+                    "relation"
                 ],
-                "summary": "GetUserInfo student's bids",
+                "summary": "Get relations",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Student ID",
                         "name": "student_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.StudentBids"
-                        }
+                        "in": "query"
                     },
-                    "404": {
-                        "description": ""
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Apply bid",
-                "parameters": [
-                    {
-                        "description": "bid info",
-                        "name": "ApplyBid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApplyBid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApplyBidResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/student/feedback": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "Get feedbacks on the supervisor.",
-                "parameters": [
                     {
                         "type": "integer",
                         "description": "Supervisor ID",
                         "name": "supervisor_id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.FeedbackPlenty"
+                            "$ref": "#/definitions/dto.RelationPlenty"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             },
-            "put": {
+            "post": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "consumes": [
@@ -177,17 +113,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "student"
+                    "relation"
                 ],
-                "summary": "Provide a feedback",
+                "summary": "Create relation",
                 "parameters": [
                     {
-                        "description": "feedback info",
-                        "name": "Feedback",
+                        "description": "Relation data",
+                        "name": "CreateRelation",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.FeedbackReq"
+                            "$ref": "#/definitions/dto.RelationCreateReq"
                         }
                     }
                 ],
@@ -195,47 +131,15 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.FeedbackAddResp"
+                            "$ref": "#/definitions/dto.RelationCreateResp"
                         }
-                    },
-                    "500": {
-                        "description": ""
                     }
                 }
-            }
-        },
-        "/api/student/profile": {
-            "get": {
+            },
+            "patch": {
                 "security": [
                     {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "student"
-                ],
-                "summary": "GetUserInfo student's profile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.StudentProfile"
-                        }
-                    },
-                    "404": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/student/ssr": {
-            "post": {
-                "security": [
-                    {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "consumes": [
@@ -245,17 +149,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "student"
+                    "relation"
                 ],
-                "summary": "Start SSR",
+                "summary": "Update relation",
                 "parameters": [
                     {
-                        "description": "ssr info",
-                        "name": "ApplyBid",
+                        "description": "Relation data",
+                        "name": "CreateRelation",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateSSR"
+                            "$ref": "#/definitions/dto.RelationUpdateReq"
                         }
                     }
                 ],
@@ -263,17 +167,17 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentViewSSR"
+                            "$ref": "#/definitions/dto.RelationResp"
                         }
                     }
                 }
             }
         },
-        "/api/student/work": {
+        "/api/v1/students/{student_id}/profile": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
@@ -282,13 +186,13 @@
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo student's works",
+                "summary": "Get student's profile",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Student ID",
                         "name": "student_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -296,17 +200,20 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.StudentWorks"
+                            "$ref": "#/definitions/dto.Student"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }
         },
-        "/api/student/work/supervisor": {
+        "/api/v1/students/{student_id}/works": {
             "get": {
                 "security": [
                     {
-                        "Auth": []
+                        "OAuth2Password": []
                     }
                 ],
                 "produces": [
@@ -315,13 +222,112 @@
                 "tags": [
                     "student"
                 ],
-                "summary": "GetUserInfo supervisors of the work",
+                "summary": "Get student's works",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Student ID",
+                        "name": "student_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StudentViewWorkPlenty"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/supervisors/{supervisor_id}/profile": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supervisor"
+                ],
+                "summary": "Get supervisor's profile",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Supervisor ID",
+                        "name": "supervisor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Supervisor"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/supervisors/{supervisor_id}/works": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supervisor"
+                ],
+                "summary": "Get supervisor's works",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Supervisor ID",
+                        "name": "supervisor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SupervisorViewWorkPlenty"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/works/{work_id}": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2Password": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "works"
+                ],
+                "summary": "Get supervisors of the work",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Work ID",
                         "name": "work_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -329,132 +335,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.WorkSupervisorPlenty"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/bid": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "GetUserInfo supervisor's bids",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Supervisor ID",
-                        "name": "supervisor_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.SupervisorBids"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/bid/resolve": {
-            "post": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "Accept or Decline student's bid",
-                "parameters": [
-                    {
-                        "description": "bid info",
-                        "name": "ResolveBid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ResolveBid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ResolveBidResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/profile": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "GetUserInfo supervisor's profile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.SupervisorProfile"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/supervisor/work": {
-            "get": {
-                "security": [
-                    {
-                        "Auth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "supervisor"
-                ],
-                "summary": "GetUserInfo supervisor's works",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Supervisor ID",
-                        "name": "supervisor_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.SupervisorWorkPlenty"
+                            "$ref": "#/definitions/dto.WorkFullResp"
                         }
                     }
                 }
@@ -462,190 +343,129 @@
         }
     },
     "definitions": {
-        "dto.ApplyBid": {
-            "type": "object",
-            "properties": {
-                "studentID": {
-                    "type": "integer"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ApplyBidResponse": {
-            "type": "object",
-            "properties": {
-                "bidID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CreateSSR": {
-            "type": "object",
-            "properties": {
-                "bidID": {
-                    "type": "integer"
-                },
-                "studentID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackAddResp": {
-            "type": "object",
-            "properties": {
-                "feedback_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackPlenty": {
-            "type": "object",
-            "properties": {
-                "feedbacks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.FeedbackResp"
-                    }
-                }
-            }
-        },
-        "dto.FeedbackReq": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "studentID": {
-                    "type": "integer"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.FeedbackResp": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "studentID": {
-                    "type": "integer"
-                },
-                "student_full_name": {
-                    "type": "string"
-                },
-                "supervisorID": {
-                    "type": "integer"
-                },
-                "workID": {
-                    "type": "integer"
-                },
-                "work_kind": {
-                    "type": "string"
-                },
-                "work_subject": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
-                "email": {
+                "access_token": {
                     "type": "string"
                 },
                 "role": {
                     "type": "string"
                 },
-                "token": {
+                "token_type": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.ResolveBid": {
-            "type": "object",
-            "properties": {
-                "accept": {
-                    "type": "boolean"
                 },
-                "bidID": {
-                    "type": "integer"
-                },
-                "supervisorID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "dto.ResolveBidResp": {
+        "dto.RelationCreateReq": {
             "type": "object",
             "properties": {
-                "new_status": {
-                    "type": "string"
+                "student_id": {
+                    "type": "integer"
+                },
+                "supervisor_id": {
+                    "type": "integer"
+                },
+                "work_id": {
+                    "type": "integer"
                 }
             }
         },
-        "dto.StudentBid": {
+        "dto.RelationCreateResp": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
+                "relation_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RelationPlenty": {
+            "type": "object",
+            "properties": {
+                "relations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RelationShortResp"
+                    }
+                }
+            }
+        },
+        "dto.RelationResp": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
                     "type": "integer"
                 },
                 "status": {
                     "type": "string"
                 },
+                "student": {
+                    "$ref": "#/definitions/dto.Student"
+                },
                 "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
+                    "$ref": "#/definitions/dto.Supervisor"
                 },
                 "work": {
-                    "$ref": "#/definitions/dto.Work"
+                    "$ref": "#/definitions/dto.WorkResp"
                 }
             }
         },
-        "dto.StudentBids": {
+        "dto.RelationShortResp": {
             "type": "object",
             "properties": {
-                "bids": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.StudentBid"
-                    }
-                }
-            }
-        },
-        "dto.StudentProfile": {
-            "type": "object",
-            "properties": {
-                "avatarUrl": {
+                "relation_id": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "string"
                 },
+                "student": {
+                    "$ref": "#/definitions/dto.StudentShort"
+                },
+                "supervisor": {
+                    "$ref": "#/definitions/dto.SupervisorShort"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkShortResp"
+                }
+            }
+        },
+        "dto.RelationUpdateReq": {
+            "type": "object",
+            "properties": {
+                "relation_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Student": {
+            "type": "object",
+            "properties": {
                 "department": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
+                "first_name": {
                     "type": "string"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
                 },
-                "studentCard": {
+                "photo_url": {
                     "type": "string"
                 },
-                "studentID": {
+                "student_card": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "integer"
                 },
                 "year": {
@@ -653,57 +473,36 @@
                 }
             }
         },
-        "dto.StudentViewSSR": {
+        "dto.StudentShort": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "first_name": {
                     "type": "string"
                 },
-                "id": {
+                "last_name": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "supervisor": {
-                    "$ref": "#/definitions/dto.SupervisorProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.StudentWork": {
+        "dto.StudentViewWorkPlenty": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_started": {
-                    "type": "boolean"
-                },
-                "kind": {
-                    "type": "string"
-                },
-                "subject": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.StudentWorks": {
-            "type": "object",
-            "properties": {
-                "studentID": {
-                    "type": "integer"
-                },
                 "works": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.StudentWork"
+                        "$ref": "#/definitions/dto.StudentViewWorkShortResp"
                     }
+                }
+            }
+        },
+        "dto.StudentViewWorkShortResp": {
+            "type": "object",
+            "properties": {
+                "work": {
+                    "$ref": "#/definitions/dto.WorkShortResp"
                 }
             }
         },
@@ -713,52 +512,18 @@
                 "department": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "subjectID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.SupervisorBid": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "status": {
+                "name": {
                     "type": "string"
-                },
-                "student": {
-                    "$ref": "#/definitions/dto.StudentProfile"
-                },
-                "work": {
-                    "$ref": "#/definitions/dto.Work"
                 }
             }
         },
-        "dto.SupervisorBids": {
-            "type": "object",
-            "properties": {
-                "bids": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SupervisorBid"
-                    }
-                }
-            }
-        },
-        "dto.SupervisorProfile": {
+        "dto.Supervisor": {
             "type": "object",
             "properties": {
                 "about": {
-                    "type": "string"
-                },
-                "avatarUrl": {
                     "type": "string"
                 },
                 "birthdate": {
@@ -770,52 +535,117 @@
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
+                "first_name": {
                     "type": "string"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
                 },
-                "supervisorID": {
+                "photo_url": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "dto.SupervisorWork": {
+        "dto.SupervisorShort": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.SupervisorViewWorkPlenty": {
+            "type": "object",
+            "properties": {
+                "works": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.SupervisorViewWorkShortResp"
+                    }
+                }
+            }
+        },
+        "dto.SupervisorViewWorkShortResp": {
+            "type": "object",
+            "properties": {
+                "is_full": {
+                    "type": "boolean"
+                },
+                "is_head": {
+                    "type": "boolean"
+                },
+                "work": {
+                    "$ref": "#/definitions/dto.WorkShortResp"
+                }
+            }
+        },
+        "dto.WaypointResp": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WorkFullResp": {
             "type": "object",
             "properties": {
                 "description": {
                     "type": "string"
-                },
-                "head": {
-                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "kind": {
-                    "type": "string"
+                    "$ref": "#/definitions/dto.WorkKindResp"
                 },
-                "subject": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.SupervisorWorkPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisorID": {
+                "semester": {
                     "type": "integer"
                 },
-                "works": {
+                "subject": {
+                    "$ref": "#/definitions/dto.SubjectResp"
+                },
+                "supervisors": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.SupervisorWork"
+                        "$ref": "#/definitions/dto.WorkSupervisorShort"
+                    }
+                },
+                "waypoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WaypointResp"
                     }
                 }
             }
         },
-        "dto.Work": {
+        "dto.WorkKindResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WorkResp": {
             "type": "object",
             "properties": {
                 "description": {
@@ -824,8 +654,8 @@
                 "id": {
                     "type": "integer"
                 },
-                "name": {
-                    "type": "string"
+                "kind": {
+                    "$ref": "#/definitions/dto.WorkKindResp"
                 },
                 "semester": {
                     "type": "integer"
@@ -835,25 +665,24 @@
                 }
             }
         },
-        "dto.WorkSupervisor": {
+        "dto.WorkShortResp": {
             "type": "object",
             "properties": {
-                "about": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
                 },
-                "avatarUrl": {
-                    "type": "string"
+                "kind": {
+                    "$ref": "#/definitions/dto.WorkKindResp"
                 },
-                "birthdate": {
-                    "type": "string"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "firstName": {
+                "subject": {
+                    "$ref": "#/definitions/dto.SubjectResp"
+                }
+            }
+        },
+        "dto.WorkSupervisorShort": {
+            "type": "object",
+            "properties": {
+                "first_name": {
                     "type": "string"
                 },
                 "full": {
@@ -862,34 +691,20 @@
                 "head": {
                     "type": "boolean"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
                 },
-                "supervisorID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.WorkSupervisorPlenty": {
-            "type": "object",
-            "properties": {
-                "supervisors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.WorkSupervisor"
-                    }
-                },
-                "workID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
         }
     },
     "securityDefinitions": {
-        "Auth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+        "OAuth2Password": {
+            "type": "oauth2",
+            "flow": "password",
+            "tokenUrl": "http://localhost:8080/api/v1/auth/login"
         }
     }
 }

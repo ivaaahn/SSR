@@ -18,9 +18,8 @@ import (
 // @BasePath /
 // @schemes http
 
-// @securitydefinitions.apikey Auth
-// @in header
-// @name Authorization
+// @securitydefinitions.oauth2.password OAuth2Password
+// @tokenUrl http://localhost:8080/api/v1/auth/login
 func main() {
 	cfg, err := config.NewConfig()
 	if err != nil {
