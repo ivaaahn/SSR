@@ -22,7 +22,7 @@ type auth struct {
 // @Success      200  {object}  dto.LoginResponse
 // @Failure      401
 // @Failure      500
-// @Router       /api/auth/login [post]
+// @Router       /api/v1/auth/login [post]
 func (ctrl *auth) login(ctx echo.Context) error {
 	email := ctx.FormValue("username")
 	password := ctx.FormValue("password")

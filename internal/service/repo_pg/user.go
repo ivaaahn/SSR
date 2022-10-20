@@ -20,7 +20,7 @@ func NewUser(pg *postgres.Postgres, l logger.Interface) *User {
 func (r *User) CreateUser(email, password, firstName, lastName, photoUrl string, role entity.UserRole) error {
 	query := `
 	insert into users (email, password, first_name, last_name, photo_url, role) 
-	values ($1, $2, $3, $4, $5)
+	values ($1, $2, $3, $4, $5, $6)
 	`
 
 	res, err := r.Conn.Exec(query, email, password, firstName, lastName, photoUrl, role)
@@ -52,7 +52,7 @@ func (r *User) GetUserByEmail(email string) (*entity.UserFull, error) {
 func (r *User) GetUserByID(userID int) (*entity.UserFull, error) {
 	auth := entity.UserFull{}
 
-	err := r.Conn.Get(&auth, "select * from user where id = $1", userID)
+	err := r.Conn.Get(&auth, "select * from users where id = $1", userID)
 	if err != nil {
 		err := fmt.Errorf("UserFull->r.Conn.Get(): %w", err)
 		r.l.Error(err)

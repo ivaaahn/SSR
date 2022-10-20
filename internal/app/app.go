@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"ssr/config"
+	"ssr/internal/app/mw"
 	ctrl "ssr/internal/controller/http"
 	"ssr/internal/service"
 	"ssr/internal/service/repo_pg"
@@ -14,9 +15,15 @@ import (
 	"ssr/pkg/postgres"
 )
 
-func setupMiddlewares(server *echo.Echo) {
+func setupMiddlewares(cfg *config.Config, server *echo.Echo) {
+	server.Use(mw.ServerHeader())
 	server.Use(middleware.CORS())
-	server.Use(middleware.Logger())
+
+	println(cfg.Performance)
+	if cfg.Performance == "false" {
+		server.Use(middleware.Logger())
+	}
+
 	server.Use(middleware.Recover())
 }
 
@@ -55,7 +62,7 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	server := echo.New()
-	setupMiddlewares(server)
+	setupMiddlewares(cfg, server)
 	makeInjections(server, pg, loggerObject, cfg)
 
 	if err := server.Start(cfg.HTTP.Port); err != http.ErrServerClosed {

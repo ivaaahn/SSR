@@ -1,0 +1,81 @@
+upstream api {
+    server app:8080;
+}
+
+upstream admin {
+    server admin:8000;
+}
+
+#
+# server {
+#     listen 80;
+#     server_name retailerx.gq, www.retailerx.gq;
+#
+#     location /.well-known/acme-challenge/ {
+#         root /var/www/certbot;
+#     }
+#
+#     location / {
+# 		return 301 https://$host$request_uri;
+#     }
+# }
+#
+
+
+
+server {
+    listen 80;
+#     server_name retailerx.gq, www.retailerx.gq;
+
+#     location /.well-known/acme-challenge/ {
+#         root /var/www/certbot;
+#     }
+#
+#     location / {
+# 		return 301 https://$host$request_uri;
+#     }
+
+     location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://api;
+    }
+}
+
+#
+# server {
+#     listen 443 ssl;
+#     server_name retailerx.gq, www.retailerx.gq;
+#     ssl_certificate /etc/letsencrypt/live/retailerx.gq/fullchain.pem;
+#     ssl_certificate_key /etc/letsencrypt/live/retailerx.gq/privkey.pem;
+#
+#     include /etc/letsencrypt/options-ssl-nginx.conf;
+#     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+#
+#     client_max_body_size 32M;
+#
+#     location /admin {
+#         proxy_set_header Host localhost;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#         proxy_pass http://admin/admin;
+#     }
+#
+#
+#     location /img/ {
+#         proxy_hide_header x-amz-request-id;
+#         proxy_hide_header x-amz-version-id;
+#         proxy_pass http://${S3_STORAGE_URL}/${S3_BUCKET_NAME}/;
+#     }
+#
+#     location / {
+#         proxy_set_header Host $http_host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#         proxy_pass http://api;
+#     }
+# }

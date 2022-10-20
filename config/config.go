@@ -24,12 +24,15 @@ type (
 
 	// HTTP -.
 	HTTP struct {
-		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		Host     string `env-required:"true" yaml:"host" env:"HTTP_HOST"`
+		BasePath string `env-required:"true" yaml:"base_path" env:"HTTP_BASE_PATH"`
+		Port     string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
 	}
 
 	// Log -.
 	Log struct {
-		Level string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
+		Level       string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
+		Performance string `env-required:"true" yaml:"performance"   env:"PERFORMANCE"`
 	}
 
 	// Pg -.

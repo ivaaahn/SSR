@@ -20,7 +20,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -708,18 +708,18 @@ const docTemplate = `{
         "OAuth2Password": {
             "type": "oauth2",
             "flow": "password",
-            "tokenUrl": "http://localhost:8080/api/v1/auth/login"
+            "tokenUrl": "/api/v1/auth/login"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{"http"},
-	Title:            "SSR Application",
+	Title:            "",
 	Description:      "Student-Supervisor Relationships",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

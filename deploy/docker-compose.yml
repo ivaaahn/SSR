@@ -2,12 +2,65 @@ version: "3"
 
 
 services:
-  app:
-#    build:
-#      dockerfile: deploy/Dockerfile
-#      context: ..
-    image: ivaaahn/ssr:0.1.2
-    container_name: app
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    depends_on:
+      - app_worker_rw
+      - app_worker_ro1
+      - app_worker_ro2
+      - admin
+    ports:
+      - "80:80"
+#      - "443:443"
+#    environment:
+#      S3_STORAGE_URL: $S3_STORAGE_URL
+#      S3_BUCKET_NAME: $S3_BUCKET_NAME
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+#      - ./nginx/templates:/etc/nginx/templates
+#      - ./nginx/data/log:/var/log/nginx
+#      - ./certbot/conf:/etc/letsencrypt
+#      - ./certbot/www:/var/www/certbot
+      - ./nginx/static/:/usr/share/nginx/html/
+    restart: unless-stopped
+
+
+  admin:
+    image: ivaaahn/ssr_admin:1.0.5
+    container_name: admin
+    expose:
+      - 8000
+    environment:
+      DJANGO_SUPERUSER_PASSWORD: admin
+      DJANGO_SUPERUSER_EMAIL: admin@admin.com
+      WAIT_HOSTS: pg:5432, admin_static:80
+      WAIT_TIMEOUT: 900
+      WAIT_SLEEP_INTERVAL: 5
+    ports:
+      - "8000:8000"
+    depends_on:
+      - migrate
+      - admin_static
+    restart: unless-stopped
+
+
+  admin_static:
+    image: ivaaahn/ssr_admin_static:1.0.0
+    container_name: admin_static
+    expose:
+      - 80
+    restart: unless-stopped
+
+
+  app_worker_rw:
+    image: ivaaahn/ssr:1.0.0
+    container_name: app_worker_rw
+    environment:
+      WAIT_HOSTS: pg:5432
+      PERFORMANCE: 'false'
+    expose:
+      - 8080
     ports:
       - "8080:8080"
     depends_on:
@@ -15,16 +68,56 @@ services:
       - migrate
     restart: unless-stopped
 
+
+  app_worker_ro1:
+    image: ivaaahn/ssr:1.0.0
+    container_name: app_worker_ro1
+    environment:
+      WAIT_HOSTS: pg:5432
+      PERFORMANCE: 'false'
+    expose:
+      - 8080
+    depends_on:
+      - pg
+      - migrate
+    restart: unless-stopped
+
+
+  app_worker_ro2:
+    image: ivaaahn/ssr:1.0.0
+    container_name: app_worker_ro2
+    environment:
+      WAIT_HOSTS: pg:5432
+      PERFORMANCE: 'false'
+    expose:
+      - 8080
+    depends_on:
+      - pg
+      - migrate
+    restart: unless-stopped
+
+  app_temp:
+    image: ivaaahn/ssr:1.0.1
+    container_name: app_temp
+    environment:
+      WAIT_HOSTS: pg:5432
+      PERFORMANCE: 'false'
+      HTTP_BASE_PATH: "/mirror1"
+    expose:
+      - 8080
+    depends_on:
+      - pg
+      - migrate
+    restart: unless-stopped
+
+
   migrate:
-#    build:
-#      dockerfile: deploy/Dockerfile.migrate
-#      context: ..
     image: ivaaahn/go-migrate:0.1.0
     container_name: migrate
     environment:
-      PG_USER: ssradmin
-      PG_PSWD: ssradmin
-      PG_DB: ssr
+      PG_USER: "ssr_user"
+      PG_PSWD: "ssr_password"
+      PG_DB: "ssr"
       PG_HOST: pg:5432
       WAIT_HOSTS: pg:5432
     volumes:
@@ -32,19 +125,23 @@ services:
     depends_on:
       - pg
 
+
   pg:
-    image: postgres:alpine
+    image: postgres:14-alpine
     container_name: pg
     expose:
       - 5432
+    ports:
+      - "5433:5432"
     environment:
-      POSTGRES_DB: ssr
-      POSTGRES_USER: ssradmin
-      POSTGRES_PASSWORD: ssradmin
+      POSTGRES_PASSWORD: "ssr_password"
+      POSTGRES_USER: "ssr_user"
+      POSTGRES_DB: "ssr"
       PGDATA: "/data/lib/postgresql/data/pgdata"
     volumes:
       - pg_data_volume:/data/lib/postgresql/data
     restart: unless-stopped
+
 
 volumes:
   pg_data_volume:
