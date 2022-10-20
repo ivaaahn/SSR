@@ -19,12 +19,12 @@ func setupMiddlewares(cfg *config.Config, server *echo.Echo) {
 	server.Use(mw.ServerHeader())
 	server.Use(middleware.CORS())
 
-	println(cfg.Performance)
 	if cfg.Performance == "false" {
 		server.Use(middleware.Logger())
 	}
 
 	server.Use(middleware.Recover())
+	server.Use(mw.HandleErrors())
 }
 
 func makeInjections(server *echo.Echo, pg *postgres.Postgres, l *logger.Logger, cfg *config.Config) {
@@ -62,6 +62,7 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	server := echo.New()
+	server.Use(mw.ServerHeader())
 	setupMiddlewares(cfg, server)
 	makeInjections(server, pg, loggerObject, cfg)
 
