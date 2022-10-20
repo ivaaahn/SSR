@@ -13,8 +13,6 @@ import (
 // @contact.url github.com/ivaahn/ssr
 // @contact.email ivahnencko01@gmail.com
 
-// @schemes http
-
 // @securitydefinitions.oauth2.password OAuth2Password
 // @tokenUrl /api/v1/auth/login
 func main() {
@@ -24,6 +22,7 @@ func main() {
 	docs.SwaggerInfo.Title = cfg.App.Name
 	docs.SwaggerInfo.Host = cfg.HTTP.Host
 	docs.SwaggerInfo.BasePath = cfg.HTTP.BasePath
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	if err != nil {
 		log.Fatalf("Config error: %s", err)

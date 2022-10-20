@@ -12,7 +12,7 @@ services:
       - admin
     ports:
       - "80:80"
-#      - "443:443"
+      - "443:443"
 #    environment:
 #      S3_STORAGE_URL: $S3_STORAGE_URL
 #      S3_BUCKET_NAME: $S3_BUCKET_NAME
@@ -23,11 +23,13 @@ services:
 #      - ./certbot/conf:/etc/letsencrypt
 #      - ./certbot/www:/var/www/certbot
       - ./nginx/static/:/usr/share/nginx/html/
+      - ./nginx/cache/:/var/nginx/cache/
+      - ./nginx/tls/certs/:/var/nginx/certs/
     restart: unless-stopped
 
 
   admin:
-    image: ivaaahn/ssr_admin:1.0.5
+    image: ivaaahn/ssr_admin:1.0.7
     container_name: admin
     expose:
       - 8000

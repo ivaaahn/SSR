@@ -19,14 +19,9 @@ func HandleErrors() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := next(c)
-
-			println("HELLLOOO")
-			println(err)
-
 			if err == middleware.ErrJWTMissing {
 				return echo.NewHTTPError(http.StatusUnauthorized, "Token is not provided")
 			}
-
 			return err
 		}
 	}
